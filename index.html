@@ -53,10 +53,22 @@
             .progress-value {
                 @apply h-full bg-primary transition-all duration-500 ease-out;
             }
+            .wechat-guide {
+                @apply fixed top-4 right-4 bg-black/80 text-white px-4 py-2 rounded-lg text-sm z-50 hidden;
+            }
+            .wechat-arrow {
+                @apply absolute top-0 right-0 w-6 h-6 transform translate-x-1/2 -translate-y-1/2 rotate-45 bg-black/80;
+            }
         }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen font-sans text-neutral">
+    <!-- 微信分享引导 -->
+    <div id="wechat-share-guide" class="wechat-guide">
+        <div class="wechat-arrow"></div>
+        点击右上角<br>选择"转发给朋友"
+    </div>
+    
     <!-- 首页 -->
     <div id="home-page" class="min-h-screen flex flex-col items-center justify-center p-6 transition-opacity duration-500">
         <div class="text-center max-w-md mx-auto">
@@ -166,6 +178,12 @@
     </div>
     
     <script>
+        // 检测是否在微信浏览器中
+        function isWechatBrowser() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            return userAgent.includes('micromessenger');
+        }
+        
         // 题目数据
         const questions = [
             {
@@ -263,6 +281,7 @@
         let currentQuestionIndex = 0;
         let userAnswers = [];
         let radarChart = null;
+        let wechatGuideTimeout = null;
         
         // DOM元素
         const homePage = document.getElementById('home-page');
@@ -282,6 +301,7 @@
         const totalScoreEl = document.getElementById('total-score');
         const dixiLevelEl = document.getElementById('dixi-level');
         const levelDescriptionEl = document.getElementById('level-description');
+        const wechatShareGuide = document.getElementById('wechat-share-guide');
         
         // 初始化事件监听
         function initEventListeners() {
@@ -291,6 +311,29 @@
             nextBtn.addEventListener('click', goToNextQuestion);
             restartBtn.addEventListener('click', restartQuiz);
             shareResultBtn.addEventListener('click', shareResult);
+            
+            // 微信环境下添加额外的分享引导
+            if (isWechatBrowser()) {
+                document.addEventListener('visibilitychange', function() {
+                    if (!document.hidden) {
+                        hideWechatGuide();
+                    }
+                });
+            }
+        }
+        
+        // 显示微信分享引导
+        function showWechatGuide() {
+            wechatShareGuide.classList.remove('hidden');
+            
+            // 5秒后自动隐藏
+            if (wechatGuideTimeout) clearTimeout(wechatGuideTimeout);
+            wechatGuideTimeout = setTimeout(hideWechatGuide, 5000);
+        }
+        
+        // 隐藏微信分享引导
+        function hideWechatGuide() {
+            wechatShareGuide.classList.add('hidden');
         }
         
         // 页面切换动画
@@ -536,6 +579,12 @@
         
         // 分享功能
         function shareApp() {
+            // 微信环境下显示分享引导
+            if (isWechatBrowser()) {
+                showWechatGuide();
+                return;
+            }
+            
             if (navigator.share) {
                 navigator.share({
                     title: '嫡系计算器',
@@ -546,7 +595,11 @@
                     showToast('分享功能暂不支持，请手动分享');
                 });
             } else {
-                showToast('分享功能暂不支持，请手动分享');
+                showToast('请复制链接分享给好友');
+                // 复制链接到剪贴板
+                navigator.clipboard.writeText(window.location.href)
+                    .then(() => showToast('链接已复制，请粘贴给好友'))
+                    .catch(() => showToast('复制失败，请手动复制链接'));
             }
         }
         
@@ -554,6 +607,12 @@
         function shareResult() {
             const score = totalScoreEl.textContent;
             const level = dixiLevelEl.textContent;
+            
+            // 微信环境下显示分享引导
+            if (isWechatBrowser()) {
+                showWechatGuide();
+                return;
+            }
             
             if (navigator.share) {
                 navigator.share({
@@ -565,7 +624,11 @@
                     showToast('分享功能暂不支持，请手动分享');
                 });
             } else {
-                showToast('分享功能暂不支持，请手动分享');
+                showToast('请复制链接分享给好友');
+                // 复制链接到剪贴板
+                navigator.clipboard.writeText(window.location.href)
+                    .then(() => showToast('链接已复制，请粘贴给好友'))
+                    .catch(() => showToast('复制失败，请手动复制链接'));
             }
         }
         
