@@ -113,7 +113,7 @@
     <div id="share-modal" class="share-modal">
         <div class="share-content">
             <h3 class="text-xl font-bold mb-4 text-center">分享你的测试结果</h3>
-            <p class="text-gray-500 text-sm text-center mb-4">长按图片保存，分享给好友</p>
+            <p class="text-gray-500 text-sm text-center mb-4">截图分享给好友</p>
             
             <!-- 分别显示得分和雷达图的截图（添加居中样式） -->
             <div class="screenshots-wrapper">
@@ -132,7 +132,7 @@
                 </div>
             </div>
             
-            <p class="text-gray-400 text-xs text-center mb-4">扫码查看完整结果</p>
+            <p class="text-gray-400 text-xs text-center mb-4">扫码测测自己的得分</p>
             
             <button id="close-share-modal" class="btn-primary w-full">
                 关闭
@@ -698,7 +698,7 @@
                 // 3. 显示分享弹窗
                 setTimeout(() => {
                     shareModal.classList.add('show');
-                    showToast('长按图片即可保存分享');
+                    showToast('截图已准备好，可分享给好友');
                 }, 500);
             }).catch(error => {
                 console.error('生成截图失败:', error);
