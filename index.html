@@ -6,7 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
     
-    <!-- 配置Tailwind自定义颜色和字体 -->
+    <!-- 配置Tailwind自定义Tail自定义颜色和字体 -->
     <script>
         tailwind.config = {
             theme: {
@@ -53,27 +53,24 @@
             .progress-value {
                 @apply h-full bg-primary transition-all duration-500 ease-out;
             }
-            .wechat-guide {
-                @apply fixed top-4 right-4 bg-black/80 text-white px-4 py-2 rounded-lg text-sm z-50 hidden;
+            .toast {
+                @apply fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-neutral text-white px-6 py-3 rounded-full shadow-lg z-50 opacity-0 transition-opacity duration-300;
             }
-            .wechat-arrow {
-                @apply absolute top-0 right-0 w-6 h-6 transform translate-x-1/2 -translate-y-1/2 rotate-45 bg-black/80;
+            .toast.show {
+                @apply opacity-100;
             }
         }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen font-sans text-neutral">
-    <!-- 微信分享引导 -->
-    <div id="wechat-share-guide" class="wechat-guide">
-        <div class="wechat-arrow"></div>
-        点击右上角<br>选择"转发给朋友"
-    </div>
+    <!-- 提示框 -->
+    <div id="toast" class="toast">提示信息</div>
     
     <!-- 首页 -->
     <div id="home-page" class="min-h-screen flex flex-col items-center justify-center p-6 transition-opacity duration-500">
         <div class="text-center max-w-md mx-auto">
             <h1 class="text-[clamp(2.5rem,8vw,4rem)] font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent mb-6 leading-tight text-shadow">
-                嫡系计算器
+               嫡系计算器
             </h1>
             <p class="text-gray-600 text-lg mb-10">
                 通过7个维度测试，评估你在组织中的嫡系程度
@@ -83,7 +80,7 @@
                     <i class="fa fa-play-circle"></i> 开始测试
                 </button>
                 <button id="share-btn" class="btn-secondary flex items-center justify-center gap-2">
-                    <i class="fa fa-share-alt"></i> 分享
+                    <i class="fa fa-share-alt"></i> 分享计算器
                 </button>
             </div>
         </div>
@@ -162,7 +159,7 @@
                     <i class="fa fa-refresh"></i> 重新测试
                 </button>
                 <button id="share-result-btn" class="btn-secondary flex items-center justify-center gap-2">
-                    <i class="fa fa-share-alt"></i> 分享结果
+                    <i class="fa fa-share-alt"></i> 分享计算器
                 </button>
             </div>
             
@@ -170,7 +167,6 @@
             <div class="text-center mb-8">
                 <p class="text-gray-600 text-sm mb-4">大厂知识库，致力于突破大厂信息茧房，持续分享职场干货，欢迎进群~</p>
                 <div class="bg-white p-4 rounded-xl shadow-md inline-block">
-                    <!-- 这里是默认图片，您可以替换src中的链接 -->
                     <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/e1891b2cd7414809a70eee3c89a5195a~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1754614361&amp;x-signature=lM27Fu4%2BH2rRT4kNMSAK7ER02X8%3D" alt="大厂知识库二维码" class="w-64 h-64 object-cover rounded-lg">
                 </div>
             </div>
@@ -178,12 +174,6 @@
     </div>
     
     <script>
-        // 检测是否在微信浏览器中
-        function isWechatBrowser() {
-            const userAgent = navigator.userAgent.toLowerCase();
-            return userAgent.includes('micromessenger');
-        }
-        
         // 题目数据
         const questions = [
             {
@@ -281,7 +271,8 @@
         let currentQuestionIndex = 0;
         let userAnswers = [];
         let radarChart = null;
-        let wechatGuideTimeout = null;
+        // 要分享的固定网址
+        const shareUrl = "https://dachangzhishiku.github.io/";
         
         // DOM元素
         const homePage = document.getElementById('home-page');
@@ -301,7 +292,7 @@
         const totalScoreEl = document.getElementById('total-score');
         const dixiLevelEl = document.getElementById('dixi-level');
         const levelDescriptionEl = document.getElementById('level-description');
-        const wechatShareGuide = document.getElementById('wechat-share-guide');
+        const toastEl = document.getElementById('toast');
         
         // 初始化事件监听
         function initEventListeners() {
@@ -311,29 +302,16 @@
             nextBtn.addEventListener('click', goToNextQuestion);
             restartBtn.addEventListener('click', restartQuiz);
             shareResultBtn.addEventListener('click', shareResult);
-            
-            // 微信环境下添加额外的分享引导
-            if (isWechatBrowser()) {
-                document.addEventListener('visibilitychange', function() {
-                    if (!document.hidden) {
-                        hideWechatGuide();
-                    }
-                });
-            }
         }
         
-        // 显示微信分享引导
-        function showWechatGuide() {
-            wechatShareGuide.classList.remove('hidden');
+        // 显示提示信息
+        function showToast(message) {
+            toastEl.textContent = message;
+            toastEl.classList.add('show');
             
-            // 5秒后自动隐藏
-            if (wechatGuideTimeout) clearTimeout(wechatGuideTimeout);
-            wechatGuideTimeout = setTimeout(hideWechatGuide, 5000);
-        }
-        
-        // 隐藏微信分享引导
-        function hideWechatGuide() {
-            wechatShareGuide.classList.add('hidden');
+            setTimeout(() => {
+                toastEl.classList.remove('show');
+            }, 3000);
         }
         
         // 页面切换动画
@@ -503,23 +481,21 @@
                     dixiLevelEl.classList.add('text-blue-600');
                     break;
                 case "外围人员":
-                    dixiLevelEl.classList.add('text-orange-500');
+                    dixiLevelEl.classList.add('text-yellow-600');
                     break;
                 case "风险人员":
-                    dixiLevelEl.classList.add('text-red-500');
+                    dixiLevelEl.classList.add('text-red-600');
                     break;
             }
         }
         
-        // 渲染雷达图
+        // 绘制雷达图
         function renderRadarChart() {
             const ctx = document.getElementById('radar-chart').getContext('2d');
             
             // 准备数据
             const labels = questions.map(q => q.dimension);
-            const data = questions.map((question, index) => {
-                return question.options[userAnswers[index]].score;
-            });
+            const data = questions.map((q, index) => q.options[userAnswers[index]].score);
             
             // 如果已有图表，先销毁
             if (radarChart) {
@@ -556,10 +532,6 @@
                         legend: {
                             display: false
                         }
-                    },
-                    animation: {
-                        duration: 2000,
-                        easing: 'easeOutQuart'
                     }
                 }
             });
@@ -569,110 +541,52 @@
         function restartQuiz() {
             currentQuestionIndex = 0;
             userAnswers = [];
-            // 移除等级颜色
-            dixiLevelEl.className = 'text-2xl font-semibold mb-4 text-accent';
-            fadeOut(resultPage, () => {
-                fadeIn(quizPage);
-                loadQuestion(currentQuestionIndex);
+            goToHome();
+        }
+        
+        // 分享功能 - 首页
+        function shareApp() {
+            // 使用固定网址替代当前页面URL
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                showToast('网址已复制到剪贴板，快去粘贴吧');
+            }).catch(err => {
+                console.error('无法复制内容: ', err);
+                // 兼容方案，创建临时input元素进行复制
+                const tempInput = document.createElement('input');
+                document.body.appendChild(tempInput);
+                tempInput.value = shareUrl;
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                showToast('网址已复制到剪贴板，快去粘贴吧');
             });
         }
         
-        // 分享功能
-        function shareApp() {
-            // 微信环境下显示分享引导
-            if (isWechatBrowser()) {
-                showWechatGuide();
-                return;
-            }
-            
-            if (navigator.share) {
-                navigator.share({
-                    title: '嫡系计算器',
-                    text: '快来测试一下你在组织中的嫡系程度吧！',
-                    url: window.location.href
-                }).catch(err => {
-                    console.log('分享失败:', err);
-                    showToast('分享功能暂不支持，请手动分享');
-                });
-            } else {
-                showToast('请复制链接分享给好友');
-                // 复制链接到剪贴板
-                navigator.clipboard.writeText(window.location.href)
-                    .then(() => showToast('链接已复制，请粘贴给好友'))
-                    .catch(() => showToast('复制失败，请手动复制链接'));
-            }
-        }
-        
-        // 分享结果
+        // 分享功能 - 结果页
         function shareResult() {
-            const score = totalScoreEl.textContent;
-            const level = dixiLevelEl.textContent;
-            
-            // 微信环境下显示分享引导
-            if (isWechatBrowser()) {
-                showWechatGuide();
-                return;
-            }
-            
-            if (navigator.share) {
-                navigator.share({
-                    title: '我的嫡系指数',
-                    text: `我的嫡系指数是${score}，属于${level}！快来测试一下吧！`,
-                    url: window.location.href
-                }).catch(err => {
-                    console.log('分享失败:', err);
-                    showToast('分享功能暂不支持，请手动分享');
-                });
-            } else {
-                showToast('请复制链接分享给好友');
-                // 复制链接到剪贴板
-                navigator.clipboard.writeText(window.location.href)
-                    .then(() => showToast('链接已复制，请粘贴给好友'))
-                    .catch(() => showToast('复制失败，请手动复制链接'));
-            }
+            // 使用固定网址替代当前页面URL
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                showToast('网址已复制到剪贴板，快去粘贴吧');
+            }).catch(err => {
+                console.error('无法复制内容: ', err);
+                // 兼容方案，创建临时input元素进行复制
+                const tempInput = document.createElement('input');
+                document.body.appendChild(tempInput);
+                tempInput.value = shareUrl;
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                showToast('网址已复制到剪贴板，快去粘贴吧');
+            });
         }
-        
-        // 显示提示
-        function showToast(message) {
-            // 创建toast元素
-            const toast = document.createElement('div');
-            toast.className = 'fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-neutral text-white px-6 py-3 rounded-full shadow-lg z-50 opacity-0 transition-opacity duration-300';
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            
-            // 显示toast
-            setTimeout(() => {
-                toast.style.opacity = '1';
-            }, 100);
-            
-            // 3秒后隐藏
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => {
-                    document.body.removeChild(toast);
-                }, 300);
-            }, 3000);
-        }
-        
-        // 添加动画样式
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-                20%, 40%, 60%, 80% { transform: translateX(5px); }
-            }
-        `;
-        document.head.appendChild(style);
         
         // 初始化应用
-        function init() {
+        function initApp() {
             initEventListeners();
         }
         
         // 启动应用
-        document.addEventListener('DOMContentLoaded', init);
+        window.addEventListener('DOMContentLoaded', initApp);
     </script>
-
-
-    </body></html>
+</body></html>
+    
