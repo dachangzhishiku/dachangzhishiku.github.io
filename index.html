@@ -5,8 +5,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <!-- 截图库 -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     
-    <!-- 配置Tailwind自定义Tail自定义颜色和字体 -->
+    <!-- 配置Tailwind自定义颜色和字体 -->
     <script>
         tailwind.config = {
             theme: {
@@ -16,7 +18,6 @@
                         secondary: '#10b981',
                         accent: '#8b5cf6',
                         neutral: '#1f2937',
-                        'neutral-light': '#f3f4f6',
                     },
                     fontFamily: {
                         sans: ['Inter', 'system-ui', 'sans-serif'],
@@ -39,25 +40,67 @@
             }
             .card-hover:hover {
                 transform: translateY(-5px);
-                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
             }
             .btn-primary {
-                @apply bg-primary text-white font-medium py-3 px-6 rounded-lg shadow-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all duration-300 transform hover:scale-105;
+                @apply bg-primary text-white font-medium py-3 px-6 rounded-lg shadow-md hover:bg-primary/90 transition-all duration-300 transform hover:scale-105;
             }
             .btn-secondary {
-                @apply bg-white text-neutral font-medium py-3 px-6 rounded-lg shadow-md border border-gray-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all duration-300 transform hover:scale-105;
+                @apply bg-white text-neutral font-medium py-3 px-6 rounded-lg shadow-md border border-gray-200 hover:bg-gray-50 transition-all duration-300 transform hover:scale-105;
             }
-            .progress-bar {
-                @apply h-2 bg-gray-200 rounded-full overflow-hidden;
-            }
-            .progress-value {
-                @apply h-full bg-primary transition-all duration-500 ease-out;
+            .btn-accent {
+                @apply bg-accent text-white font-medium py-3 px-6 rounded-lg shadow-md hover:bg-accent/90 transition-all duration-300 transform hover:scale-105;
             }
             .toast {
                 @apply fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-neutral text-white px-6 py-3 rounded-full shadow-lg z-50 opacity-0 transition-opacity duration-300;
             }
             .toast.show {
                 @apply opacity-100;
+            }
+            /* 分享弹窗样式 */
+            .share-modal {
+                @apply fixed inset-0 bg-black/70 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300;
+            }
+            .share-modal.show {
+                @apply opacity-100 pointer-events-auto;
+            }
+            .share-content {
+                @apply bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4 transform scale-95 transition-transform duration-300;
+            }
+            .share-modal.show .share-content {
+                @apply scale-100;
+            }
+            .screenshot-container {
+                @apply border border-gray-200 rounded-xl overflow-hidden mb-4;
+            }
+            .screenshots-wrapper {
+                @apply space-y-4 mb-6;
+            }
+            /* 居中截图容器 */
+            .centered-screenshot {
+                @apply flex justify-center items-center p-4 bg-gray-50;
+            }
+            /* 表格样式 */
+            .rating-table {
+                @apply w-full border-collapse text-sm;
+            }
+            .rating-table th {
+                @apply bg-gray-50 py-2 px-3 text-left border border-gray-200 font-semibold;
+            }
+            .rating-table td {
+                @apply py-2 px-3 border border-gray-200;
+            }
+            /* 得分区域容器 - 确保椭圆框内上下居中 */
+            .score-container {
+                @apply flex flex-col items-center justify-center min-h-[200px] w-full;
+            }
+            /* 雷达图容器 - 确保在白色框内居中 */
+            .radar-container {
+                @apply flex justify-center items-center w-full h-full p-2;
+            }
+            /* 椭圆标签样式 - 确保内部文字上下居中 */
+            .score-badge {
+                @apply inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-blue-100 text-primary text-sm font-medium mb-3;
             }
         }
     </style>
@@ -66,8 +109,39 @@
     <!-- 提示框 -->
     <div id="toast" class="toast">提示信息</div>
     
+    <!-- 分享结果弹窗 -->
+    <div id="share-modal" class="share-modal">
+        <div class="share-content">
+            <h3 class="text-xl font-bold mb-4 text-center">分享你的测试结果</h3>
+            <p class="text-gray-500 text-sm text-center mb-4">长按图片保存，分享给好友</p>
+            
+            <!-- 分别显示得分和雷达图的截图（添加居中样式） -->
+            <div class="screenshots-wrapper">
+                <div class="screenshot-container centered-screenshot">
+                    <img id="score-screenshot" src="" alt="得分信息截图" class="max-w-full max-h-[200px]">
+                </div>
+                <div class="screenshot-container centered-screenshot">
+                    <img id="radar-screenshot" src="" alt="雷达图截图" class="max-w-full max-h-[200px]">
+                </div>
+            </div>
+            
+            <!-- 预留二维码位置 - 已替换为新的短链二维码 -->
+            <div class="flex justify-center mb-6">
+                <div id="qrcode-container" class="w-32 h-32 border border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
+                    <img id="custom-qrcode" src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/8bfff67ce267432fb7fb2a4a9694038e~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1754622182&amp;x-signature=eACpRI%2FEEHxqZpKb9DmgI%2BCwgxU%3D" alt="分享二维码" class="w-full h-full object-contain p-2">
+                </div>
+            </div>
+            
+            <p class="text-gray-400 text-xs text-center mb-4">扫码查看完整结果</p>
+            
+            <button id="close-share-modal" class="btn-primary w-full">
+                关闭
+            </button>
+        </div>
+    </div>
+    
     <!-- 首页 -->
-    <div id="home-page" class="min-h-screen flex flex-col items-center justify-center p-6 transition-opacity duration-500">
+    <div id="home-page" class="min-h-screen flex flex-col items-center justify-center p-6">
         <div class="text-center max-w-md mx-auto">
             <h1 class="text-[clamp(2.5rem,8vw,4rem)] font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent mb-6 leading-tight text-shadow">
                嫡系计算器
@@ -84,10 +158,6 @@
                 </button>
             </div>
         </div>
-        
-        <div class="absolute bottom-8 left-0 right-0 text-center text-gray-400 text-sm">
-            <p>职场趣味测试 · 仅供参考</p>
-        </div>
     </div>
     
     <!-- 测试页面 -->
@@ -99,8 +169,8 @@
                     <span>问题 <span id="current-question">1</span>/7</span>
                     <span id="progress-text">14%</span>
                 </div>
-                <div class="progress-bar">
-                    <div id="progress-bar" class="progress-value" style="width: 14%"></div>
+                <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-primary transition-all duration-500 ease-out" style="width: 14%"></div>
                 </div>
             </div>
             
@@ -134,22 +204,63 @@
             <p class="text-gray-500 text-center mb-8">你的职场嫡系指数分析</p>
             
             <!-- 结果卡片 -->
-            <div class="bg-white rounded-2xl shadow-xl p-6 mb-8 transform transition-all duration-500 hover:shadow-2xl">
-                <div class="flex flex-col md:flex-row items-center gap-8">
-                    <!-- 得分信息 -->
-                    <div class="text-center md:text-left flex-1">
-                        <div class="inline-block px-4 py-1 rounded-full bg-blue-100 text-primary text-sm font-medium mb-3">
-                            综合评分
+            <div id="result-card" class="bg-white rounded-2xl shadow-xl p-6 mb-8">
+                <!-- 综合得分和雷达图 -->
+                <div class="flex flex-col md:flex-row items-center gap-8 mb-8">
+                    <!-- 得分信息 - 确保综合评分在椭圆框内上下居中 -->
+                    <div id="score-section" class="text-center md:text-left flex-1">
+                        <div class="score-container">
+                            <div class="score-badge">
+                                综合评分
+                            </div>
+                            <h3 class="text-5xl font-bold text-neutral mb-2" id="total-score">0</h3>
+                            <h4 class="text-2xl font-semibold mb-4 text-accent" id="dixi-level">评估中...</h4>
+                            <p class="text-gray-600" id="level-description">请完成测试查看结果</p>
                         </div>
-                        <h3 class="text-5xl font-bold text-neutral mb-2" id="total-score">0</h3>
-                        <h4 class="text-2xl font-semibold mb-4 text-accent" id="dixi-level">评估中...</h4>
-                        <p class="text-gray-600" id="level-description">请完成测试查看结果</p>
                     </div>
                     
-                    <!-- 雷达图 -->
-                    <div class="w-full md:w-64 h-64 flex-1">
-                        <canvas id="radar-chart"></canvas>
+                    <!-- 雷达图 - 确保在白色框内居中 -->
+                    <div id="radar-section" class="w-full md:w-64 h-64 flex-1">
+                        <div class="radar-container">
+                            <canvas id="radar-chart"></canvas>
+                        </div>
                     </div>
+                </div>
+                
+                <!-- 嫡系等级判定说明 -->
+                <div class="mt-6 border-t pt-6">
+                    <h5 class="text-lg font-semibold mb-3 text-neutral">嫡系等级判定说明</h5>
+                    <table class="rating-table">
+                        <thead>
+                            <tr>
+                                <th>总分范围</th>
+                                <th>嫡系等级</th>
+                                <th>职场特征</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>&gt;60分</td>
+                                <td>心腹嫡系</td>
+                                <td>参与重大决策，掌握核心资源，领导心腹</td>
+                            </tr>
+                            <tr>
+                                <td>50-60分</td>
+                                <td>核心圈层</td>
+                                <td>负责关键业务，资源优先配置，领导核心圈层</td>
+                            </tr>
+                            <tr>
+                                <td>40-50分</td>
+                                <td>外围人员</td>
+                                <td>常规工作关系，无特殊关照</td>
+                            </tr>
+                            <tr>
+                                <td>&lt;40分</td>
+                                <td>风险人员</td>
+                                <td>可能被边缘化或优化</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
             
@@ -158,16 +269,19 @@
                 <button id="restart-btn" class="btn-primary flex items-center justify-center gap-2">
                     <i class="fa fa-refresh"></i> 重新测试
                 </button>
-                <button id="share-result-btn" class="btn-secondary flex items-center justify-center gap-2">
+                <button id="share-result-btn" class="btn-accent flex items-center justify-center gap-2">
+                    <i class="fa fa-share-square-o"></i> 分享结果
+                </button>
+                <button id="share-calculator-btn" class="btn-secondary flex items-center justify-center gap-2">
                     <i class="fa fa-share-alt"></i> 分享计算器
                 </button>
             </div>
             
-            <!-- 新增的图片和文字区域 -->
             <div class="text-center mb-8">
                 <p class="text-gray-600 text-sm mb-4">大厂知识库，致力于突破大厂信息茧房，持续分享职场干货，欢迎进群~</p>
                 <div class="bg-white p-4 rounded-xl shadow-md inline-block">
-                    <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/e1891b2cd7414809a70eee3c89a5195a~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1754614361&amp;x-signature=lM27Fu4%2BH2rRT4kNMSAK7ER02X8%3D" alt="大厂知识库二维码" class="w-64 h-64 object-cover rounded-lg">
+                    <!-- 已替换为新的短链二维码 -->
+                    <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/c59f40ea003c49ed9727e382fca30e29~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1754622134&amp;x-signature=yhei%2FTaZsVByiRZJbBl128sHY9E%3D" alt="分享二维码" class="w-64 h-64 object-cover rounded-lg">
                 </div>
             </div>
         </div>
@@ -271,8 +385,7 @@
         let currentQuestionIndex = 0;
         let userAnswers = [];
         let radarChart = null;
-        // 要分享的固定网址
-        const shareUrl = "https://dachangzhishiku.github.io/";
+        const shareUrl = "https://wyws.bmwca.cn/q8xcQz"; // 更新为新的短链
         
         // DOM元素
         const homePage = document.getElementById('home-page');
@@ -284,6 +397,7 @@
         const nextBtn = document.getElementById('next-btn');
         const restartBtn = document.getElementById('restart-btn');
         const shareResultBtn = document.getElementById('share-result-btn');
+        const shareCalculatorBtn = document.getElementById('share-calculator-btn');
         const questionText = document.getElementById('question-text');
         const optionsContainer = document.getElementById('options-container');
         const currentQuestionEl = document.getElementById('current-question');
@@ -293,6 +407,14 @@
         const dixiLevelEl = document.getElementById('dixi-level');
         const levelDescriptionEl = document.getElementById('level-description');
         const toastEl = document.getElementById('toast');
+        const shareModal = document.getElementById('share-modal');
+        const closeShareModal = document.getElementById('close-share-modal');
+        const scoreScreenshot = document.getElementById('score-screenshot');
+        const radarScreenshot = document.getElementById('radar-screenshot');
+        const qrcodeContainer = document.getElementById('qrcode-container');
+        const customQrcode = document.getElementById('custom-qrcode');
+        const scoreSection = document.getElementById('score-section');
+        const radarSection = document.getElementById('radar-section');
         
         // 初始化事件监听
         function initEventListeners() {
@@ -302,6 +424,10 @@
             nextBtn.addEventListener('click', goToNextQuestion);
             restartBtn.addEventListener('click', restartQuiz);
             shareResultBtn.addEventListener('click', shareResult);
+            shareCalculatorBtn.addEventListener('click', shareCalculator);
+            closeShareModal.addEventListener('click', () => {
+                shareModal.classList.remove('show');
+            });
         }
         
         // 显示提示信息
@@ -314,12 +440,9 @@
             }, 3000);
         }
         
-        // 页面切换动画
+        // 页面切换
         function fadeOut(element, callback) {
-            element.style.opacity = '1';
-            element.style.transition = 'opacity 0.3s ease-out';
             element.style.opacity = '0';
-            
             setTimeout(() => {
                 element.classList.add('hidden');
                 if (callback) callback();
@@ -328,9 +451,7 @@
         
         function fadeIn(element) {
             element.classList.remove('hidden');
-            element.style.opacity = '0';
             setTimeout(() => {
-                element.style.transition = 'opacity 0.3s ease-in';
                 element.style.opacity = '1';
             }, 50);
         }
@@ -361,11 +482,11 @@
             progressBar.style.width = `${progress}%`;
             progressText.textContent = `${Math.round(progress)}%`;
             
-            // 清空并生成选项
+            // 生成选项
             optionsContainer.innerHTML = '';
             question.options.forEach((option, optIndex) => {
                 const optionEl = document.createElement('div');
-                optionEl.className = `option card-hover border rounded-xl p-4 cursor-pointer ${
+                optionEl.className = `card-hover border rounded-xl p-4 cursor-pointer ${
                     userAnswers[index] === optIndex ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-primary/50'
                 }`;
                 optionEl.innerHTML = `
@@ -381,7 +502,7 @@
                 
                 optionEl.addEventListener('click', () => {
                     userAnswers[index] = optIndex;
-                    loadQuestion(index); // 重新加载以更新选中状态
+                    loadQuestion(index);
                 });
                 
                 optionsContainer.appendChild(optionEl);
@@ -390,7 +511,6 @@
             // 更新按钮状态
             prevBtn.disabled = index === 0;
             prevBtn.classList.toggle('hidden', index === 0);
-            nextBtn.textContent = index === questions.length - 1 ? '查看结果' : '下一题';
             nextBtn.innerHTML = index === questions.length - 1 
                 ? '查看结果 <i class="fa fa-arrow-right ml-2"></i>'
                 : '下一题 <i class="fa fa-arrow-right ml-2"></i>';
@@ -401,12 +521,6 @@
             if (currentQuestionIndex > 0) {
                 currentQuestionIndex--;
                 loadQuestion(currentQuestionIndex);
-                // 添加页面切换动画
-                const card = document.querySelector('.transform');
-                card.style.transform = 'translateX(-20px)';
-                setTimeout(() => {
-                    card.style.transform = 'translateX(0)';
-                }, 50);
             }
         }
         
@@ -426,12 +540,6 @@
             if (currentQuestionIndex < questions.length - 1) {
                 currentQuestionIndex++;
                 loadQuestion(currentQuestionIndex);
-                // 添加页面切换动画
-                const card = document.querySelector('.transform');
-                card.style.transform = 'translateX(20px)';
-                setTimeout(() => {
-                    card.style.transform = 'translateX(0)';
-                }, 50);
             } else {
                 // 计算结果并显示
                 calculateResult();
@@ -445,15 +553,10 @@
         // 计算结果
         function calculateResult() {
             let totalScore = 0;
-            const dimensionScores = [];
             
             questions.forEach((question, index) => {
                 const selectedOption = question.options[userAnswers[index]];
                 totalScore += selectedOption.score;
-                dimensionScores.push({
-                    dimension: question.dimension,
-                    score: selectedOption.score
-                });
             });
             
             // 计算平均分
@@ -544,14 +647,13 @@
             goToHome();
         }
         
-        // 分享功能 - 首页
+        // 分享计算器 - 首页
         function shareApp() {
-            // 使用固定网址替代当前页面URL
             navigator.clipboard.writeText(shareUrl).then(() => {
                 showToast('网址已复制到剪贴板，快去粘贴吧');
             }).catch(err => {
                 console.error('无法复制内容: ', err);
-                // 兼容方案，创建临时input元素进行复制
+                // 兼容方案
                 const tempInput = document.createElement('input');
                 document.body.appendChild(tempInput);
                 tempInput.value = shareUrl;
@@ -562,14 +664,13 @@
             });
         }
         
-        // 分享功能 - 结果页
-        function shareResult() {
-            // 使用固定网址替代当前页面URL
+        // 分享计算器 - 结果页
+        function shareCalculator() {
             navigator.clipboard.writeText(shareUrl).then(() => {
                 showToast('网址已复制到剪贴板，快去粘贴吧');
             }).catch(err => {
                 console.error('无法复制内容: ', err);
-                // 兼容方案，创建临时input元素进行复制
+                // 兼容方案
                 const tempInput = document.createElement('input');
                 document.body.appendChild(tempInput);
                 tempInput.value = shareUrl;
@@ -577,6 +678,31 @@
                 document.execCommand('copy');
                 document.body.removeChild(tempInput);
                 showToast('网址已复制到剪贴板，快去粘贴吧');
+            });
+        }
+        
+        // 分享结果功能 - 分别截取得分和雷达图
+        function shareResult() {
+            // 显示加载提示
+            showToast('正在准备分享内容...');
+            
+            // 1. 分别截取得分部分和雷达图部分
+            Promise.all([
+                html2canvas(scoreSection),
+                html2canvas(radarSection)
+            ]).then(([scoreCanvas, radarCanvas]) => {
+                // 2. 显示截图
+                scoreScreenshot.src = scoreCanvas.toDataURL('image/png');
+                radarScreenshot.src = radarCanvas.toDataURL('image/png');
+                
+                // 3. 显示分享弹窗
+                setTimeout(() => {
+                    shareModal.classList.add('show');
+                    showToast('长按图片即可保存分享');
+                }, 500);
+            }).catch(error => {
+                console.error('生成截图失败:', error);
+                showToast('生成分享内容失败，请重试');
             });
         }
         
@@ -588,5 +714,5 @@
         // 启动应用
         window.addEventListener('DOMContentLoaded', initApp);
     </script>
-</body></html>
-    
+
+    </body></html>
