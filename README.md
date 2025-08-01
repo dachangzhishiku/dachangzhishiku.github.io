@@ -1,7 +1,8 @@
 # dachangzhishiku.github.io
 嫡系计算器
-
 通过7个维度测试，评估你在组织中的嫡系程度。
+
+在线体验 https://dachangzhishiku.github.io/
 
 功能介绍
 - 7个维度全方位评估
