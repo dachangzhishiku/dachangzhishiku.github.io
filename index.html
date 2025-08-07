@@ -102,6 +102,15 @@
             .score-badge {
                 @apply inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-blue-100 text-primary text-sm font-medium mb-3;
             }
+            /* 页面过渡动画 */
+            .page-transition {
+                transition: opacity 0.3s ease, transform 0.3s ease;
+                opacity: 1;
+            }
+            .page-transition.fade-out {
+                opacity: 0;
+                transform: translateY(20px);
+            }
         }
     </style>
 </head>
@@ -125,7 +134,7 @@
                 </div>
             </div>
             
-            <!-- 预留二维码位置 - 已替换为新的短链二维码 -->
+            <!-- 预留二维码位置 -->
             <div class="flex justify-center mb-6">
                 <div id="qrcode-container" class="w-32 h-32 border border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
                     <img id="custom-qrcode" src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/14d61e2565894233bff3cb89633ec8cb~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1754623862&amp;x-signature=K33STVq2XhCbh8PBJH3HFEyLC7k%3D" alt="分享二维码" class="w-full h-full object-contain p-2">
@@ -139,9 +148,9 @@
     </div>
     
     <!-- 首页 -->
-    <div id="home-page" class="min-h-screen flex flex-col items-center justify-center p-6">
+    <div id="home-page" class="min-h-screen flex flex-col items-center justify-center p-6 page-transition">
         <div class="text-center max-w-md mx-auto">
-            <h1 class="text-[clamp(2.5rem,8vw,4rem)] font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent mb-6 leading-tight text-shadow">
+            <h1 class="text-[clamp(2.5rem,8vw,4rem)] font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent mb-6 leading-tight text-shadow animate-pulse">
                嫡系计算器
             </h1>
             <p class="text-gray-600 text-lg mb-10">
@@ -159,7 +168,7 @@
     </div>
     
     <!-- 测试页面 -->
-    <div id="quiz-page" class="min-h-screen p-6 hidden">
+    <div id="quiz-page" class="min-h-screen p-6 hidden page-transition">
         <div class="max-w-2xl mx-auto">
             <!-- 进度条 -->
             <div class="mb-8">
@@ -173,7 +182,7 @@
             </div>
             
             <!-- 题目卡片 -->
-            <div class="bg-white rounded-2xl shadow-xl p-6 mb-8 transform transition-all duration-500">
+            <div class="bg-white rounded-2xl shadow-xl p-6 mb-8 transform transition-all duration-500 card-hover">
                 <h2 id="question-text" class="text-2xl font-bold mb-6 text-neutral">组织关系</h2>
                 
                 <div id="options-container" class="space-y-3">
@@ -196,13 +205,13 @@
     </div>
     
     <!-- 结果页面 -->
-    <div id="result-page" class="min-h-screen p-6 hidden">
+    <div id="result-page" class="min-h-screen p-6 hidden page-transition">
         <div class="max-w-3xl mx-auto">
             <h2 class="text-3xl font-bold text-center mb-2">测试结果</h2>
             <p class="text-gray-500 text-center mb-8">你的职场嫡系指数分析</p>
             
             <!-- 结果卡片 -->
-            <div id="result-card" class="bg-white rounded-2xl shadow-xl p-6 mb-8">
+            <div id="result-card" class="bg-white rounded-2xl shadow-xl p-6 mb-8 transform transition-all duration-500 hover:shadow-2xl">
                 <!-- 综合得分和雷达图 -->
                 <div class="flex flex-col md:flex-row items-center gap-8 mb-8">
                     <!-- 得分信息 - 确保综合评分在椭圆框内上下居中 -->
@@ -277,9 +286,8 @@
             
             <div class="text-center mb-8">
                 <p class="text-gray-600 text-sm mb-4">大厂知识库，致力于突破大厂信息茧房，持续分享职场干货，欢迎进群~</p>
-                <div class="bg-white p-4 rounded-xl shadow-md inline-block">
-                    <!-- 已替换为新的短链二维码 -->
-                    <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/c59f40ea003c49ed9727e382fca30e29~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1754622134&amp;x-signature=yhei%2FTaZsVByiRZJbBl128sHY9E%3D" alt="分享二维码" class="w-64 h-64 object-cover rounded-lg">
+                <div class="bg-white p-4 rounded-xl shadow-md inline-block transform transition-all duration-300 hover:shadow-lg">
+                    <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/1a884b869c3242c694d5c9de36dcca01~tplv-a9rns2rl98-image.image?rcl=20250807200517DB8A04827F410077E294&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1755173118&amp;x-signature=qcZg3vMr2vXnhjsZ6J62pdfkvm4%3D" alt="分享二维码" class="w-64 h-64 object-cover rounded-lg">
                 </div>
             </div>
         </div>
@@ -383,7 +391,7 @@
         let currentQuestionIndex = 0;
         let userAnswers = [];
         let radarChart = null;
-        const shareUrl = "https://wyws.bmwca.cn/q8xcQz"; // 更新为新的短链
+        const shareUrl = "https://wyws.bmwca.cn/q8xcQz"; // 分享链接
         
         // DOM元素
         const homePage = document.getElementById('home-page');
@@ -438,20 +446,20 @@
             }, 3000);
         }
         
-        // 页面切换
+        // 页面切换动画
         function fadeOut(element, callback) {
-            element.style.opacity = '0';
+            element.classList.add('fade-out');
             setTimeout(() => {
                 element.classList.add('hidden');
+                element.classList.remove('fade-out');
                 if (callback) callback();
             }, 300);
         }
         
         function fadeIn(element) {
             element.classList.remove('hidden');
-            setTimeout(() => {
-                element.style.opacity = '1';
-            }, 50);
+            // 触发重排以启用动画
+            void element.offsetWidth;
         }
         
         // 前往测试页面
@@ -484,14 +492,14 @@
             optionsContainer.innerHTML = '';
             question.options.forEach((option, optIndex) => {
                 const optionEl = document.createElement('div');
-                optionEl.className = `card-hover border rounded-xl p-4 cursor-pointer ${
-                    userAnswers[index] === optIndex ? 'border-primary bg-blue-50' : 'border-gray-200 hover:border-primary/50'
+                optionEl.className = `card-hover border rounded-xl p-4 cursor-pointer transition-all duration-300 ${
+                    userAnswers[index] === optIndex ? 'border-primary bg-blue-50 ring-2 ring-primary/20' : 'border-gray-200 hover:border-primary/50 hover:bg-gray-50'
                 }`;
                 optionEl.innerHTML = `
                     <div class="flex items-center">
                         <div class="w-5 h-5 rounded-full border-2 ${
                             userAnswers[index] === optIndex ? 'border-primary bg-primary' : 'border-gray-300'
-                        } flex items-center justify-center mr-3">
+                        } flex items-center justify-center mr-3 transition-all duration-300">
                             ${userAnswers[index] === optIndex ? '<i class="fa fa-check text-white text-xs"></i>' : ''}
                         </div>
                         <span>${option.text}</span>
@@ -518,7 +526,13 @@
         function goToPrevQuestion() {
             if (currentQuestionIndex > 0) {
                 currentQuestionIndex--;
-                loadQuestion(currentQuestionIndex);
+                // 添加问题切换动画
+                const card = document.querySelector('#quiz-page .card-hover');
+                card.style.transform = 'translateX(-20px) opacity(0)';
+                setTimeout(() => {
+                    loadQuestion(currentQuestionIndex);
+                    card.style.transform = 'translateX(0) opacity(1)';
+                }, 200);
             }
         }
         
@@ -526,24 +540,34 @@
         function goToNextQuestion() {
             // 检查是否已选择答案
             if (userAnswers[currentQuestionIndex] === undefined) {
-                // 提示用户选择答案
-                const card = document.querySelector('.transform');
+                // 提示用户选择答案 - 添加抖动动画
+                const card = document.querySelector('#quiz-page .card-hover');
                 card.style.animation = 'shake 0.5s';
                 setTimeout(() => {
                     card.style.animation = '';
                 }, 500);
+                showToast('请选择一个选项继续');
                 return;
             }
             
             if (currentQuestionIndex < questions.length - 1) {
                 currentQuestionIndex++;
-                loadQuestion(currentQuestionIndex);
+                // 添加问题切换动画
+                const card = document.querySelector('#quiz-page .card-hover');
+                card.style.transform = 'translateX(20px) opacity(0)';
+                setTimeout(() => {
+                    loadQuestion(currentQuestionIndex);
+                    card.style.transform = 'translateX(0) opacity(1)';
+                }, 200);
             } else {
                 // 计算结果并显示
                 calculateResult();
                 fadeOut(quizPage, () => {
                     fadeIn(resultPage);
-                    renderRadarChart();
+                    // 延迟渲染图表以确保DOM已准备好
+                    setTimeout(() => {
+                        renderRadarChart();
+                    }, 100);
                 });
             }
         }
@@ -570,6 +594,9 @@
                 }
             }
             
+            // 清除之前的颜色类
+            dixiLevelEl.classList.remove('text-green-600', 'text-blue-600', 'text-yellow-600', 'text-red-600');
+            
             dixiLevelEl.textContent = levelInfo.level;
             levelDescriptionEl.textContent = levelInfo.description;
             
@@ -588,6 +615,15 @@
                     dixiLevelEl.classList.add('text-red-600');
                     break;
             }
+            
+            // 添加得分动画
+            totalScoreEl.style.opacity = '0';
+            totalScoreEl.style.transform = 'scale(0.8)';
+            setTimeout(() => {
+                totalScoreEl.style.transition = 'all 0.5s ease-out';
+                totalScoreEl.style.opacity = '1';
+                totalScoreEl.style.transform = 'scale(1)';
+            }, 100);
         }
         
         // 绘制雷达图
@@ -616,7 +652,8 @@
                         pointBackgroundColor: 'rgba(59, 130, 246, 1)',
                         pointBorderColor: '#fff',
                         pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: 'rgba(59, 130, 246, 1)'
+                        pointHoverBorderColor: 'rgba(59, 130, 246, 1)',
+                        tension: 0.2
                     }]
                 },
                 options: {
@@ -626,13 +663,28 @@
                                 display: true
                             },
                             suggestedMin: 0,
-                            suggestedMax: 100
+                            suggestedMax: 100,
+                            ticks: {
+                                stepSize: 20,
+                                backdropColor: 'transparent'
+                            }
                         }
                     },
                     plugins: {
                         legend: {
                             display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `得分: ${context.raw}`;
+                                }
+                            }
                         }
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeOutQuart'
                     }
                 }
             });
@@ -642,6 +694,10 @@
         function restartQuiz() {
             currentQuestionIndex = 0;
             userAnswers = [];
+            // 重置结果样式
+            totalScoreEl.style.transition = 'none';
+            totalScoreEl.style.opacity = '1';
+            totalScoreEl.style.transform = 'scale(1)';
             goToHome();
         }
         
@@ -707,10 +763,22 @@
         // 初始化应用
         function initApp() {
             initEventListeners();
+            // 添加全局动画样式
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes shake {
+                    0%, 100% { transform: translateX(0); }
+                    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                    20%, 40%, 60%, 80% { transform: translateX(5px); }
+                }
+            `;
+            document.head.appendChild(style);
         }
         
         // 启动应用
         window.addEventListener('DOMContentLoaded', initApp);
     </script>
 
-    </body></html>
+
+
+</body></html>
