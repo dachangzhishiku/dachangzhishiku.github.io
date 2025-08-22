@@ -30,14 +30,13 @@
       .option-card.selected {@apply border-2 border-primary bg-blue-50;}
       .dimension-card {@apply bg-white border rounded-xl p-5 shadow-sm transition-all duration-200 hover:shadow-md;}
       .social-btn {@apply w-full text-white text-sm font-medium py-2 px-4 rounded-lg shadow hover:opacity-90 transition;}
+      .chart-container {@apply relative w-full overflow-hidden;}
     }
   </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen font-sans text-neutral">
-  <!-- 测试页面 -->
-
-
-  <div class="flex flex-col items-center space-y-2">
+  <!-- 社交链接 -->
+  <div class="flex flex-col items-center space-y-2 p-4">
     <a href="https://github.com/dachangzhishiku/dachangzhishiku.github.io" target="_blank" class="social-btn bg-blue-500">
       ⭐ 如果觉得还不错，欢迎来 GitHub 点亮星星
     </a>
@@ -46,13 +45,14 @@
     </a>
   </div>
 
-  <div id="quiz-page" class="min-h-screen p-6">
-    <div class="text-center max-w-md mx-auto mb-10">
-      <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent mb-6">嫡系计算器2.0</h1>
-      <p class="text-gray-600 text-lg mb-6">通过9个维度测试，评估你在组织中的嫡系程度</p>
+  <!-- 测试页面 -->
+  <div id="quiz-page" class="min-h-screen p-4">
+    <div class="text-center max-w-md mx-auto mb-6">
+      <h1 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent mb-4">嫡系计算器2.0</h1>
+      <p class="text-gray-600 text-base md:text-lg">通过9个维度测试，评估你在组织中的嫡系程度</p>
     </div>
     <div class="max-w-2xl mx-auto">
-      <div class="mb-8">
+      <div class="mb-6">
         <div class="flex justify-between text-sm text-gray-500 mb-2">
           <span>已完成 <span id="completed-count">0</span>/9 题</span>
           <span id="progress-text">0%</span>
@@ -61,8 +61,8 @@
           <div id="progress-bar" class="h-full bg-primary transition-all duration-500 ease-out" style="width:0%"></div>
         </div>
       </div>
-      <h2 class="text-2xl font-bold mb-8 text-center">请回答以下所有问题</h2>
-      <div id="questions-container" class="space-y-6 mb-10"></div>
+      <h2 class="text-xl md:text-2xl font-bold mb-6 text-center">请回答以下所有问题</h2>
+      <div id="questions-container" class="space-y-4 mb-8"></div>
       <div class="flex justify-center">
         <button id="submit-btn" class="btn-primary" disabled="">提交答案</button>
       </div>
@@ -70,13 +70,14 @@
   </div>
 
   <!-- 结果页面 -->
-  <div id="result-page" class="min-h-screen p-6 hidden">
-    <div class="max-w-4xl mx-auto space-y-8">
-      <div class="bg-white rounded-2xl shadow-md p-6 text-center" id="score-card">
-        <h2 class="text-2xl font-bold mb-4">综合得分</h2>
-        <div id="score-text" class="text-5xl font-extrabold text-primary mb-4"></div>
-        <div id="level-text" class="text-lg font-medium text-gray-600 mb-4"></div>
-        <div class="text-left text-sm text-gray-500 border-t pt-4 mt-4">
+  <div id="result-page" class="min-h-screen p-4 hidden">
+    <div class="max-w-4xl mx-auto space-y-6">
+      <!-- 综合得分卡片 -->
+      <div class="bg-white rounded-2xl shadow-md p-5 text-center" id="score-card">
+        <h2 class="text-xl md:text-2xl font-bold mb-3">综合得分</h2>
+        <div id="score-text" class="text-4xl md:text-5xl font-extrabold text-primary mb-3"></div>
+        <div id="level-text" class="text-base md:text-lg font-medium text-gray-600 mb-3"></div>
+        <div class="text-left text-xs md:text-sm text-gray-500 border-t pt-3 mt-3">
           <h3 class="font-semibold mb-2">嫡系等级判定说明</h3>
           <table class="w-full border-collapse text-xs">
             <tbody><tr class="bg-gray-100">
@@ -107,32 +108,40 @@
           </tbody></table>
         </div>
       </div>
-      <div class="bg-white rounded-2xl shadow-md p-6" id="radar-card">
-        <h3 class="text-xl font-bold mb-4 text-center">维度雷达图</h3>
-        <canvas id="radarChart" class="max-h-[400px]"></canvas>
+
+      <!-- 雷达图卡片 -->
+      <div class="bg-white rounded-2xl shadow-md p-5" id="radar-card">
+        <h3 class="text-lg md:text-xl font-bold mb-3 text-center">维度雷达图</h3>
+        <div class="chart-container" style="height: 300px;">
+          <canvas id="radarChart"></canvas>
+        </div>
       </div>
-      <div class="bg-white rounded-2xl shadow-md p-6">
-        <h3 class="text-xl font-bold mb-6 text-center">维度详情</h3>
-        <div id="dimensions-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+      <!-- 维度详情 -->
+      <div class="bg-white rounded-2xl shadow-md p-5">
+        <h3 class="text-lg md:text-xl font-bold mb-4 text-center">维度详情</h3>
+        <div id="dimensions-container" class="grid grid-cols-1 gap-3">
           <!-- 维度卡片将在这里动态生成 -->
         </div>
       </div>
-      <div class="text-center flex justify-center gap-4">
+
+      <!-- 操作按钮 -->
+      <div class="text-center flex flex-col sm:flex-row justify-center gap-3">
         <button id="share-btn" class="btn-primary"><i class="fa fa-share mr-2"></i>生成分享图</button>
         <button id="share-calculator-btn" class="btn-primary bg-green-600 hover:bg-green-700"><i class="fa fa-link mr-2"></i>分享计算器</button>
         <button id="back-btn" class="btn-primary bg-gray-600 hover:bg-gray-700"><i class="fa fa-arrow-left mr-2"></i>返回上一页</button>
       </div>
     </div>
   </div>
-    <!-- 群聊信息 -->
-    <div class="max-w-2xl mx-auto text-center mt-10">
-      <p class="text-gray-700 text-sm mb-3">建了个群聊，致力于突破大厂信息茧房，每周掉落职场干货，欢迎进群~</p>
-      <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/812d77df9eef40959316a03291598db6~tplv-a9rns2rl98-image.image?rcl=20250822102816B11F6EB0A81697AF4CE8&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1756434500&amp;x-signature=XJNHe4hCyWNGfeJP4OJTsvJNxyc%3D" alt="微信群二维码" class="mx-auto w-48 h-48 rounded-lg shadow">
-    </div>
-  
+
+  <!-- 群聊信息 -->
+  <div class="max-w-2xl mx-auto text-center mt-6 p-4">
+    <p class="text-gray-700 text-sm mb-3">建了个群聊，致力于突破大厂信息茧房，每周掉落职场干货，欢迎进群~</p>
+    <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/812d77df9eef40959316a03291598db6~tplv-a9rns2rl98-image.image?rcl=20250822102816B11F6EB0A81697AF4CE8&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1756434500&amp;x-signature=XJNHe4hCyWNGfeJP4OJTsvJNxyc%3D" alt="微信群二维码" class="mx-auto w-40 h-40 rounded-lg shadow">
+  </div>
 
   <script>
-    // 扩展问题数据，包含每个选项的分析和建议
+    // 问题数据
     const questions = [
       { 
         text: "组织关系", 
@@ -232,21 +241,23 @@
       }
     ];
 
+    // 渲染问题
     function renderAllQuestions() {
       const container = document.getElementById('questions-container');
       container.innerHTML = '';
       questions.forEach((q, index) => {
         const card = document.createElement('div');
-        card.className = 'bg-white rounded-xl shadow-md p-6';
+        card.className = 'bg-white rounded-xl shadow-md p-4';
         let opts = '';
         q.options.forEach((opt, i) => {
           opts += `<div class=\"option-card\" data-q=\"${index}\" data-option-index=\"${i}\" data-score=\"${opt.score}\">${opt.text}</div>`;
         });
-        card.innerHTML = `<h3 class='text-lg font-semibold mb-4'>${index+1}. ${q.text}</h3><div class='space-y-3'>${opts}</div>`;
+        card.innerHTML = `<h3 class='text-lg font-semibold mb-3'>${index+1}. ${q.text}</h3><div class='space-y-2'>${opts}</div>`;
         container.appendChild(card);
       });
     }
 
+    // 更新进度
     function updateProgress() {
       const total = questions.length;
       const answered = document.querySelectorAll('.option-card.selected').length;
@@ -257,6 +268,7 @@
       document.getElementById('submit-btn').disabled = answered < total;
     }
 
+    // 计算结果
     function calculateResult() {
       let results = [];
       let sum = 0;
@@ -282,6 +294,7 @@
       showResult(results, avg);
     }
 
+    // 获取等级文本
     function getLevelText(score) {
       if(score > 60) return "心腹嫡系：参与重大决策，掌握核心资源，领导心腹";
       if(score >= 50) return "核心圈层：负责关键业务，资源优先配置，领导核心圈层";
@@ -289,6 +302,7 @@
       return "风险人员：可能被边缘化或优化";
     }
 
+    // 显示结果
     function showResult(dimensions, avg){
       document.getElementById('quiz-page').classList.add('hidden');
       const res = document.getElementById('result-page');
@@ -298,9 +312,18 @@
       document.getElementById('score-text').innerText = avg.toFixed(1);
       document.getElementById('level-text').innerText = getLevelText(avg);
 
-      // 绘制雷达图
+      // 绘制雷达图（优化移动设备显示）
       const ctx = document.getElementById('radarChart');
-      new Chart(ctx, {
+      
+      // 销毁已存在的图表，避免重复绘制
+      if (window.radarChartInstance) {
+        window.radarChartInstance.destroy();
+      }
+      
+      // 检测屏幕宽度，调整图表配置
+      const isMobile = window.innerWidth < 640;
+      
+      window.radarChartInstance = new Chart(ctx, {
         type: 'radar',
         data: {
           labels: dimensions.map(d => d.dimension),
@@ -309,22 +332,56 @@
             data: dimensions.map(d => d.score),
             backgroundColor: 'rgba(59,130,246,0.2)',
             borderColor: '#3b82f6',
-            pointBackgroundColor: '#3b82f6'
+            pointBackgroundColor: '#3b82f6',
+            pointRadius: isMobile ? 3 : 5,
+            pointHoverRadius: isMobile ? 5 : 7
           }]
         },
         options: {
+          responsive: true,
+          maintainAspectRatio: false,
           scales: {
             r: {
               beginAtZero: true,
-              max: 100
+              max: 100,
+              ticks: {
+                display: !isMobile, // 移动端不显示刻度值
+                stepSize: 20
+              },
+              pointLabels: {
+                font: {
+                  size: isMobile ? 10 : 12 // 移动端缩小标签字体
+                },
+                padding: isMobile ? 5 : 10
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: !isMobile // 移动端不显示图例
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return `${context.label}: ${context.raw}分`;
+                }
+              }
             }
           }
         }
       });
 
-      // 生成维度详情卡片
+      // 生成维度详情卡片（优化移动设备显示）
       const container = document.getElementById('dimensions-container');
       container.innerHTML = '';
+      
+      // 根据屏幕宽度设置网格布局
+      if (window.innerWidth >= 768) {
+        container.classList.add('md:grid-cols-2');
+      }
+      if (window.innerWidth >= 1024) {
+        container.classList.add('lg:grid-cols-3');
+      }
       
       dimensions.forEach(dimension => {
         const card = document.createElement('div');
@@ -338,6 +395,7 @@
       });
     }
 
+    // 事件监听
     document.addEventListener('click', e => {
       if(e.target.classList.contains('option-card')){
         const qid = e.target.dataset.q;
@@ -350,89 +408,91 @@
     });
 
     document.getElementById('submit-btn').addEventListener('click', calculateResult);
-    window.onload = renderAllQuestions;
-
-    // 返回上一页按钮事件
+    
+    // 返回按钮事件
     document.getElementById('back-btn').addEventListener('click', () => {
       document.getElementById('result-page').classList.add('hidden');
       document.getElementById('quiz-page').classList.remove('hidden');
     });
 
-    // 生成分享图按钮事件 - 修复版，确保能生成PNG图片
-    document.getElementById('share-btn').addEventListener('click', async () => {
-      try {
-        // 显示加载提示
-        alert('正在生成分享图，请稍候...');
+// 生成分享图按钮事件 - 替换二维码版本
+document.getElementById('share-btn').addEventListener('click', async function() {
+  try {
+    console.log('生成分享图按钮被点击');
+    alert('开始生成分享图...');
+    
+    if (typeof html2canvas === 'undefined') {
+      alert('截图工具未加载，请刷新页面重试');
+      console.error('html2canvas is not loaded');
+      return;
+    }
+    
+    // 1. 先截取结果页面核心内容（这里以分数卡片为例，可根据实际需求调整截取范围）
+    const scoreCard = document.getElementById('score-card');
+    if (scoreCard) {
+      console.log('开始截取分数卡片...');
+      const contentCanvas = await html2canvas(scoreCard, {
+        useCORS: true,
+        scale: 1,
+        logging: true
+      });
+
+      // 2. 创建最终的分享图 canvas ，并绘制内容 + 新二维码
+      const finalCanvas = document.createElement('canvas');
+      const ctx = finalCanvas.getContext('2d');
+      // 假设内容 canvas 宽高是 w 和 h ，可根据实际获取
+      const contentWidth = contentCanvas.width;
+      const contentHeight = contentCanvas.height;
+      // 新二维码尺寸，可按需调整
+      const qrCodeWidth = 120; 
+      const qrCodeHeight = 120; 
+      // 最终 canvas 高度 = 内容高度 + 二维码高度 + 间距（比如 20px ）
+      finalCanvas.width = contentWidth;
+      finalCanvas.height = contentHeight + qrCodeHeight + 20; 
+
+      // 3. 绘制内容到最终 canvas
+      ctx.drawImage(contentCanvas, 0, 0);
+
+      // 4. 绘制新二维码到最终 canvas （这里用在线示例地址，你替换成实际的二维码图片地址）
+      const qrCodeImage = new Image();
+      // 替换成你实际的二维码图片路径，本地的话注意路径正确，也可以用在线地址
+      qrCodeImage.src = 'https://img.example.com/new-qr-code.png'; 
+      qrCodeImage.onload = function() {
+        // 计算二维码位置，底部居中
+        const qrX = (contentWidth - qrCodeWidth) / 2;
+        const qrY = contentHeight + 10; 
+        ctx.drawImage(qrCodeImage, qrX, qrY, qrCodeWidth, qrCodeHeight);
+
+        // 5. 下载最终的分享图
+        const link = document.createElement('a');
+        link.download = '嫡系计算器结果.png';
+        link.href = finalCanvas.toDataURL('image/png');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
         
-        // 获取结果页面中需要截图的主要内容区域
-        const resultContent = document.querySelector('#result-page > div.max-w-4xl');
-        
-        // 配置html2canvas选项，确保截图质量
-        const canvas = await html2canvas(resultContent, {
-          scale: 2, // 提高缩放比例以获得更高质量
-          useCORS: true, // 允许跨域图片
-          logging: false,
-          letterRendering: true
-        });
-        
-        // 创建新画布，添加二维码空间
-        const finalCanvas = document.createElement('canvas');
-        const ctx = finalCanvas.getContext('2d');
-        const qrSize = 120;
-        const padding = 20;
-        
-        // 设置最终画布尺寸
-        finalCanvas.width = canvas.width;
-        finalCanvas.height = canvas.height + qrSize + padding;
-        
-        // 绘制白色背景
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
-        
-        // 绘制内容截图
-        ctx.drawImage(canvas, 0, 0);
-        
-        // 创建并绘制二维码
-        const qrImg = new Image();
-        qrImg.crossOrigin = 'anonymous';
-        qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://dachangzhishiku.github.io/';
-        
-        qrImg.onload = function() {
-          // 计算二维码位置（底部居中）
-          const qrX = (finalCanvas.width - qrSize) / 2;
-          const qrY = canvas.height + padding / 2;
-          
-          // 绘制二维码
-          ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
-          
-          // 创建下载链接
-          const link = document.createElement('a');
-          link.download = '嫡系计算器结果.png';
-          link.href = finalCanvas.toDataURL('image/png');
-          
-          // 触发下载
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          
-          // 显示成功提示
-          alert('分享图已生成并下载！');
-        };
-        
-        qrImg.onerror = function() {
-          // 二维码加载失败时，仍然生成截图
-          const link = document.createElement('a');
-          link.download = '嫡系计算器结果.png';
-          link.href = canvas.toDataURL('image/png');
-          link.click();
-          alert('分享图已生成，但二维码加载失败，已为您下载不含二维码的版本。');
-        };
-        
-      } catch (error) {
-        console.error('生成分享图失败:', error);
-        alert('生成分享图时出错，请重试。错误信息: ' + error.message);
-      }
-    });
+        alert('分享图已生成并下载！');
+        console.log('截图 + 二维码绘制成功');
+      };
+      qrCodeImage.onerror = function() {
+        alert('二维码图片加载失败，已生成不含二维码的分享图');
+        // 直接下载内容截图
+        const link = document.createElement('a');
+        link.download = '嫡系计算器结果.png';
+        link.href = contentCanvas.toDataURL('image/png');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      };
+    } else {
+      alert('未找到分数卡片元素');
+      console.error('score-card element not found');
+    }
+  } catch (error) {
+    console.error('生成分享图失败:', error);
+    alert('生成分享图时出错: ' + error.message + '\n请尝试刷新页面重试');
+  }
+});
 
     // 分享计算器按钮事件
     document.getElementById('share-calculator-btn').addEventListener('click', async () => {
@@ -445,7 +505,19 @@
         alert('复制失败，请手动复制: ' + url);
       }
     });
+
+    // 页面加载完成后初始化
+    window.onload = function() {
+      renderAllQuestions();
+      
+      // 监听窗口大小变化，重新绘制图表
+      window.addEventListener('resize', function() {
+        const resultPage = document.getElementById('result-page');
+        if (!resultPage.classList.contains('hidden')) {
+          // 如果在结果页面，重新计算并显示结果以更新布局
+          calculateResult();
+        }
+      });
+    };
   </script>
-
-
 </body></html>
