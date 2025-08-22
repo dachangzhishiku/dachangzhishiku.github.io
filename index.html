@@ -13,10 +13,12 @@
       theme: {
         extend: {
           colors: {
-            primary: '#3b82f6',
-            secondary: '#10b981',
-            accent: '#8b5cf6',
+            primary: '#3b82f6', // 蓝色
+            secondary: '#10b981', // 绿色
+            warning: '#f59e0b', // 黄色
             neutral: '#1f2937',
+            danger: '#ef4444',
+            accent: '#8b5cf6',
           },
           fontFamily: {
             sans: ['Inter', 'system-ui', 'sans-serif'],
@@ -30,7 +32,11 @@
       .btn-primary {@apply bg-primary text-white font-medium py-3 px-6 rounded-lg shadow-md hover:bg-primary/90 transition-all duration-300;}
       .option-card {@apply border rounded-xl p-4 cursor-pointer transition-all duration-200 bg-white hover:shadow-md;}
       .option-card.selected {@apply border-2 border-primary bg-blue-50;}
-      .dimension-card {@apply bg-white border rounded-xl p-5 shadow-sm;}
+      .dimension-card {@apply bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden relative;}
+      /* 按行定义指示条颜色 */
+      .dimension-card.row-blue::before {@apply absolute top-0 left-0 w-1 h-full bg-primary transition-all duration-300; content: '';}
+      .dimension-card.row-yellow::before {@apply absolute top-0 left-0 w-1 h-full bg-warning transition-all duration-300; content: '';}
+      .dimension-card.row-green::before {@apply absolute top-0 left-0 w-1 h-full bg-secondary transition-all duration-300; content: '';}
       .social-btn {@apply w-full text-white text-sm font-medium py-2 px-4 rounded-lg shadow hover:opacity-90 transition;}
       .chart-container {@apply relative w-full overflow-hidden;}
       .qrcode-pair {@apply flex flex-col sm:flex-row justify-center items-center gap-6;}
@@ -41,7 +47,7 @@
 <body class="bg-gradient-to-br from-blue-50 to-purple-50 font-sans text-neutral">
   <!-- 测试页面 -->
   <div id="quiz-page" class="min-h-screen p-4">
-    <!-- 顶部社交链接（仅测试页显示） -->
+    <!-- 顶部社交链接 -->
     <div class="flex flex-col items-center space-y-2 p-4">
       <a href="https://github.com/dachangzhishiku/dachangzhishiku.github.io" target="_blank" class="social-btn bg-blue-500">
         ⭐ 如果觉得还不错，欢迎来 GitHub 点亮星星
@@ -119,7 +125,7 @@
       <div class="bg-white rounded-2xl shadow-md p-5" id="radar-card">
         <h3 class="text-lg font-bold mb-3 text-center">维度雷达图</h3>
         <div class="flex justify-center">
-          <div class="chart-container ml-2" style="height: 300px; max-width: 400px;">
+          <div class="chart-container mx-auto" style="height: 300px; max-width: 400px;">
             <canvas id="radarChart"></canvas>
           </div>
         </div>
@@ -206,6 +212,28 @@
         ]
       },
       { 
+        text: "绩效情况", 
+        dimension: "绩效情况", 
+        options: [
+          {text:"长期低绩效/背锅侠（C/D）", score:20, analysis: "处于边缘或风险。", suggestion: "寻找短期可提升的突破口。"},
+          {text:"近期绩效下滑（S/A→B/C）", score:40, analysis: "状态不稳定。", suggestion: "分析原因并快速调整。"},
+          {text:"稳定中等（近2次B+/B）", score:60, analysis: "处于稳定区间。", suggestion: "适当寻找亮点项目突破。"},
+          {text:"近期绩效提升（近2次B+/B）", score:80, analysis: "状态上升。", suggestion: "持续保持，扩大影响力。"},
+          {text:"持续高绩效（近2次S/A）", score:100, analysis: "核心绩效背书。", suggestion: "保持长期稳定，关注团队贡献。"}
+        ]
+      },
+      { 
+        text: "RSU/股权激励授予", 
+        dimension: "股权激励", 
+        options: [
+          {text:"从未获得过任何激励", score:20, analysis: "不在激励核心。", suggestion: "提升稀缺价值，争取关注。"},
+          {text:"仅入职授予，后续无新增", score:40, analysis: "缺乏持续性认可。", suggestion: "保持业绩，争取新激励。"},
+          {text:"授予价值低于同级", score:60, analysis: "认可度有限。", suggestion: "对比同级，提出合理诉求。"},
+          {text:"授予价值高于同级", score:80, analysis: "价值较高。", suggestion: "继续提升，保持核心地位。"},
+          {text:"授予周期稳定且价值可观", score:100, analysis: "处于激励核心。", suggestion: "稳定发挥，避免波动。"}
+        ]
+      },
+      { 
         text: "资源倾斜", 
         dimension: "资源倾斜", 
         options: [
@@ -233,28 +261,6 @@
           {text:"中立状态", score:50, analysis: "保持中性，安全但边缘。", suggestion: "寻找提升存在感的机会。"},
           {text:"领导公开维护", score:75, analysis: "获得一定保护。", suggestion: "维持与领导良好关系。"},
           {text:"领导私下保护", score:100, analysis: "深度信任，关键时刻被优先照顾。", suggestion: "继续巩固，保持低调。"}
-        ]
-      },
-      { 
-        text: "绩效情况", 
-        dimension: "绩效情况", 
-        options: [
-          {text:"长期低绩效/背锅侠（C/D）", score:20, analysis: "处于边缘或风险。", suggestion: "寻找短期可提升的突破口。"},
-          {text:"近期绩效下滑（S/A→B/C）", score:40, analysis: "状态不稳定。", suggestion: "分析原因并快速调整。"},
-          {text:"稳定中等（近2次B+/B）", score:60, analysis: "处于稳定区间。", suggestion: "适当寻找亮点项目突破。"},
-          {text:"近期绩效提升（近2次B+/B）", score:80, analysis: "状态上升。", suggestion: "持续保持，扩大影响力。"},
-          {text:"持续高绩效（近2次S/A）", score:100, analysis: "核心绩效背书。", suggestion: "保持长期稳定，关注团队贡献。"}
-        ]
-      },
-      { 
-        text: "RSU/股权激励授予", 
-        dimension: "股权激励", 
-        options: [
-          {text:"从未获得过任何激励", score:20, analysis: "不在激励核心。", suggestion: "提升稀缺价值，争取关注。"},
-          {text:"仅入职授予，后续无新增", score:40, analysis: "缺乏持续性认可。", suggestion: "保持业绩，争取新激励。"},
-          {text:"授予价值低于同级", score:60, analysis: "认可度有限。", suggestion: "对比同级，提出合理诉求。"},
-          {text:"授予价值高于同级", score:80, analysis: "价值较高。", suggestion: "继续提升，保持核心地位。"},
-          {text:"授予周期稳定且价值可观", score:100, analysis: "处于激励核心。", suggestion: "稳定发挥，避免波动。"}
         ]
       }
     ];
@@ -310,6 +316,46 @@
       return"风险人员：可能被边缘化或优化";
     }
 
+    // 根据卡片索引和屏幕尺寸计算行号，分配颜色（第一行蓝、第二行黄、第三行绿）
+    function getRowColorInfo(index) {
+      // 获取当前屏幕宽度，确定列数（与CSS grid布局匹配）
+      const screenWidth = window.innerWidth;
+      let cols = 1; // 默认1列（移动端）
+      if (screenWidth >= 1024) cols = 3; // lg以上3列
+      else if (screenWidth >= 640) cols = 2; // sm以上2列
+
+      // 计算行号（从0开始）
+      const row = Math.floor(index / cols);
+
+      // 按行分配颜色：0行蓝、1行黄、2行绿
+      switch(row % 3) {
+        case 0: // 第一行
+          return {
+            cardClass: "row-blue",
+            badgeColor: "bg-primary text-white",
+            lightColor: "bg-blue-50 text-blue-700"
+          };
+        case 1: // 第二行
+          return {
+            cardClass: "row-yellow",
+            badgeColor: "bg-warning text-white",
+            lightColor: "bg-yellow-50 text-yellow-700"
+          };
+        case 2: // 第三行
+          return {
+            cardClass: "row-green",
+            badgeColor: "bg-secondary text-white",
+            lightColor: "bg-green-50 text-green-700"
+          };
+        default: // 默认蓝色
+          return {
+            cardClass: "row-blue",
+            badgeColor: "bg-primary text-white",
+            lightColor: "bg-blue-50 text-blue-700"
+          };
+      }
+    }
+
     function showResult(dim,avg){
       document.getElementById('quiz-page').classList.add('hidden');
       document.getElementById('result-page').classList.remove('hidden');
@@ -341,19 +387,21 @@
         }
       });
 
-      // 渲染维度详情
+      // 渲染维度详情（按行分配颜色）
       const dc=document.getElementById('dimensions-container');
       dc.innerHTML="";
       
-      dim.forEach(d=>{
-        dc.innerHTML+=`<div class="dimension-card">
-          <div class="flex justify-between">
-            <h4>${d.dimension}</h4>
-            <span>${d.score}分</span>
+      dim.forEach((d, index)=>{
+        const colorInfo = getRowColorInfo(index);
+        
+        dc.innerHTML+=`<div class="dimension-card ${colorInfo.cardClass}">
+          <div class="flex justify-between items-start mb-2">
+            <h4 class="font-medium text-gray-800">${d.dimension}</h4>
+            <span class="inline-block px-2 py-1 rounded-full text-xs font-medium ${colorInfo.badgeColor}">${d.score}分</span>
           </div>
-          <div class="text-sm text-gray-600">${d.analysis}</div>
-          <div class="text-sm text-green-600">
-            <i class="fa fa-lightbulb-o"></i> ${d.suggestion}
+          <div class="text-sm text-gray-600 mb-3 leading-relaxed">${d.analysis}</div>
+          <div class="text-sm ${colorInfo.lightColor} p-2 rounded-lg mt-2">
+            <i class="fa fa-lightbulb-o mr-1"></i> ${d.suggestion}
           </div>
         </div>`;
       });
@@ -385,7 +433,7 @@
         updateProgress();
       });
 
-      // 分享按钮功能 - 修复版
+      // 分享按钮功能
       document.getElementById("share-result-btn").addEventListener("click",()=>{
         const url = "https://dachangzhishiku.github.io/";
         const button = document.getElementById("share-result-btn");
@@ -407,12 +455,12 @@
         });
       });
 
-      // 下载图片功能 - 只截取指定部分
+      // 下载图片功能
       document.getElementById("download-screenshot").addEventListener("click",()=>{
         const resultPage = document.getElementById("result-page");
         const dimensionsSection = document.getElementById("dimensions-section");
         
-        // 隐藏维度详情部分
+        // 隐藏维度详情部分以优化截图
         dimensionsSection.style.display = "none";
         
         setTimeout(() => {
