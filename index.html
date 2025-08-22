@@ -125,9 +125,9 @@
         </div>
       </div>
 
-      <!-- 操作按钮 -->
+      <!-- 操作按钮 - 已删除"生成分享图"按钮 -->
       <div class="text-center flex flex-col sm:flex-row justify-center gap-3">
-        <button id="share-btn" class="btn-primary"><i class="fa fa-share mr-2"></i>生成分享图</button>
+        <button id="share-result-btn" class="btn-primary bg-blue-600 hover:bg-blue-700"><i class="fa fa-share-alt mr-2"></i>分享测试结果</button>
         <button id="share-calculator-btn" class="btn-primary bg-green-600 hover:bg-green-700"><i class="fa fa-link mr-2"></i>分享计算器</button>
         <button id="back-btn" class="btn-primary bg-gray-600 hover:bg-gray-700"><i class="fa fa-arrow-left mr-2"></i>返回上一页</button>
       </div>
@@ -135,9 +135,28 @@
   </div>
 
   <!-- 群聊信息 -->
-  <div class="max-w-2xl mx-auto text-center mt-6 p-4">
+  <div class="max-w-2xl mx-auto text-center mt-6 p-4" id="qrcode-container">
     <p class="text-gray-700 text-sm mb-3">建了个群聊，致力于突破大厂信息茧房，每周掉落职场干货，欢迎进群~</p>
-    <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/812d77df9eef40959316a03291598db6~tplv-a9rns2rl98-image.image?rcl=20250822102816B11F6EB0A81697AF4CE8&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1756434500&amp;x-signature=XJNHe4hCyWNGfeJP4OJTsvJNxyc%3D" alt="微信群二维码" class="mx-auto w-40 h-40 rounded-lg shadow">
+    <img src="https://s21.ax1x.com/2025/08/22/pVDydr4.png" alt="微信群二维码" class="mx-auto w-40 h-40 rounded-lg shadow">
+  </div>
+
+  <!-- 截图模态框 -->
+  <div id="screenshot-modal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl p-4 max-w-3xl w-full max-h-[90vh] overflow-auto">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold">测试结果分享图</h3>
+        <button id="close-modal" class="text-gray-500 hover:text-gray-700">
+          <i class="fa fa-times text-xl"></i>
+        </button>
+      </div>
+      <div id="screenshot-container" class="mb-4"></div>
+      <div class="flex justify-center gap-3">
+        <a id="download-screenshot" href="#" download="嫡系计算器测试结果.png" class="btn-primary bg-green-600 hover:bg-green-700">
+          <i class="fa fa-download mr-2"></i>下载图片
+        </a>
+        <button id="close-modal-btn" class="btn-primary bg-gray-600 hover:bg-gray-700">关闭</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -312,7 +331,7 @@
       document.getElementById('score-text').innerText = avg.toFixed(1);
       document.getElementById('level-text').innerText = getLevelText(avg);
 
-      // 绘制雷达图（优化移动设备显示）
+      // 绘制雷达图（禁用动画确保截图时已完成绘制）
       const ctx = document.getElementById('radarChart');
       
       // 销毁已存在的图表，避免重复绘制
@@ -340,17 +359,18 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          animation: false, // 禁用动画确保图表立即绘制完成
           scales: {
             r: {
               beginAtZero: true,
               max: 100,
               ticks: {
-                display: !isMobile, // 移动端不显示刻度值
+                display: !isMobile,
                 stepSize: 20
               },
               pointLabels: {
                 font: {
-                  size: isMobile ? 10 : 12 // 移动端缩小标签字体
+                  size: isMobile ? 10 : 12
                 },
                 padding: isMobile ? 5 : 10
               }
@@ -358,7 +378,7 @@
           },
           plugins: {
             legend: {
-              display: !isMobile // 移动端不显示图例
+              display: !isMobile
             },
             tooltip: {
               callbacks: {
@@ -371,11 +391,10 @@
         }
       });
 
-      // 生成维度详情卡片（优化移动设备显示）
+      // 生成维度详情卡片
       const container = document.getElementById('dimensions-container');
       container.innerHTML = '';
       
-      // 根据屏幕宽度设置网格布局
       if (window.innerWidth >= 768) {
         container.classList.add('md:grid-cols-2');
       }
@@ -397,219 +416,138 @@
 
     // 事件监听
     document.addEventListener('click', e => {
-      if(e.target.classList.contains('option-card')){
-        const qid = e.target.dataset.q;
-        document.querySelectorAll(`.option-card[data-q='${qid}']`).forEach(el => {
+      // 选项点击事件
+      if (e.target.classList.contains('option-card')) {
+        const qIndex = e.target.dataset.q;
+        document.querySelectorAll(`.option-card[data-q="${qIndex}"]`).forEach(el => {
           el.classList.remove('selected');
         });
         e.target.classList.add('selected');
         updateProgress();
       }
-    });
-
-    document.getElementById('submit-btn').addEventListener('click', calculateResult);
-    
-    // 返回按钮事件
-    document.getElementById('back-btn').addEventListener('click', () => {
-      document.getElementById('result-page').classList.add('hidden');
-      document.getElementById('quiz-page').classList.remove('hidden');
-    });
-
-// 修改生成分享图按钮事件
-document.getElementById('share-btn').addEventListener('click', async function() {
-  const btn = this;
-  // 保存原始按钮文本，用于恢复
-  const originalBtnText = btn.innerHTML;
-  
-  // 防止重复点击，设置加载状态
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> 生成中...';
-  
-  try {
-    console.log('生成分享图按钮被点击');
-    // 使用 Toast 替代 alert 提升体验（假设存在简易 toast 实现）
-    showToast('开始生成分享图...', 'info');
-    
-    if (typeof html2canvas === 'undefined') {
-      throw new Error('截图工具未加载，请刷新页面重试');
-    }
-    
-    // 获取需要截图的两个卡片元素
-    const scoreCard = document.getElementById('score-card');
-    const radarCard = document.getElementById('radar-card');
-    
-    if (!scoreCard || !radarCard) {
-      throw new Error('未找到需要截图的内容');
-    }
-    
-    // 创建一个临时容器来组合两个卡片
-    const tempContainer = document.createElement('div');
-    // 使用内联样式确保布局正确
-    Object.assign(tempContainer.style, {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '16px',
-      padding: '16px',
-      backgroundColor: '#fff',
-      position: 'absolute',
-      top: '-9999px',
-      left: '-9999px',
-      // 确保容器尺寸正确
-      width: `${Math.max(scoreCard.offsetWidth, radarCard.offsetWidth)}px`
-    });
-    
-    // 克隆卡片并添加到临时容器（深克隆确保样式和内容完整）
-    const scoreCardClone = scoreCard.cloneNode(true);
-    const radarCardClone = radarCard.cloneNode(true);
-    tempContainer.appendChild(scoreCardClone);
-    tempContainer.appendChild(radarCardClone);
-    
-    // 将临时容器添加到文档中
-    document.body.appendChild(tempContainer);
-    
-    // 给浏览器一点时间渲染克隆元素
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
-    // 截取临时容器内容
-    console.log('开始截取综合得分和雷达图...');
-    const contentCanvas = await html2canvas(tempContainer, {
-      useCORS: true,
-      scale: window.devicePixelRatio || 1.5, // 基于设备像素比优化清晰度
-      allowTaint: false,
-      logging: false,
-      backgroundColor: null // 确保背景透明部分正确处理
-    });
-    
-    // 移除临时容器
-    document.body.removeChild(tempContainer);
-
-    // 创建最终的分享图 canvas ，并绘制内容 + 二维码
-    const finalCanvas = document.createElement('canvas');
-    const ctx = finalCanvas.getContext('2d');
-    // 内容 canvas 宽高
-    const contentWidth = contentCanvas.width;
-    const contentHeight = contentCanvas.height;
-    // 二维码尺寸（根据内容宽度自适应）
-    const qrCodeSize = Math.min(150, contentWidth * 0.3); 
-    // 最终 canvas 高度 = 内容高度 + 二维码高度 + 间距 + 文字高度
-    finalCanvas.width = contentWidth;
-    finalCanvas.height = contentHeight + qrCodeSize + 50; 
-
-    // 优化绘制质量
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-
-    // 绘制内容到最终 canvas
-    ctx.drawImage(contentCanvas, 0, 0);
-
-    // 加载并绘制二维码
-    await new Promise((resolve, reject) => {
-      const qrCodeImage = new Image();
-      qrCodeImage.src = 'https://s21.ax1x.com/2025/08/22/pVDydr4.png';
-      qrCodeImage.crossOrigin = 'anonymous'; // 解决跨域问题
       
-      qrCodeImage.onload = function() {
-        // 计算二维码位置，底部居中
-        const qrX = (contentWidth - qrCodeSize) / 2;
-        const qrY = contentHeight + 15; 
-        ctx.drawImage(qrCodeImage, qrX, qrY, qrCodeSize, qrCodeSize);
-
-        // 添加二维码说明文字
-        ctx.font = '16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-        ctx.fillStyle = '#333';
-        ctx.textAlign = 'center';
-        ctx.fillText('扫码查看详情', contentWidth / 2, contentHeight + qrCodeSize + 35);
-
-        resolve();
-      };
+      // 提交按钮点击事件
+      if (e.target.id === 'submit-btn' || e.target.parentElement.id === 'submit-btn') {
+        calculateResult();
+      }
       
-      qrCodeImage.onerror = function() {
-        reject(new Error('二维码图片加载失败'));
-      };
-    });
-
-    // 下载最终的分享图
-    const link = document.createElement('a');
-    link.download = '嫡系计算器结果.png';
-    // 优化图片质量
-    link.href = finalCanvas.toDataURL('image/png', 0.95);
-    document.body.appendChild(link);
-    link.click();
-    // 延迟移除避免某些浏览器下载失败
-    setTimeout(() => document.body.removeChild(link), 100);
-    
-    showToast('分享图已生成并下载！', 'success');
-    console.log('截图 + 二维码绘制成功');
-    
-  } catch (error) {
-    console.error('生成分享图失败:', error);
-    // 显示具体错误信息
-    showToast(`生成失败: ${error.message}`, 'error');
-    
-    // 如果是二维码错误，尝试下载不含二维码的版本
-    if (error.message.includes('二维码') && typeof contentCanvas !== 'undefined') {
-      const link = document.createElement('a');
-      link.download = '嫡系计算器结果.png';
-      link.href = contentCanvas.toDataURL('image/png');
-      document.body.appendChild(link);
-      link.click();
-      setTimeout(() => document.body.removeChild(link), 100);
-    }
-  } finally {
-    // 恢复按钮状态
-    btn.disabled = false;
-    btn.innerHTML = originalBtnText;
-  }
-});
-
-// 简易 Toast 实现（可根据实际项目替换）
-function showToast(message, type = 'info') {
-  // 避免重复创建多个 toast
-  const existingToast = document.querySelector('.custom-toast');
-  if (existingToast) {
-    existingToast.remove();
-  }
-  
-  const toast = document.createElement('div');
-  toast.className = `custom-toast fixed bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-md text-white z-50 transition-all duration-300 ${
-    type === 'success' ? 'bg-green-500' : 
-    type === 'error' ? 'bg-red-500' : 'bg-blue-500'
-  }`;
-  toast.textContent = message;
-  document.body.appendChild(toast);
-  
-  // 3秒后自动消失
-  setTimeout(() => {
-    toast.style.opacity = '0';
-    setTimeout(() => toast.remove(), 300);
-  }, 3000);
-}
-
-
-    // 分享计算器按钮事件
-    document.getElementById('share-calculator-btn').addEventListener('click', async () => {
-      const url = 'https://dachangzhishiku.github.io/';
-      try {
-        await navigator.clipboard.writeText(url);
-        alert('网址已复制，快去粘贴吧');
-      } catch (err) {
-        console.error('无法复制文本: ', err);
-        alert('复制失败，请手动复制: ' + url);
+      // 返回按钮点击事件
+      if (e.target.id === 'back-btn' || e.target.parentElement.id === 'back-btn') {
+        document.getElementById('result-page').classList.add('hidden');
+        document.getElementById('quiz-page').classList.remove('hidden');
+      }
+      
+      // 分享计算器按钮点击事件
+      if (e.target.id === 'share-calculator-btn' || e.target.parentElement.id === 'share-calculator-btn') {
+        if (navigator.share) {
+          navigator.share({
+            title: '嫡系计算器2.0',
+            text: '快来测试一下你在组织中的嫡系程度吧！',
+            url: window.location.href
+          }).catch(err => {
+            console.log('分享失败:', err);
+          });
+        } else {
+          navigator.clipboard.writeText(window.location.href).then(() => {
+            alert('链接已复制到剪贴板，可以分享给朋友了！');
+          }).catch(err => {
+            console.log('复制失败:', err);
+          });
+        }
       }
     });
 
-    // 页面加载完成后初始化
-    window.onload = function() {
-      renderAllQuestions();
+    // 分享测试结果按钮事件
+    document.getElementById('share-result-btn').addEventListener('click', async () => {
+      // 显示加载状态
+      const loadingAlert = alert('正在生成分享图，请稍候...');
       
-      // 监听窗口大小变化，重新绘制图表
-      window.addEventListener('resize', function() {
-        const resultPage = document.getElementById('result-page');
-        if (!resultPage.classList.contains('hidden')) {
-          // 如果在结果页面，重新计算并显示结果以更新布局
-          calculateResult();
-        }
-      });
-    };
+      try {
+        // 确保雷达图已完全渲染
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // 获取需要截图的原始元素
+        const scoreCard = document.getElementById('score-card');
+        const radarCard = document.getElementById('radar-card');
+        const qrcodeContainer = document.getElementById('qrcode-container');
+        
+        // 创建一个临时容器来组合这些元素
+        const tempContainer = document.createElement('div');
+        tempContainer.style.cssText = `
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          background-color: #f9fafb;
+          padding: 20px;
+          width: 100%;
+          max-width: 800px;
+          margin: 0 auto;
+        `;
+        
+        // 克隆综合得分卡片和二维码容器
+        const scoreCardClone = scoreCard.cloneNode(true);
+        const qrcodeClone = qrcodeContainer.cloneNode(true);
+        
+        // 对于雷达图，我们直接使用原始元素而不是克隆，确保Canvas内容正确
+        // 先隐藏原始雷达图
+        radarCard.style.display = 'none';
+        // 创建一个占位容器
+        const radarPlaceholder = document.createElement('div');
+        radarPlaceholder.style.width = '100%';
+        tempContainer.appendChild(scoreCardClone);
+        tempContainer.appendChild(radarCard); // 使用原始雷达图元素
+        tempContainer.appendChild(qrcodeClone);
+        
+        // 将临时容器添加到body
+        document.body.appendChild(tempContainer);
+        
+        // 确保元素已正确布局
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
+        // 使用html2canvas生成截图，增加配置确保正确捕获Canvas
+        const canvas = await html2canvas(tempContainer, {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          allowTaint: true,
+          backgroundColor: null
+        });
+        
+        // 恢复原始雷达图显示并移除临时容器
+        radarCard.style.display = '';
+        document.body.removeChild(tempContainer);
+        
+        // 显示截图模态框
+        const modal = document.getElementById('screenshot-modal');
+        const screenshotContainer = document.getElementById('screenshot-container');
+        screenshotContainer.innerHTML = '';
+        screenshotContainer.appendChild(canvas);
+        
+        // 设置下载链接
+        const downloadLink = document.getElementById('download-screenshot');
+        downloadLink.href = canvas.toDataURL('image/png');
+        
+        // 显示模态框
+        modal.classList.remove('hidden');
+        
+      } catch (error) {
+        console.error('生成截图失败:', error);
+        alert('生成截图失败，请重试');
+      }
+    });
+    
+    // 关闭模态框事件
+    document.getElementById('close-modal').addEventListener('click', () => {
+      document.getElementById('screenshot-modal').classList.add('hidden');
+    });
+    
+    document.getElementById('close-modal-btn').addEventListener('click', () => {
+      document.getElementById('screenshot-modal').classList.add('hidden');
+    });
+
+    // 初始化页面
+    renderAllQuestions();
   </script>
+
+
 </body></html>
