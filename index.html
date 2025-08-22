@@ -1,4 +1,6 @@
-<html lang="zh-CN"><head>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>嫡系计算器2.0</title>
@@ -113,11 +115,12 @@
         </div>
       </div>
 
-      <!-- 雷达图 -->
+      <!-- 雷达图 - 调整了位置使其与标题中线对齐 -->
       <div class="bg-white rounded-2xl shadow-md p-5" id="radar-card">
         <h3 class="text-lg font-bold mb-3 text-center">维度雷达图</h3>
         <div class="flex justify-center">
-          <div class="chart-container" style="height: 300px; max-width: 400px;">
+          <!-- 增加了ml-2使图表向右移动，与标题中线对齐 -->
+          <div class="chart-container ml-2" style="height: 300px; max-width: 400px;">
             <canvas id="radarChart"></canvas>
           </div>
         </div>
@@ -141,17 +144,15 @@
         <div class="qrcode-pair">
           <!-- 第一个二维码 -->
           <div class="qrcode-item">
-            <p class="text-gray-700 mb-3 text-sm font-medium">建了个群聊，每周掉落职场干货~</p>
-            <p class="text-sm text-gray-600 mb-2">
-</p>
+            <p class="text-gray-700 mb-3 text-sm font-medium">建了个群聊，每周掉落职场干货，欢迎进群~</p>
+            <p class="text-sm text-gray-600 mb-2">微信群二维码</p>
             <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/ffd08ae069d84e3cb7a2f7292a181a0a~tplv-a9rns2rl98-image.image?rcl=2025082216491508D12C99CF60573B10A5&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1756457356&amp;x-signature=hLch6F3Pyzdij9nCvHpqfD6cFno%3D" alt="微信群二维码" class="w-40 h-40 rounded-lg shadow border p-2 bg-white">
           </div>
           
           <!-- 第二个二维码 -->
           <div class="qrcode-item">
             <p class="text-gray-700 mb-3 text-sm font-medium">快来测一测你的嫡系指数吧</p>
-            <p class="text-sm text-gray-600 mb-2">
-</p>
+            <p class="text-sm text-gray-600 mb-2">测试二维码</p>
             <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/6704675a2c9a4abb9d0f1bc0936a12b3~tplv-a9rns2rl98-image.image?rcl=202508221653301E3287D5F693A9DAF498&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1756457610&amp;x-signature=50JWZC9WMaFsKhb1tmaFht%2F9J1I%3D" alt="测试二维码" class="w-40 h-40 rounded-lg shadow border p-2 bg-gray-50 flex items-center justify-center">
           </div>
         </div>
@@ -163,66 +164,102 @@
     let radarChartInstance = null;
 
     const questions = [
-      { text:"组织关系", dimension:"组织关系", options:[
-        {text:"跨三级汇报",score:20,analysis:"层级远，影响力弱。",suggestion:"主动建立跨级沟通。"},
-        {text:"跨两级汇报",score:40,analysis:"存在隔阂，影响有限。",suggestion:"争取展示机会。"},
-        {text:"直接汇报",score:60,analysis:"常规沟通顺畅。",suggestion:"提升汇报质量。"},
-        {text:"直接汇报+同部门≥3年",score:80,analysis:"长期合作，有信任。",suggestion:"深化绑定。"},
-        {text:"领导前嫡系团队",score:100,analysis:"高度信任。",suggestion:"维护长期关系。"}
-      ]},
-      { text:"信任等级", dimension:"信任等级", options:[
-        {text:"仅工作沟通",score:20,analysis:"纯工作关系。",suggestion:"增加互动。"},
-        {text:"参与常规会议",score:40,analysis:"基础信任。",suggestion:"会议积极发言。"},
-        {text:"参加小范围会议",score:60,analysis:"进入核心圈。",suggestion:"注意保密。"},
-        {text:"处理私人事务",score:80,analysis:"高度信任。",suggestion:"公私分明。"},
-        {text:"掌握核心资源",score:100,analysis:"绝对信任。",suggestion:"保持忠诚。"}
-      ]},
-      { text:"项目权重", dimension:"项目权重", options:[
-        {text:"支持性工作",score:20,analysis:"影响小。",suggestion:"主动争取责任。"},
-        {text:"独立模块负责人",score:40,analysis:"有限职责。",suggestion:"做出亮点。"},
-        {text:"核心骨干",score:60,analysis:"受重视。",suggestion:"打造核心力。"},
-        {text:"战略项目负责人",score:80,analysis:"战略价值。",suggestion:"确保成功。"},
-        {text:"领导亲指派",score:100,analysis:"特殊使命。",suggestion:"超额完成。"}
-      ]},
-      { text:"晋升轨迹", dimension:"晋升轨迹", options:[
-        {text:"无晋升",score:0,analysis:"发展停滞。",suggestion:"寻找突破。"},
-        {text:"正常晋升",score:20,analysis:"符合预期。",suggestion:"提升优势。"},
-        {text:"破格晋升",score:40,analysis:"表现突出。",suggestion:"保持证明。"},
-        {text:"调岗晋升",score:80,analysis:"受器重。",suggestion:"快速适应。"},
-        {text:"特批职级",score:100,analysis:"高度认可。",suggestion:"不负所托。"}
-      ]},
-      { text:"资源倾斜", dimension:"资源倾斜", options:[
-        {text:"资源受限",score:25,analysis:"资源不足。",suggestion:"高效利用。"},
-        {text:"标准配置",score:50,analysis:"正常水平。",suggestion:"逐渐申请。"},
-        {text:"优先获取",score:75,analysis:"优先级高。",suggestion:"成果回报。"},
-        {text:"特批资源",score:100,analysis:"特殊照顾。",suggestion:"谨慎使用。"}
-      ]},
-      { text:"信息权限", dimension:"信息权限", options:[
-        {text:"信息滞后",score:25,analysis:"末端。",suggestion:"主动获取。"},
-        {text:"同步知悉",score:50,analysis:"及时。",suggestion:"保证执行。"},
-        {text:"提前获知",score:75,analysis:"被信任。",suggestion:"注意保密。"},
-        {text:"参与决策",score:100,analysis:"核心决策。",suggestion:"发挥思考。"}
-      ]},
-      { text:"危机处理", dimension:"危机处理", options:[
-        {text:"被牺牲",score:25,analysis:"风险高。",suggestion:"增强不可替代性。"},
-        {text:"中立",score:50,analysis:"安全但边缘。",suggestion:"提升存在感。"},
-        {text:"公开维护",score:75,analysis:"获得保护。",suggestion:"维持关系。"},
-        {text:"私下保护",score:100,analysis:"深度信任。",suggestion:"保持低调。"}
-      ]},
-      { text:"绩效情况", dimension:"绩效情况", options:[
-        {text:"低绩效",score:20,analysis:"边缘化风险。",suggestion:"寻找突破。"},
-        {text:"绩效下滑",score:40,analysis:"不稳定。",suggestion:"快速调整。"},
-        {text:"中等",score:60,analysis:"稳定。",suggestion:"寻找亮点。"},
-        {text:"绩效提升",score:80,analysis:"上升。",suggestion:"保持扩大。"},
-        {text:"高绩效",score:100,analysis:"核心背书。",suggestion:"保持稳定。"}
-      ]},
-      { text:"RSU/股权", dimension:"股权激励", options:[
-        {text:"未获得",score:20,analysis:"不在核心。",suggestion:"争取机会。"},
-        {text:"仅入职",score:40,analysis:"缺乏持续。",suggestion:"保持业绩。"},
-        {text:"低于同级",score:60,analysis:"认可有限。",suggestion:"提出诉求。"},
-        {text:"高于同级",score:80,analysis:"较高价值。",suggestion:"保持地位。"},
-        {text:"稳定可观",score:100,analysis:"激励核心。",suggestion:"稳定发挥。"}
-      ]}
+      { 
+        text: "组织关系", 
+        dimension: "组织关系", 
+        options: [
+          {text:"跨三级汇报", score:20, analysis: "层级距离远，信息传递衰减。", suggestion: "主动建立跨级沟通渠道。"},
+          {text:"跨两级汇报", score:40, analysis: "存在层级隔阂，影响力有限。", suggestion: "争取更多向上展示的机会。"},
+          {text:"直接汇报", score:60, analysis: "常规汇报关系，沟通顺畅。", suggestion: "提升汇报质量，建立信任。"},
+          {text:"直接汇报+同部门≥3年", score:80, analysis: "长期合作，有一定信任基础。", suggestion: "深化业务绑定，成为可靠助手。"},
+          {text:"领导前嫡系团队", score:100, analysis: "深度绑定，高度信任。", suggestion: "维护长期信任，成为左膀右臂。"}
+        ]
+      },
+      { 
+        text: "信任等级", 
+        dimension: "信任等级", 
+        options: [
+          {text:"仅工作沟通", score:20, analysis: "纯工作关系，无额外信任。", suggestion: "增加工作外互动，建立好感。"},
+          {text:"参与常规会议", score:40, analysis: "基础信任，纳入常规信息圈。", suggestion: "会议中积极贡献，展现价值。"},
+          {text:"参加领导小范围会议", score:60, analysis: "中度信任，进入核心信息圈。", suggestion: "保守机密，提升判断力。"},
+          {text:"处理领导私人事务", score:80, analysis: "高度信任，超越工作关系。", suggestion: "把握分寸，公私分明。"},
+          {text:"掌握领导核心资源", score:100, analysis: "绝对信任，成为核心心腹。", suggestion: "忠诚可靠，保守核心秘密。"}
+        ]
+      },
+      { 
+        text: "项目权重", 
+        dimension: "项目权重", 
+        options: [
+          {text:"支持性工作", score:20, analysis: "参与度低，影响力有限。", suggestion: "主动承担更多责任，展现能力。"},
+          {text:"独立模块负责人", score:40, analysis: "有一定职责，但非核心。", suggestion: "做出亮点，争取更大范围负责。"},
+          {text:"核心项目骨干", score:60, analysis: "承担重要工作，受重视。", suggestion: "打造核心竞争力，成为不可或缺的角色。"},
+          {text:"战略项目负责人", score:80, analysis: "负责关键项目，有战略价值。", suggestion: "确保项目成功，提升战略影响力。"},
+          {text:"领导亲自指派项目", score:100, analysis: "深度信任，承担特殊使命。", suggestion: "超额完成，巩固信任基础。"}
+        ]
+      },
+      { 
+        text: "晋升轨迹", 
+        dimension: "晋升轨迹", 
+        options: [
+          {text:"无晋升", score:0, analysis: "发展停滞，需警惕。", suggestion: "寻找问题根源，主动寻求突破。"},
+          {text:"正常晋升", score:20, analysis: "按部就班，符合预期。", suggestion: "提升差异化优势，争取加速发展。"},
+          {text:"破格晋升", score:40, analysis: "表现突出，获得认可。", suggestion: "保持势头，证明晋升合理性。"},
+          {text:"跟随领导调岗晋升", score:80, analysis: "受领导器重，同步发展。", suggestion: "适应新环境，快速创造价值。"},
+          {text:"领导特批职级", score:100, analysis: "高度认可，特殊对待。", suggestion: "匹配职级要求，不负所托。"}
+        ]
+      },
+      { 
+        text: "资源倾斜", 
+        dimension: "资源倾斜", 
+        options: [
+          {text:"资源受限", score:25, analysis: "获取资源较少。", suggestion: "学会用有限资源做出成果。"},
+          {text:"标准配置", score:50, analysis: "处于正常水平。", suggestion: "逐渐申请更多资源。"},
+          {text:"优先获取资源", score:75, analysis: "具备较高优先级。", suggestion: "确保成果回报资源支持。"},
+          {text:"领导特批资源", score:100, analysis: "获得特殊照顾。", suggestion: "谨慎使用，避免口碑风险。"}
+        ]
+      },
+      { 
+        text: "信息权限", 
+        dimension: "信息权限", 
+        options: [
+          {text:"信息滞后", score:25, analysis: "处于信息末端。", suggestion: "主动拓展信息渠道。"},
+          {text:"同步知悉", score:50, analysis: "获取信息及时。", suggestion: "保证理解和执行。"},
+          {text:"提前获知未公开信息", score:75, analysis: "提前获知，说明被信任。", suggestion: "注意保密。"},
+          {text:"参与决策讨论", score:100, analysis: "直接参与核心决策。", suggestion: "发挥战略思考力。"}
+        ]
+      },
+      { 
+        text: "危机处理", 
+        dimension: "危机处理", 
+        options: [
+          {text:"被牺牲", score:25, analysis: "处于弱势，风险高。", suggestion: "增强不可替代性。"},
+          {text:"中立状态", score:50, analysis: "保持中性，安全但边缘。", suggestion: "寻找提升存在感的机会。"},
+          {text:"领导公开维护", score:75, analysis: "获得一定保护。", suggestion: "维持与领导良好关系。"},
+          {text:"领导私下保护", score:100, analysis: "深度信任，关键时刻被优先照顾。", suggestion: "继续巩固，保持低调。"}
+        ]
+      },
+      { 
+        text: "绩效情况", 
+        dimension: "绩效情况", 
+        options: [
+          {text:"长期低绩效/背锅侠（C/D）", score:20, analysis: "处于边缘或风险。", suggestion: "寻找短期可提升的突破口。"},
+          {text:"近期绩效下滑（S/A→B/C）", score:40, analysis: "状态不稳定。", suggestion: "分析原因并快速调整。"},
+          {text:"稳定中等（近2次B+/B）", score:60, analysis: "处于稳定区间。", suggestion: "适当寻找亮点项目突破。"},
+          {text:"近期绩效提升（近2次B+/B）", score:80, analysis: "状态上升。", suggestion: "持续保持，扩大影响力。"},
+          {text:"持续高绩效（近2次S/A）", score:100, analysis: "核心绩效背书。", suggestion: "保持长期稳定，关注团队贡献。"}
+        ]
+      },
+      { 
+        text: "RSU/股权激励授予", 
+        dimension: "股权激励", 
+        options: [
+          {text:"从未获得过任何激励", score:20, analysis: "不在激励核心。", suggestion: "提升稀缺价值，争取关注。"},
+          {text:"仅入职授予，后续无新增", score:40, analysis: "缺乏持续性认可。", suggestion: "保持业绩，争取新激励。"},
+          {text:"授予价值低于同级", score:60, analysis: "认可度有限。", suggestion: "对比同级，提出合理诉求。"},
+          {text:"授予价值高于同级", score:80, analysis: "价值较高。", suggestion: "继续提升，保持核心地位。"},
+          {text:"授予周期稳定且价值可观", score:100, analysis: "处于激励核心。", suggestion: "稳定发挥，避免波动。"}
+        ]
+      }
     ];
 
     // 渲染题目
@@ -399,5 +436,5 @@
       });
     });
   </script>
-
-</body></html>
+</body>
+</html>
