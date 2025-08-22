@@ -171,7 +171,7 @@
         text: "组织关系", 
         dimension: "组织关系", 
         options: [
-          {text:"跨三级汇报", score:20, analysis: "层级距离远，信息传递衰减。", suggestion: "主动建立跨级沟通渠道。"},
+          {text:"跨三级汇报", score:20, analysis: "层级距离远，信息传递衰减。", suggestion: "把握每次跨级展示机会。"},
           {text:"跨两级汇报", score:40, analysis: "存在层级隔阂，影响力有限。", suggestion: "争取更多向上展示的机会。"},
           {text:"直接汇报", score:60, analysis: "常规汇报关系，沟通顺畅。", suggestion: "提升汇报质量，建立信任。"},
           {text:"直接汇报+同部门≥3年", score:80, analysis: "长期合作，有一定信任基础。", suggestion: "深化业务绑定，成为可靠助手。"},
@@ -184,7 +184,7 @@
         options: [
           {text:"仅工作沟通", score:20, analysis: "纯工作关系，无额外信任。", suggestion: "增加工作外互动，建立好感。"},
           {text:"参与常规会议", score:40, analysis: "基础信任，纳入常规信息圈。", suggestion: "会议中积极贡献，展现价值。"},
-          {text:"参加领导小范围会议", score:60, analysis: "中度信任，进入核心信息圈。", suggestion: "保守机密，提升判断力。"},
+          {text:"参加领导小范围会议", score:60, analysis: "中度信任，进入核心信息圈。", suggestion: "保守机密，提升价值贡献。"},
           {text:"处理领导私人事务", score:80, analysis: "高度信任，超越工作关系。", suggestion: "把握分寸，公私分明。"},
           {text:"掌握领导核心资源", score:100, analysis: "绝对信任，成为核心心腹。", suggestion: "忠诚可靠，保守核心秘密。"}
         ]
@@ -204,7 +204,7 @@
         text: "晋升轨迹", 
         dimension: "晋升轨迹", 
         options: [
-          {text:"无晋升", score:0, analysis: "发展停滞，需警惕。", suggestion: "寻找问题根源，主动寻求突破。"},
+          {text:"无晋升", score:0, analysis: "发展停滞，需警惕。", suggestion: "考虑与领导1on1沟通，或寻找外部机会。"},
           {text:"正常晋升", score:20, analysis: "按部就班，符合预期。", suggestion: "提升差异化优势，争取加速发展。"},
           {text:"破格晋升", score:40, analysis: "表现突出，获得认可。", suggestion: "保持势头，证明晋升合理性。"},
           {text:"跟随领导调岗晋升", score:80, analysis: "受领导器重，同步发展。", suggestion: "适应新环境，快速创造价值。"},
@@ -215,19 +215,19 @@
         text: "绩效情况", 
         dimension: "绩效情况", 
         options: [
-          {text:"长期低绩效/背锅侠（C/D）", score:20, analysis: "处于边缘或风险。", suggestion: "寻找短期可提升的突破口。"},
-          {text:"近期绩效下滑（S/A→B/C）", score:40, analysis: "状态不稳定。", suggestion: "分析原因并快速调整。"},
+          {text:"长期低绩效/背锅侠（C/D）", score:20, analysis: "处于边缘或风险。", suggestion: "寻找短期可提升的突破口，或寻找外部机会。"},
+          {text:"近期绩效下滑（S/A→B/C）", score:40, analysis: "状态不稳定。", suggestion: "分析原因并沟通、调整。"},
           {text:"稳定中等（近2次B+/B）", score:60, analysis: "处于稳定区间。", suggestion: "适当寻找亮点项目突破。"},
           {text:"近期绩效提升（近2次B+/B）", score:80, analysis: "状态上升。", suggestion: "持续保持，扩大影响力。"},
-          {text:"持续高绩效（近2次S/A）", score:100, analysis: "核心绩效背书。", suggestion: "保持长期稳定，关注团队贡献。"}
+          {text:"持续高绩效（近2次S/A）", score:100, analysis: "核心绩效背书。", suggestion: "保持长期稳定，关注团队赋能。"}
         ]
       },
       { 
         text: "RSU/股权激励授予", 
         dimension: "股权激励", 
         options: [
-          {text:"从未获得过任何激励", score:20, analysis: "不在激励核心。", suggestion: "提升稀缺价值，争取关注。"},
-          {text:"仅入职授予，后续无新增", score:40, analysis: "缺乏持续性认可。", suggestion: "保持业绩，争取新激励。"},
+          {text:"从未获得过任何激励", score:20, analysis: "不在激励范围内。", suggestion: "争取绩效表现突破。"},
+          {text:"仅入职授予，后续无新增", score:40, analysis: "缺乏持续性认可。", suggestion: "强化亮点，争取新激励。"},
           {text:"授予价值低于同级", score:60, analysis: "认可度有限。", suggestion: "对比同级，提出合理诉求。"},
           {text:"授予价值高于同级", score:80, analysis: "价值较高。", suggestion: "继续提升，保持核心地位。"},
           {text:"授予周期稳定且价值可观", score:100, analysis: "处于激励核心。", suggestion: "稳定发挥，避免波动。"}
@@ -237,9 +237,9 @@
         text: "资源倾斜", 
         dimension: "资源倾斜", 
         options: [
-          {text:"资源受限", score:25, analysis: "获取资源较少。", suggestion: "学会用有限资源做出成果。"},
+          {text:"资源受限", score:25, analysis: "获取资源较少。", suggestion: "尝试用有限资源做出成果。"},
           {text:"标准配置", score:50, analysis: "处于正常水平。", suggestion: "逐渐申请更多资源。"},
-          {text:"优先获取资源", score:75, analysis: "具备较高优先级。", suggestion: "确保成果回报资源支持。"},
+          {text:"优先获取资源", score:75, analysis: "具备较高优先级。", suggestion: "确保成果回报值得。"},
           {text:"领导特批资源", score:100, analysis: "获得特殊照顾。", suggestion: "谨慎使用，避免口碑风险。"}
         ]
       },
@@ -249,7 +249,7 @@
         options: [
           {text:"信息滞后", score:25, analysis: "处于信息末端。", suggestion: "主动拓展信息渠道。"},
           {text:"同步知悉", score:50, analysis: "获取信息及时。", suggestion: "保证理解和执行。"},
-          {text:"提前获知未公开信息", score:75, analysis: "提前获知，说明被信任。", suggestion: "注意保密。"},
+          {text:"提前获知未公开信息", score:75, analysis: "提前获知，说明被信任。", suggestion: "注意信息保密。"},
           {text:"参与决策讨论", score:100, analysis: "直接参与核心决策。", suggestion: "发挥战略思考力。"}
         ]
       },
