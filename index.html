@@ -1,784 +1,451 @@
 <html lang="zh-CN"><head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>嫡系计算器</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
-    <!-- 截图库 -->
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-    
-    <!-- 配置Tailwind自定义颜色和字体 -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#3b82f6',
-                        secondary: '#10b981',
-                        accent: '#8b5cf6',
-                        neutral: '#1f2937',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                    },
-                }
-            }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>嫡系计算器2.0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#3b82f6',
+            secondary: '#10b981',
+            accent: '#8b5cf6',
+            neutral: '#1f2937',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
         }
-    </script>
-    
-    <style type="text/tailwindcss">
-        @layer utilities {
-            .content-auto {
-                content-visibility: auto;
-            }
-            .text-shadow {
-                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            }
-            .card-hover {
-                transition: all 0.3s ease;
-            }
-            .card-hover:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-            }
-            .btn-primary {
-                @apply bg-primary text-white font-medium py-3 px-6 rounded-lg shadow-md hover:bg-primary/90 transition-all duration-300 transform hover:scale-105;
-            }
-            .btn-secondary {
-                @apply bg-white text-neutral font-medium py-3 px-6 rounded-lg shadow-md border border-gray-200 hover:bg-gray-50 transition-all duration-300 transform hover:scale-105;
-            }
-            .btn-accent {
-                @apply bg-accent text-white font-medium py-3 px-6 rounded-lg shadow-md hover:bg-accent/90 transition-all duration-300 transform hover:scale-105;
-            }
-            .toast {
-                @apply fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-neutral text-white px-6 py-3 rounded-full shadow-lg z-50 opacity-0 transition-opacity duration-300;
-            }
-            .toast.show {
-                @apply opacity-100;
-            }
-            /* 分享弹窗样式 */
-            .share-modal {
-                @apply fixed inset-0 bg-black/70 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300;
-            }
-            .share-modal.show {
-                @apply opacity-100 pointer-events-auto;
-            }
-            .share-content {
-                @apply bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4 transform scale-95 transition-transform duration-300;
-            }
-            .share-modal.show .share-content {
-                @apply scale-100;
-            }
-            .screenshot-container {
-                @apply border border-gray-200 rounded-xl overflow-hidden mb-4;
-            }
-            .screenshots-wrapper {
-                @apply space-y-4 mb-6;
-            }
-            /* 居中截图容器 */
-            .centered-screenshot {
-                @apply flex justify-center items-center p-4 bg-gray-50;
-            }
-            /* 表格样式 */
-            .rating-table {
-                @apply w-full border-collapse text-sm;
-            }
-            .rating-table th {
-                @apply bg-gray-50 py-2 px-3 text-left border border-gray-200 font-semibold;
-            }
-            .rating-table td {
-                @apply py-2 px-3 border border-gray-200;
-            }
-            /* 得分区域容器 - 确保椭圆框内上下居中 */
-            .score-container {
-                @apply flex flex-col items-center justify-center min-h-[200px] w-full;
-            }
-            /* 雷达图容器 - 确保在白色框内居中 */
-            .radar-container {
-                @apply flex justify-center items-center w-full h-full p-2;
-            }
-            /* 椭圆标签样式 - 确保内部文字上下居中 */
-            .score-badge {
-                @apply inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-blue-100 text-primary text-sm font-medium mb-3;
-            }
-            /* 页面过渡动画 */
-            .page-transition {
-                transition: opacity 0.3s ease, transform 0.3s ease;
-                opacity: 1;
-            }
-            .page-transition.fade-out {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-        }
-    </style>
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .btn-primary {@apply bg-primary text-white font-medium py-3 px-6 rounded-lg shadow-md hover:bg-primary/90 transition-all duration-300 transform hover:scale-105;}
+      .option-card {@apply border rounded-xl p-4 cursor-pointer transition-all duration-200 bg-white hover:shadow-md;}
+      .option-card.selected {@apply border-2 border-primary bg-blue-50;}
+      .dimension-card {@apply bg-white border rounded-xl p-5 shadow-sm transition-all duration-200 hover:shadow-md;}
+      .social-btn {@apply w-full text-white text-sm font-medium py-2 px-4 rounded-lg shadow hover:opacity-90 transition;}
+    }
+  </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen font-sans text-neutral">
-    <!-- 提示框 -->
-    <div id="toast" class="toast">提示信息</div>
-    
-    <!-- 分享结果弹窗 -->
-    <div id="share-modal" class="share-modal">
-        <div class="share-content">
-            <h3 class="text-xl font-bold mb-4 text-center">分享你的测试结果</h3>
-            <p class="text-gray-500 text-sm text-center mb-4">截图分享给好友</p>
-            
-            <!-- 分别显示得分和雷达图的截图（添加居中样式） -->
-            <div class="screenshots-wrapper">
-                <div class="screenshot-container centered-screenshot">
-                    <img id="score-screenshot" src="" alt="得分信息截图" class="max-w-full max-h-[200px]">
-                </div>
-                <div class="screenshot-container centered-screenshot">
-                    <img id="radar-screenshot" src="" alt="雷达图截图" class="max-w-full max-h-[200px]">
-                </div>
-            </div>
-            
-            <!-- 预留二维码位置 -->
-            <div class="flex justify-center mb-6">
-                <div id="qrcode-container" class="w-32 h-32 border border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
-                    <img id="custom-qrcode" src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/14d61e2565894233bff3cb89633ec8cb~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1754623862&amp;x-signature=K33STVq2XhCbh8PBJH3HFEyLC7k%3D" alt="分享二维码" class="w-full h-full object-contain p-2">
-                </div>
-            </div>
-            
-            <p class="text-gray-400 text-xs text-center mb-4">扫码测测自己的得分</p>
-            
-            <button id="close-share-modal" class="btn-primary w-full">关闭</button>
-        </div>
-    </div>
-    
-    <!-- 首页 -->
-    <div id="home-page" class="min-h-screen flex flex-col items-center justify-center p-6 page-transition">
-        <div class="text-center max-w-md mx-auto">
-            <h1 class="text-[clamp(2.5rem,8vw,4rem)] font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent mb-6 leading-tight text-shadow animate-pulse">
-               嫡系计算器
-            </h1>
-            <p class="text-gray-600 text-lg mb-10">
-                通过7个维度测试，评估你在组织中的嫡系程度
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <button id="start-btn" class="btn-primary flex items-center justify-center gap-2">
-                    <i class="fa fa-play-circle"></i> 开始测试
-                </button>
-                <button id="share-btn" class="btn-secondary flex items-center justify-center gap-2">
-                    <i class="fa fa-share-alt"></i> 分享计算器
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 测试页面 -->
-    <div id="quiz-page" class="min-h-screen p-6 hidden page-transition">
-        <div class="max-w-2xl mx-auto">
-            <!-- 进度条 -->
-            <div class="mb-8">
-                <div class="flex justify-between text-sm text-gray-500 mb-2">
-                    <span>问题 <span id="current-question">1</span>/7</span>
-                    <span id="progress-text">14%</span>
-                </div>
-                <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div id="progress-bar" class="h-full bg-primary transition-all duration-500 ease-out" style="width: 14%"></div>
-                </div>
-            </div>
-            
-            <!-- 题目卡片 -->
-            <div class="bg-white rounded-2xl shadow-xl p-6 mb-8 transform transition-all duration-500 card-hover">
-                <h2 id="question-text" class="text-2xl font-bold mb-6 text-neutral">组织关系</h2>
-                
-                <div id="options-container" class="space-y-3">
-                    <!-- 选项将通过JS动态生成 -->
-                </div>
-            </div>
-            
-            <!-- 导航按钮 -->
-            <div class="flex justify-between">
-                <button id="prev-btn" class="btn-secondary hidden" disabled="">
-                    <i class="fa fa-arrow-left mr-2"></i> 上一题
-                </button>
-                <div class="ml-auto">
-                    <button id="next-btn" class="btn-primary">
-                        下一题 <i class="fa fa-arrow-right ml-2"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 结果页面 -->
-    <div id="result-page" class="min-h-screen p-6 hidden page-transition">
-        <div class="max-w-3xl mx-auto">
-            <h2 class="text-3xl font-bold text-center mb-2">测试结果</h2>
-            <p class="text-gray-500 text-center mb-8">你的职场嫡系指数分析</p>
-            
-            <!-- 结果卡片 -->
-            <div id="result-card" class="bg-white rounded-2xl shadow-xl p-6 mb-8 transform transition-all duration-500 hover:shadow-2xl">
-                <!-- 综合得分和雷达图 -->
-                <div class="flex flex-col md:flex-row items-center gap-8 mb-8">
-                    <!-- 得分信息 - 确保综合评分在椭圆框内上下居中 -->
-                    <div id="score-section" class="text-center md:text-left flex-1">
-                        <div class="score-container">
-                            <div class="score-badge">
-                                综合评分
-                            </div>
-                            <h3 class="text-5xl font-bold text-neutral mb-2" id="total-score">0</h3>
-                            <h4 class="text-2xl font-semibold mb-4 text-accent" id="dixi-level">评估中...</h4>
-                            <p class="text-gray-600" id="level-description">请完成测试查看结果</p>
-                        </div>
-                    </div>
-                    
-                    <!-- 雷达图 - 确保在白色框内居中 -->
-                    <div id="radar-section" class="w-full md:w-64 h-64 flex-1">
-                        <div class="radar-container">
-                            <canvas id="radar-chart"></canvas>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 嫡系等级判定说明 -->
-                <div class="mt-6 border-t pt-6">
-                    <h5 class="text-lg font-semibold mb-3 text-neutral">嫡系等级判定说明</h5>
-                    <table class="rating-table">
-                        <thead>
-                            <tr>
-                                <th>总分范围</th>
-                                <th>嫡系等级</th>
-                                <th>职场特征</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>&gt;60分</td>
-                                <td>心腹嫡系</td>
-                                <td>参与重大决策，掌握核心资源，领导心腹</td>
-                            </tr>
-                            <tr>
-                                <td>50-60分</td>
-                                <td>核心圈层</td>
-                                <td>负责关键业务，资源优先配置，领导核心圈层</td>
-                            </tr>
-                            <tr>
-                                <td>40-50分</td>
-                                <td>外围人员</td>
-                                <td>常规工作关系，无特殊关照</td>
-                            </tr>
-                            <tr>
-                                <td>&lt;40分</td>
-                                <td>风险人员</td>
-                                <td>可能被边缘化或优化</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <!-- 行动按钮 -->
-            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-10">
-                <button id="restart-btn" class="btn-primary flex items-center justify-center gap-2">
-                    <i class="fa fa-refresh"></i> 重新测试
-                </button>
-                <button id="share-result-btn" class="btn-accent flex items-center justify-center gap-2">
-                    <i class="fa fa-share-square-o"></i> 分享结果
-                </button>
-                <button id="share-calculator-btn" class="btn-secondary flex items-center justify-center gap-2">
-                    <i class="fa fa-share-alt"></i> 分享计算器
-                </button>
-            </div>
-            
-            <div class="text-center mb-8">
-                <p class="text-gray-600 text-sm mb-4">大厂知识库，致力于突破大厂信息茧房，持续分享职场干货，欢迎进群~</p>
-                <div class="bg-white p-4 rounded-xl shadow-md inline-block transform transition-all duration-300 hover:shadow-lg">
-                    <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/b48df7b65155477c80e5592a40f086c1~tplv-a9rns2rl98-image.image?rcl=202508151720574AA123BB429BE7F76E4F&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1755854458&amp;x-signature=o2E7%2FHBT%2Bl5GyLGLA1LaRnv4O7Y%3D" alt="分享二维码" class="w-64 h-64 object-cover rounded-lg">
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <script>
-        // 题目数据
-        const questions = [
-            {
-                id: 1,
-                title: "组织关系",
-                dimension: "组织关系",
-                options: [
-                    { text: "跨三级汇报", score: 20 },
-                    { text: "跨两级汇报", score: 40 },
-                    { text: "直接汇报", score: 60 },
-                    { text: "直接汇报+同部门≥3年", score: 80 },
-                    { text: "领导前嫡系团队", score: 100 }
-                ]
-            },
-            {
-                id: 2,
-                title: "信任等级",
-                dimension: "信任等级",
-                options: [
-                    { text: "仅工作沟通", score: 20 },
-                    { text: "参与常规会议", score: 40 },
-                    { text: "参加领导小范围会议", score: 60 },
-                    { text: "处理领导私人事务", score: 80 },
-                    { text: "掌握领导核心资源", score: 100 }
-                ]
-            },
-            {
-                id: 3,
-                title: "项目权重",
-                dimension: "项目权重",
-                options: [
-                    { text: "支持性工作", score: 20 },
-                    { text: "独立模块负责人", score: 40 },
-                    { text: "核心项目骨干", score: 60 },
-                    { text: "战略项目负责人", score: 80 },
-                    { text: "领导亲自指派项目", score: 100 }
-                ]
-            },
-            {
-                id: 4,
-                title: "晋升轨迹",
-                dimension: "晋升轨迹",
-                options: [
-                    { text: "无晋升", score: 20 },
-                    { text: "正常晋升", score: 40 },
-                    { text: "破格晋升", score: 60 },
-                    { text: "跟随领导调岗晋升", score: 80 },
-                    { text: "领导特批职级", score: 100 }
-                ]
-            },
-            {
-                id: 5,
-                title: "资源倾斜",
-                dimension: "资源倾斜",
-                options: [
-                    { text: "资源受限", score: 25 },
-                    { text: "标准配置", score: 50 },
-                    { text: "优先获取资源", score: 75 },
-                    { text: "领导特批资源", score: 100 }
-                ]
-            },
-            {
-                id: 6,
-                title: "信息权限",
-                dimension: "信息权限",
-                options: [
-                    { text: "信息滞后", score: 25 },
-                    { text: "同步知悉", score: 50 },
-                    { text: "提前获知未公开信息", score: 75 },
-                    { text: "参与决策讨论", score: 100 }
-                ]
-            },
-            {
-                id: 7,
-                title: "危机处理",
-                dimension: "危机处理",
-                options: [
-                    { text: "被牺牲", score: 25 },
-                    { text: "中立状态", score: 50 },
-                    { text: "领导公开维护", score: 75 },
-                    { text: "领导私下保护", score: 100 }
-                ]
-            }
-        ];
-        
-        // 等级评定标准
-        const levels = [
-            { min: 60, max: 100, level: "心腹嫡系", description: "参与重大决策，掌握核心资源，领导心腹" },
-            { min: 50, max: 60, level: "核心圈层", description: "负责关键业务，资源优先配置，领导核心圈层" },
-            { min: 40, max: 50, level: "外围人员", description: "常规工作关系，无特殊关照" },
-            { min: 0, max: 40, level: "风险人员", description: "可能被边缘化或优化" }
-        ];
-        
-        // 全局变量
-        let currentQuestionIndex = 0;
-        let userAnswers = [];
-        let radarChart = null;
-        const shareUrl = "https://wyws.bmwca.cn/q8xcQz"; // 分享链接
-        
-        // DOM元素
-        const homePage = document.getElementById('home-page');
-        const quizPage = document.getElementById('quiz-page');
-        const resultPage = document.getElementById('result-page');
-        const startBtn = document.getElementById('start-btn');
-        const shareBtn = document.getElementById('share-btn');
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const restartBtn = document.getElementById('restart-btn');
-        const shareResultBtn = document.getElementById('share-result-btn');
-        const shareCalculatorBtn = document.getElementById('share-calculator-btn');
-        const questionText = document.getElementById('question-text');
-        const optionsContainer = document.getElementById('options-container');
-        const currentQuestionEl = document.getElementById('current-question');
-        const progressBar = document.getElementById('progress-bar');
-        const progressText = document.getElementById('progress-text');
-        const totalScoreEl = document.getElementById('total-score');
-        const dixiLevelEl = document.getElementById('dixi-level');
-        const levelDescriptionEl = document.getElementById('level-description');
-        const toastEl = document.getElementById('toast');
-        const shareModal = document.getElementById('share-modal');
-        const closeShareModal = document.getElementById('close-share-modal');
-        const scoreScreenshot = document.getElementById('score-screenshot');
-        const radarScreenshot = document.getElementById('radar-screenshot');
-        const qrcodeContainer = document.getElementById('qrcode-container');
-        const customQrcode = document.getElementById('custom-qrcode');
-        const scoreSection = document.getElementById('score-section');
-        const radarSection = document.getElementById('radar-section');
-        
-        // 初始化事件监听
-        function initEventListeners() {
-            startBtn.addEventListener('click', goToQuiz);
-            shareBtn.addEventListener('click', shareApp);
-            prevBtn.addEventListener('click', goToPrevQuestion);
-            nextBtn.addEventListener('click', goToNextQuestion);
-            restartBtn.addEventListener('click', restartQuiz);
-            shareResultBtn.addEventListener('click', shareResult);
-            shareCalculatorBtn.addEventListener('click', shareCalculator);
-            closeShareModal.addEventListener('click', () => {
-                shareModal.classList.remove('show');
-            });
-        }
-        
-        // 显示提示信息
-        function showToast(message) {
-            toastEl.textContent = message;
-            toastEl.classList.add('show');
-            
-            setTimeout(() => {
-                toastEl.classList.remove('show');
-            }, 3000);
-        }
-        
-        // 页面切换动画
-        function fadeOut(element, callback) {
-            element.classList.add('fade-out');
-            setTimeout(() => {
-                element.classList.add('hidden');
-                element.classList.remove('fade-out');
-                if (callback) callback();
-            }, 300);
-        }
-        
-        function fadeIn(element) {
-            element.classList.remove('hidden');
-            // 触发重排以启用动画
-            void element.offsetWidth;
-        }
-        
-        // 前往测试页面
-        function goToQuiz() {
-            fadeOut(homePage, () => {
-                fadeIn(quizPage);
-                loadQuestion(currentQuestionIndex);
-            });
-        }
-        
-        // 返回首页
-        function goToHome() {
-            fadeOut(resultPage, () => {
-                fadeIn(homePage);
-            });
-        }
-        
-        // 加载问题
-        function loadQuestion(index) {
-            const question = questions[index];
-            questionText.textContent = question.title;
-            currentQuestionEl.textContent = question.id;
-            
-            // 更新进度
-            const progress = ((index + 1) / questions.length) * 100;
-            progressBar.style.width = `${progress}%`;
-            progressText.textContent = `${Math.round(progress)}%`;
-            
-            // 生成选项
-            optionsContainer.innerHTML = '';
-            question.options.forEach((option, optIndex) => {
-                const optionEl = document.createElement('div');
-                optionEl.className = `card-hover border rounded-xl p-4 cursor-pointer transition-all duration-300 ${
-                    userAnswers[index] === optIndex ? 'border-primary bg-blue-50 ring-2 ring-primary/20' : 'border-gray-200 hover:border-primary/50 hover:bg-gray-50'
-                }`;
-                optionEl.innerHTML = `
-                    <div class="flex items-center">
-                        <div class="w-5 h-5 rounded-full border-2 ${
-                            userAnswers[index] === optIndex ? 'border-primary bg-primary' : 'border-gray-300'
-                        } flex items-center justify-center mr-3 transition-all duration-300">
-                            ${userAnswers[index] === optIndex ? '<i class="fa fa-check text-white text-xs"></i>' : ''}
-                        </div>
-                        <span>${option.text}</span>
-                    </div>
-                `;
-                
-                optionEl.addEventListener('click', () => {
-                    userAnswers[index] = optIndex;
-                    loadQuestion(index);
-                });
-                
-                optionsContainer.appendChild(optionEl);
-            });
-            
-            // 更新按钮状态
-            prevBtn.disabled = index === 0;
-            prevBtn.classList.toggle('hidden', index === 0);
-            nextBtn.innerHTML = index === questions.length - 1 
-                ? '查看结果 <i class="fa fa-arrow-right ml-2"></i>'
-                : '下一题 <i class="fa fa-arrow-right ml-2"></i>';
-        }
-        
-        // 上一题
-        function goToPrevQuestion() {
-            if (currentQuestionIndex > 0) {
-                currentQuestionIndex--;
-                // 添加问题切换动画
-                const card = document.querySelector('#quiz-page .card-hover');
-                card.style.transform = 'translateX(-20px) opacity(0)';
-                setTimeout(() => {
-                    loadQuestion(currentQuestionIndex);
-                    card.style.transform = 'translateX(0) opacity(1)';
-                }, 200);
-            }
-        }
-        
-        // 下一题或提交
-        function goToNextQuestion() {
-            // 检查是否已选择答案
-            if (userAnswers[currentQuestionIndex] === undefined) {
-                // 提示用户选择答案 - 添加抖动动画
-                const card = document.querySelector('#quiz-page .card-hover');
-                card.style.animation = 'shake 0.5s';
-                setTimeout(() => {
-                    card.style.animation = '';
-                }, 500);
-                showToast('请选择一个选项继续');
-                return;
-            }
-            
-            if (currentQuestionIndex < questions.length - 1) {
-                currentQuestionIndex++;
-                // 添加问题切换动画
-                const card = document.querySelector('#quiz-page .card-hover');
-                card.style.transform = 'translateX(20px) opacity(0)';
-                setTimeout(() => {
-                    loadQuestion(currentQuestionIndex);
-                    card.style.transform = 'translateX(0) opacity(1)';
-                }, 200);
-            } else {
-                // 计算结果并显示
-                calculateResult();
-                fadeOut(quizPage, () => {
-                    fadeIn(resultPage);
-                    // 延迟渲染图表以确保DOM已准备好
-                    setTimeout(() => {
-                        renderRadarChart();
-                    }, 100);
-                });
-            }
-        }
-        
-        // 计算结果
-        function calculateResult() {
-            let totalScore = 0;
-            
-            questions.forEach((question, index) => {
-                const selectedOption = question.options[userAnswers[index]];
-                totalScore += selectedOption.score;
-            });
-            
-            // 计算平均分
-            const averageScore = (totalScore / questions.length).toFixed(1);
-            totalScoreEl.textContent = averageScore;
-            
-            // 确定等级
-            let levelInfo = levels[3]; // 默认最低等级
-            for (const level of levels) {
-                if (averageScore > level.min) {
-                    levelInfo = level;
-                    break;
-                }
-            }
-            
-            // 清除之前的颜色类
-            dixiLevelEl.classList.remove('text-green-600', 'text-blue-600', 'text-yellow-600', 'text-red-600');
-            
-            dixiLevelEl.textContent = levelInfo.level;
-            levelDescriptionEl.textContent = levelInfo.description;
-            
-            // 设置等级颜色
-            switch(levelInfo.level) {
-                case "心腹嫡系":
-                    dixiLevelEl.classList.add('text-green-600');
-                    break;
-                case "核心圈层":
-                    dixiLevelEl.classList.add('text-blue-600');
-                    break;
-                case "外围人员":
-                    dixiLevelEl.classList.add('text-yellow-600');
-                    break;
-                case "风险人员":
-                    dixiLevelEl.classList.add('text-red-600');
-                    break;
-            }
-            
-            // 添加得分动画
-            totalScoreEl.style.opacity = '0';
-            totalScoreEl.style.transform = 'scale(0.8)';
-            setTimeout(() => {
-                totalScoreEl.style.transition = 'all 0.5s ease-out';
-                totalScoreEl.style.opacity = '1';
-                totalScoreEl.style.transform = 'scale(1)';
-            }, 100);
-        }
-        
-        // 绘制雷达图
-        function renderRadarChart() {
-            const ctx = document.getElementById('radar-chart').getContext('2d');
-            
-            // 准备数据
-            const labels = questions.map(q => q.dimension);
-            const data = questions.map((q, index) => q.options[userAnswers[index]].score);
-            
-            // 如果已有图表，先销毁
-            if (radarChart) {
-                radarChart.destroy();
-            }
-            
-            // 创建雷达图
-            radarChart = new Chart(ctx, {
-                type: 'radar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: '你的得分',
-                        data: data,
-                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
-                        borderColor: 'rgba(59, 130, 246, 1)',
-                        pointBackgroundColor: 'rgba(59, 130, 246, 1)',
-                        pointBorderColor: '#fff',
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: 'rgba(59, 130, 246, 1)',
-                        tension: 0.2
-                    }]
-                },
-                options: {
-                    scales: {
-                        r: {
-                            angleLines: {
-                                display: true
-                            },
-                            suggestedMin: 0,
-                            suggestedMax: 100,
-                            ticks: {
-                                stepSize: 20,
-                                backdropColor: 'transparent'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `得分: ${context.raw}`;
-                                }
-                            }
-                        }
-                    },
-                    animation: {
-                        duration: 2000,
-                        easing: 'easeOutQuart'
-                    }
-                }
-            });
-        }
-        
-        // 重新测试
-        function restartQuiz() {
-            currentQuestionIndex = 0;
-            userAnswers = [];
-            // 重置结果样式
-            totalScoreEl.style.transition = 'none';
-            totalScoreEl.style.opacity = '1';
-            totalScoreEl.style.transform = 'scale(1)';
-            goToHome();
-        }
-        
-        // 分享计算器 - 首页
-        function shareApp() {
-            navigator.clipboard.writeText(shareUrl).then(() => {
-                showToast('网址已复制到剪贴板，快去粘贴吧');
-            }).catch(err => {
-                console.error('无法复制内容: ', err);
-                // 兼容方案
-                const tempInput = document.createElement('input');
-                document.body.appendChild(tempInput);
-                tempInput.value = shareUrl;
-                tempInput.select();
-                document.execCommand('copy');
-                document.body.removeChild(tempInput);
-                showToast('网址已复制到剪贴板，快去粘贴吧');
-            });
-        }
-        
-        // 分享计算器 - 结果页
-        function shareCalculator() {
-            navigator.clipboard.writeText(shareUrl).then(() => {
-                showToast('网址已复制到剪贴板，快去粘贴吧');
-            }).catch(err => {
-                console.error('无法复制内容: ', err);
-                // 兼容方案
-                const tempInput = document.createElement('input');
-                document.body.appendChild(tempInput);
-                tempInput.value = shareUrl;
-                tempInput.select();
-                document.execCommand('copy');
-                document.body.removeChild(tempInput);
-                showToast('网址已复制到剪贴板，快去粘贴吧');
-            });
-        }
-        
-        // 分享结果功能 - 分别截取得分和雷达图
-        function shareResult() {
-            // 显示加载提示
-            showToast('正在准备分享内容...');
-            
-            // 1. 分别截取得分部分和雷达图部分
-            Promise.all([
-                html2canvas(scoreSection),
-                html2canvas(radarSection)
-            ]).then(([scoreCanvas, radarCanvas]) => {
-                // 2. 显示截图
-                scoreScreenshot.src = scoreCanvas.toDataURL('image/png');
-                radarScreenshot.src = radarCanvas.toDataURL('image/png');
-                
-                // 3. 显示分享弹窗
-                setTimeout(() => {
-                    shareModal.classList.add('show');
-                    showToast('截图已准备好，可分享给好友');
-                }, 500);
-            }).catch(error => {
-                console.error('生成截图失败:', error);
-                showToast('生成分享内容失败，请重试');
-            });
-        }
-        
-        // 初始化应用
-        function initApp() {
-            initEventListeners();
-            // 添加全局动画样式
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes shake {
-                    0%, 100% { transform: translateX(0); }
-                    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-                    20%, 40%, 60%, 80% { transform: translateX(5px); }
-                }
-            `;
-            document.head.appendChild(style);
-        }
-        
-        // 启动应用
-        window.addEventListener('DOMContentLoaded', initApp);
-    </script>
+  <!-- 测试页面 -->
 
+
+  <div class="flex flex-col items-center space-y-2">
+    <a href="https://github.com/dachangzhishiku/dachangzhishiku.github.io" target="_blank" class="social-btn bg-blue-500">
+      ⭐ 如果觉得还不错，欢迎来 GitHub 点亮星星
+    </a>
+    <a href="https://www.xiaohongshu.com/user/profile/660ea153000000000600c7ba?xsec_token=YB_QX_iMe6bUxk35Ffx2heGFaOsvVziKC0rCCQ0UViyfQ=&amp;xsec_source=app_share&amp;xhsshare=CopyLink&amp;appuid=660ea153000000000600c7ba&amp;apptime=1755827298&amp;share_id=b371e9936e8c497885ab3be09a0fbcc3" target="_blank" class="social-btn bg-red-500">
+      ❤️ 欢迎关注我的小红书，持续更新职场实用干货
+    </a>
+  </div>
+
+  <div id="quiz-page" class="min-h-screen p-6">
+    <div class="text-center max-w-md mx-auto mb-10">
+      <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent mb-6">嫡系计算器2.0</h1>
+      <p class="text-gray-600 text-lg mb-6">通过9个维度测试，评估你在组织中的嫡系程度</p>
+    </div>
+    <div class="max-w-2xl mx-auto">
+      <div class="mb-8">
+        <div class="flex justify-between text-sm text-gray-500 mb-2">
+          <span>已完成 <span id="completed-count">0</span>/9 题</span>
+          <span id="progress-text">0%</span>
+        </div>
+        <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div id="progress-bar" class="h-full bg-primary transition-all duration-500 ease-out" style="width:0%"></div>
+        </div>
+      </div>
+      <h2 class="text-2xl font-bold mb-8 text-center">请回答以下所有问题</h2>
+      <div id="questions-container" class="space-y-6 mb-10"></div>
+      <div class="flex justify-center">
+        <button id="submit-btn" class="btn-primary" disabled="">提交答案</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 结果页面 -->
+  <div id="result-page" class="min-h-screen p-6 hidden">
+    <div class="max-w-4xl mx-auto space-y-8">
+      <div class="bg-white rounded-2xl shadow-md p-6 text-center" id="score-card">
+        <h2 class="text-2xl font-bold mb-4">综合得分</h2>
+        <div id="score-text" class="text-5xl font-extrabold text-primary mb-4"></div>
+        <div id="level-text" class="text-lg font-medium text-gray-600 mb-4"></div>
+        <div class="text-left text-sm text-gray-500 border-t pt-4 mt-4">
+          <h3 class="font-semibold mb-2">嫡系等级判定说明</h3>
+          <table class="w-full border-collapse text-xs">
+            <tbody><tr class="bg-gray-100">
+              <th class="p-2 border">总分范围</th>
+              <th class="p-2 border">嫡系等级</th>
+              <th class="p-2 border">职场特征</th>
+            </tr>
+            <tr>
+              <td class="p-2 border">&gt;60分</td>
+              <td class="p-2 border">心腹嫡系</td>
+              <td class="p-2 border">参与重大决策，掌握核心资源，领导心腹</td>
+            </tr>
+            <tr>
+              <td class="p-2 border">50-60分</td>
+              <td class="p-2 border">核心圈层</td>
+              <td class="p-2 border">负责关键业务，资源优先配置，领导核心圈层</td>
+            </tr>
+            <tr>
+              <td class="p-2 border">40-50分</td>
+              <td class="p-2 border">外围人员</td>
+              <td class="p-2 border">常规工作关系，无特殊关照</td>
+            </tr>
+            <tr>
+              <td class="p-2 border">&lt;40分</td>
+              <td class="p-2 border">风险人员</td>
+              <td class="p-2 border">可能被边缘化或优化</td>
+            </tr>
+          </tbody></table>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-md p-6" id="radar-card">
+        <h3 class="text-xl font-bold mb-4 text-center">维度雷达图</h3>
+        <canvas id="radarChart" class="max-h-[400px]"></canvas>
+      </div>
+      <div class="bg-white rounded-2xl shadow-md p-6">
+        <h3 class="text-xl font-bold mb-6 text-center">维度详情</h3>
+        <div id="dimensions-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- 维度卡片将在这里动态生成 -->
+        </div>
+      </div>
+      <div class="text-center flex justify-center gap-4">
+        <button id="share-btn" class="btn-primary"><i class="fa fa-share mr-2"></i>生成分享图</button>
+        <button id="share-calculator-btn" class="btn-primary bg-green-600 hover:bg-green-700"><i class="fa fa-link mr-2"></i>分享计算器</button>
+        <button id="back-btn" class="btn-primary bg-gray-600 hover:bg-gray-700"><i class="fa fa-arrow-left mr-2"></i>返回上一页</button>
+      </div>
+    </div>
+  </div>
+    <!-- 群聊信息 -->
+    <div class="max-w-2xl mx-auto text-center mt-10">
+      <p class="text-gray-700 text-sm mb-3">建了个群聊，致力于突破大厂信息茧房，每周掉落职场干货，欢迎进群~</p>
+      <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/812d77df9eef40959316a03291598db6~tplv-a9rns2rl98-image.image?rcl=20250822102816B11F6EB0A81697AF4CE8&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1756434500&amp;x-signature=XJNHe4hCyWNGfeJP4OJTsvJNxyc%3D" alt="微信群二维码" class="mx-auto w-48 h-48 rounded-lg shadow">
+    </div>
+  
+
+  <script>
+    // 扩展问题数据，包含每个选项的分析和建议
+    const questions = [
+      { 
+        text: "组织关系", 
+        dimension: "组织关系", 
+        options: [
+          {text:"跨三级汇报", score:20, analysis: "层级距离远，信息传递衰减。", suggestion: "主动建立跨级沟通渠道。"},
+          {text:"跨两级汇报", score:40, analysis: "存在层级隔阂，影响力有限。", suggestion: "争取更多向上展示的机会。"},
+          {text:"直接汇报", score:60, analysis: "常规汇报关系，沟通顺畅。", suggestion: "提升汇报质量，建立信任。"},
+          {text:"直接汇报+同部门≥3年", score:80, analysis: "长期合作，有一定信任基础。", suggestion: "深化业务绑定，成为可靠助手。"},
+          {text:"领导前嫡系团队", score:100, analysis: "深度绑定，高度信任。", suggestion: "维护长期信任，成为左膀右臂。"}
+        ]
+      },
+      { 
+        text: "信任等级", 
+        dimension: "信任等级", 
+        options: [
+          {text:"仅工作沟通", score:20, analysis: "纯工作关系，无额外信任。", suggestion: "增加工作外互动，建立好感。"},
+          {text:"参与常规会议", score:40, analysis: "基础信任，纳入常规信息圈。", suggestion: "会议中积极贡献，展现价值。"},
+          {text:"参加领导小范围会议", score:60, analysis: "中度信任，进入核心信息圈。", suggestion: "保守机密，提升判断力。"},
+          {text:"处理领导私人事务", score:80, analysis: "高度信任，超越工作关系。", suggestion: "把握分寸，公私分明。"},
+          {text:"掌握领导核心资源", score:100, analysis: "绝对信任，成为核心心腹。", suggestion: "忠诚可靠，保守核心秘密。"}
+        ]
+      },
+      { 
+        text: "项目权重", 
+        dimension: "项目权重", 
+        options: [
+          {text:"支持性工作", score:20, analysis: "参与度低，影响力有限。", suggestion: "主动承担更多责任，展现能力。"},
+          {text:"独立模块负责人", score:40, analysis: "有一定职责，但非核心。", suggestion: "做出亮点，争取更大范围负责。"},
+          {text:"核心项目骨干", score:60, analysis: "承担重要工作，受重视。", suggestion: "打造核心竞争力，成为不可或缺的角色。"},
+          {text:"战略项目负责人", score:80, analysis: "负责关键项目，有战略价值。", suggestion: "确保项目成功，提升战略影响力。"},
+          {text:"领导亲自指派项目", score:100, analysis: "深度信任，承担特殊使命。", suggestion: "超额完成，巩固信任基础。"}
+        ]
+      },
+      { 
+        text: "晋升轨迹", 
+        dimension: "晋升轨迹", 
+        options: [
+          {text:"无晋升", score:0, analysis: "发展停滞，需警惕。", suggestion: "寻找问题根源，主动寻求突破。"},
+          {text:"正常晋升", score:20, analysis: "按部就班，符合预期。", suggestion: "提升差异化优势，争取加速发展。"},
+          {text:"破格晋升", score:40, analysis: "表现突出，获得认可。", suggestion: "保持势头，证明晋升合理性。"},
+          {text:"跟随领导调岗晋升", score:80, analysis: "受领导器重，同步发展。", suggestion: "适应新环境，快速创造价值。"},
+          {text:"领导特批职级", score:100, analysis: "高度认可，特殊对待。", suggestion: "匹配职级要求，不负所托。"}
+        ]
+      },
+      { 
+        text: "资源倾斜", 
+        dimension: "资源倾斜", 
+        options: [
+          {text:"资源受限", score:25, analysis: "获取资源较少。", suggestion: "学会用有限资源做出成果。"},
+          {text:"标准配置", score:50, analysis: "处于正常水平。", suggestion: "逐渐申请更多资源。"},
+          {text:"优先获取资源", score:75, analysis: "具备较高优先级。", suggestion: "确保成果回报资源支持。"},
+          {text:"领导特批资源", score:100, analysis: "获得特殊照顾。", suggestion: "谨慎使用，避免口碑风险。"}
+        ]
+      },
+      { 
+        text: "信息权限", 
+        dimension: "信息权限", 
+        options: [
+          {text:"信息滞后", score:25, analysis: "处于信息末端。", suggestion: "主动拓展信息渠道。"},
+          {text:"同步知悉", score:50, analysis: "获取信息及时。", suggestion: "保证理解和执行。"},
+          {text:"提前获知未公开信息", score:75, analysis: "提前获知，说明被信任。", suggestion: "注意保密。"},
+          {text:"参与决策讨论", score:100, analysis: "直接参与核心决策。", suggestion: "发挥战略思考力。"}
+        ]
+      },
+      { 
+        text: "危机处理", 
+        dimension: "危机处理", 
+        options: [
+          {text:"被牺牲", score:25, analysis: "处于弱势，风险高。", suggestion: "增强不可替代性。"},
+          {text:"中立状态", score:50, analysis: "保持中性，安全但边缘。", suggestion: "寻找提升存在感的机会。"},
+          {text:"领导公开维护", score:75, analysis: "获得一定保护。", suggestion: "维持与领导良好关系。"},
+          {text:"领导私下保护", score:100, analysis: "深度信任，关键时刻被优先照顾。", suggestion: "继续巩固，保持低调。"}
+        ]
+      },
+      { 
+        text: "绩效情况", 
+        dimension: "绩效情况", 
+        options: [
+          {text:"长期低绩效/背锅侠（C/D）", score:20, analysis: "处于边缘或风险。", suggestion: "寻找短期可提升的突破口。"},
+          {text:"近期绩效下滑（S/A→B/C）", score:40, analysis: "状态不稳定。", suggestion: "分析原因并快速调整。"},
+          {text:"稳定中等（近2次B+/B）", score:60, analysis: "处于稳定区间。", suggestion: "适当寻找亮点项目突破。"},
+          {text:"近期绩效提升（近2次B+/B）", score:80, analysis: "状态上升。", suggestion: "持续保持，扩大影响力。"},
+          {text:"持续高绩效（近2次S/A）", score:100, analysis: "核心绩效背书。", suggestion: "保持长期稳定，关注团队贡献。"}
+        ]
+      },
+      { 
+        text: "RSU/股权激励授予", 
+        dimension: "股权激励", 
+        options: [
+          {text:"从未获得过任何激励", score:20, analysis: "不在激励核心。", suggestion: "提升稀缺价值，争取关注。"},
+          {text:"仅入职授予，后续无新增", score:40, analysis: "缺乏持续性认可。", suggestion: "保持业绩，争取新激励。"},
+          {text:"授予价值低于同级", score:60, analysis: "认可度有限。", suggestion: "对比同级，提出合理诉求。"},
+          {text:"授予价值高于同级", score:80, analysis: "价值较高。", suggestion: "继续提升，保持核心地位。"},
+          {text:"授予周期稳定且价值可观", score:100, analysis: "处于激励核心。", suggestion: "稳定发挥，避免波动。"}
+        ]
+      }
+    ];
+
+    function renderAllQuestions() {
+      const container = document.getElementById('questions-container');
+      container.innerHTML = '';
+      questions.forEach((q, index) => {
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-xl shadow-md p-6';
+        let opts = '';
+        q.options.forEach((opt, i) => {
+          opts += `<div class=\"option-card\" data-q=\"${index}\" data-option-index=\"${i}\" data-score=\"${opt.score}\">${opt.text}</div>`;
+        });
+        card.innerHTML = `<h3 class='text-lg font-semibold mb-4'>${index+1}. ${q.text}</h3><div class='space-y-3'>${opts}</div>`;
+        container.appendChild(card);
+      });
+    }
+
+    function updateProgress() {
+      const total = questions.length;
+      const answered = document.querySelectorAll('.option-card.selected').length;
+      document.getElementById('completed-count').innerText = answered;
+      const percent = Math.round((answered/total)*100);
+      document.getElementById('progress-text').innerText = percent+"%";
+      document.getElementById('progress-bar').style.width = percent+"%";
+      document.getElementById('submit-btn').disabled = answered < total;
+    }
+
+    function calculateResult() {
+      let results = [];
+      let sum = 0;
+      let count = 0;
+      
+      questions.forEach((q,i) => {
+        const sel = document.querySelector(`.option-card.selected[data-q='${i}']`);
+        if(sel){
+          const optionIndex = parseInt(sel.dataset.optionIndex);
+          const selectedOption = q.options[optionIndex];
+          results.push({
+            dimension: q.dimension,
+            score: selectedOption.score,
+            analysis: selectedOption.analysis,
+            suggestion: selectedOption.suggestion
+          });
+          sum += selectedOption.score;
+          count++;
+        }
+      });
+      
+      const avg = count > 0 ? (sum / count) : 0;
+      showResult(results, avg);
+    }
+
+    function getLevelText(score) {
+      if(score > 60) return "心腹嫡系：参与重大决策，掌握核心资源，领导心腹";
+      if(score >= 50) return "核心圈层：负责关键业务，资源优先配置，领导核心圈层";
+      if(score >= 40) return "外围人员：常规工作关系，无特殊关照";
+      return "风险人员：可能被边缘化或优化";
+    }
+
+    function showResult(dimensions, avg){
+      document.getElementById('quiz-page').classList.add('hidden');
+      const res = document.getElementById('result-page');
+      res.classList.remove('hidden');
+      
+      // 更新综合得分
+      document.getElementById('score-text').innerText = avg.toFixed(1);
+      document.getElementById('level-text').innerText = getLevelText(avg);
+
+      // 绘制雷达图
+      const ctx = document.getElementById('radarChart');
+      new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: dimensions.map(d => d.dimension),
+          datasets: [{
+            label: '得分',
+            data: dimensions.map(d => d.score),
+            backgroundColor: 'rgba(59,130,246,0.2)',
+            borderColor: '#3b82f6',
+            pointBackgroundColor: '#3b82f6'
+          }]
+        },
+        options: {
+          scales: {
+            r: {
+              beginAtZero: true,
+              max: 100
+            }
+          }
+        }
+      });
+
+      // 生成维度详情卡片
+      const container = document.getElementById('dimensions-container');
+      container.innerHTML = '';
+      
+      dimensions.forEach(dimension => {
+        const card = document.createElement('div');
+        card.className = 'dimension-card';
+        card.innerHTML = `
+          <div class="font-semibold text-primary mb-2">${dimension.dimension}：${dimension.score}分</div>
+          <div class="text-sm text-gray-600 mb-3">现状分析：${dimension.analysis}</div>
+          <div class="text-sm bg-blue-50 p-3 rounded-lg">行动建议：${dimension.suggestion}</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    document.addEventListener('click', e => {
+      if(e.target.classList.contains('option-card')){
+        const qid = e.target.dataset.q;
+        document.querySelectorAll(`.option-card[data-q='${qid}']`).forEach(el => {
+          el.classList.remove('selected');
+        });
+        e.target.classList.add('selected');
+        updateProgress();
+      }
+    });
+
+    document.getElementById('submit-btn').addEventListener('click', calculateResult);
+    window.onload = renderAllQuestions;
+
+    // 返回上一页按钮事件
+    document.getElementById('back-btn').addEventListener('click', () => {
+      document.getElementById('result-page').classList.add('hidden');
+      document.getElementById('quiz-page').classList.remove('hidden');
+    });
+
+    // 生成分享图按钮事件 - 修复版，确保能生成PNG图片
+    document.getElementById('share-btn').addEventListener('click', async () => {
+      try {
+        // 显示加载提示
+        alert('正在生成分享图，请稍候...');
+        
+        // 获取结果页面中需要截图的主要内容区域
+        const resultContent = document.querySelector('#result-page > div.max-w-4xl');
+        
+        // 配置html2canvas选项，确保截图质量
+        const canvas = await html2canvas(resultContent, {
+          scale: 2, // 提高缩放比例以获得更高质量
+          useCORS: true, // 允许跨域图片
+          logging: false,
+          letterRendering: true
+        });
+        
+        // 创建新画布，添加二维码空间
+        const finalCanvas = document.createElement('canvas');
+        const ctx = finalCanvas.getContext('2d');
+        const qrSize = 120;
+        const padding = 20;
+        
+        // 设置最终画布尺寸
+        finalCanvas.width = canvas.width;
+        finalCanvas.height = canvas.height + qrSize + padding;
+        
+        // 绘制白色背景
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+        
+        // 绘制内容截图
+        ctx.drawImage(canvas, 0, 0);
+        
+        // 创建并绘制二维码
+        const qrImg = new Image();
+        qrImg.crossOrigin = 'anonymous';
+        qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://dachangzhishiku.github.io/';
+        
+        qrImg.onload = function() {
+          // 计算二维码位置（底部居中）
+          const qrX = (finalCanvas.width - qrSize) / 2;
+          const qrY = canvas.height + padding / 2;
+          
+          // 绘制二维码
+          ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+          
+          // 创建下载链接
+          const link = document.createElement('a');
+          link.download = '嫡系计算器结果.png';
+          link.href = finalCanvas.toDataURL('image/png');
+          
+          // 触发下载
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          
+          // 显示成功提示
+          alert('分享图已生成并下载！');
+        };
+        
+        qrImg.onerror = function() {
+          // 二维码加载失败时，仍然生成截图
+          const link = document.createElement('a');
+          link.download = '嫡系计算器结果.png';
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+          alert('分享图已生成，但二维码加载失败，已为您下载不含二维码的版本。');
+        };
+        
+      } catch (error) {
+        console.error('生成分享图失败:', error);
+        alert('生成分享图时出错，请重试。错误信息: ' + error.message);
+      }
+    });
+
+    // 分享计算器按钮事件
+    document.getElementById('share-calculator-btn').addEventListener('click', async () => {
+      const url = 'https://dachangzhishiku.github.io/';
+      try {
+        await navigator.clipboard.writeText(url);
+        alert('网址已复制，快去粘贴吧');
+      } catch (err) {
+        console.error('无法复制文本: ', err);
+        alert('复制失败，请手动复制: ' + url);
+      }
+    });
+  </script>
 
 
 </body></html>
