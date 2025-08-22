@@ -34,7 +34,7 @@
       .social-btn {@apply w-full text-white text-sm font-medium py-2 px-4 rounded-lg shadow hover:opacity-90 transition;}
       .chart-container {@apply relative w-full overflow-hidden;}
       .qrcode-pair {@apply flex flex-col sm:flex-row justify-center items-center gap-6;}
-      .qrcode-item {@apply text-center mx-auto; /* 新增mx-auto确保手机端居中 */}
+      .qrcode-item {@apply text-center mx-auto;}
     }
   </style>
 </head>
@@ -78,7 +78,7 @@
     <div class="max-w-4xl w-full space-y-6">
       <!-- 综合得分 -->
       <div class="bg-white rounded-2xl shadow-md p-5 text-center" id="score-card">
-        <h2 class="text-xl font-bold mb-3">综合得分</h2>
+        <h2 class="text-xl font-bold mb-3">嫡系程度得分</h2>
         <div id="score-text" class="text-4xl font-extrabold text-primary mb-3"></div>
         <div id="level-text" class="text-base font-medium text-gray-600 mb-3"></div>
         <div class="text-left text-xs text-gray-500 border-t pt-3 mt-3">
