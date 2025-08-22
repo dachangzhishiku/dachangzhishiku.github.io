@@ -76,7 +76,7 @@
   <!-- 结果页面 -->
   <div id="result-page" class="min-h-screen p-4 hidden flex flex-col items-center">
     <div class="max-w-4xl w-full space-y-6">
-      <!-- 综合得分 -->
+      <!-- 嫡系程度得分 -->
       <div class="bg-white rounded-2xl shadow-md p-5 text-center" id="score-card">
         <h2 class="text-xl font-bold mb-3">嫡系程度得分</h2>
         <div id="score-text" class="text-4xl font-extrabold text-primary mb-3"></div>
@@ -126,7 +126,7 @@
       </div>
 
       <!-- 维度详情 -->
-      <div class="bg-white rounded-2xl shadow-md p-5">
+      <div class="bg-white rounded-2xl shadow-md p-5" id="dimensions-section">
         <h3 class="text-lg font-bold mb-4 text-center">维度详情</h3>
         <div id="dimensions-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
       </div>
@@ -407,9 +407,13 @@
         });
       });
 
-      // 下载图片功能
+      // 下载图片功能 - 只截取指定部分
       document.getElementById("download-screenshot").addEventListener("click",()=>{
         const resultPage = document.getElementById("result-page");
+        const dimensionsSection = document.getElementById("dimensions-section");
+        
+        // 隐藏维度详情部分
+        dimensionsSection.style.display = "none";
         
         setTimeout(() => {
           html2canvas(resultPage, {
@@ -425,9 +429,15 @@
             a.href = canvas.toDataURL("image/png");
             a.download = "嫡系指数测试结果.png";
             a.click();
+            
+            // 恢复维度详情显示
+            dimensionsSection.style.display = "block";
           }).catch(err => {
             console.error('截图失败: ', err);
             alert("截图失败，请重试");
+            
+            // 无论成功失败都恢复显示
+            dimensionsSection.style.display = "block";
           });
         }, 1000);
       });
