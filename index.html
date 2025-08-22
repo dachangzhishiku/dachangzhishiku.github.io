@@ -25,31 +25,33 @@
   </script>
   <style type="text/tailwindcss">
     @layer utilities {
-      .btn-primary {@apply bg-primary text-white font-medium py-3 px-6 rounded-lg shadow-md hover:bg-primary/90 transition-all duration-300 transform hover:scale-105;}
+      .btn-primary {@apply bg-primary text-white font-medium py-3 px-6 rounded-lg shadow-md hover:bg-primary/90 transition-all duration-300;}
       .option-card {@apply border rounded-xl p-4 cursor-pointer transition-all duration-200 bg-white hover:shadow-md;}
       .option-card.selected {@apply border-2 border-primary bg-blue-50;}
-      .dimension-card {@apply bg-white border rounded-xl p-5 shadow-sm transition-all duration-200 hover:shadow-md;}
+      .dimension-card {@apply bg-white border rounded-xl p-5 shadow-sm;}
       .social-btn {@apply w-full text-white text-sm font-medium py-2 px-4 rounded-lg shadow hover:opacity-90 transition;}
       .chart-container {@apply relative w-full overflow-hidden;}
+      .qrcode-pair {@apply flex flex-col sm:flex-row justify-center items-center gap-6;}
+      .qrcode-item {@apply text-center;}
     }
   </style>
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen font-sans text-neutral">
-  <!-- 社交链接 -->
-  <div class="flex flex-col items-center space-y-2 p-4">
-    <a href="https://github.com/dachangzhishiku/dachangzhishiku.github.io" target="_blank" class="social-btn bg-blue-500">
-      ⭐ 如果觉得还不错，欢迎来 GitHub 点亮星星
-    </a>
-    <a href="https://www.xiaohongshu.com/user/profile/660ea153000000000600c7ba?xsec_token=YB_QX_iMe6bUxk35Ffx2heGFaOsvVziKC0rCCQ0UViyfQ=&amp;xsec_source=app_share&amp;xhsshare=CopyLink&amp;appuid=660ea153000000000600c7ba&amp;apptime=1755827298&amp;share_id=b371e9936e8c497885ab3be09a0fbcc3" target="_blank" class="social-btn bg-red-500">
-      ❤️ 欢迎关注我的小红书，持续更新职场实用干货
-    </a>
-  </div>
-
+<body class="bg-gradient-to-br from-blue-50 to-purple-50 font-sans text-neutral">
   <!-- 测试页面 -->
   <div id="quiz-page" class="min-h-screen p-4">
+    <!-- 顶部社交链接（仅测试页显示） -->
+    <div class="flex flex-col items-center space-y-2 p-4">
+      <a href="https://github.com/dachangzhishiku/dachangzhishiku.github.io" target="_blank" class="social-btn bg-blue-500">
+        ⭐ 如果觉得还不错，欢迎来 GitHub 点亮星星
+      </a>
+      <a href="https://www.xiaohongshu.com/user/profile/660ea153000000000600c7ba" target="_blank" class="social-btn bg-red-500">
+        ❤️ 欢迎关注我的小红书，持续更新职场实用干货
+      </a>
+    </div>
+
     <div class="text-center max-w-md mx-auto mb-6">
-      <h1 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent mb-4">嫡系计算器2.0</h1>
-      <p class="text-gray-600 text-base md:text-lg">通过9个维度测试，评估你在组织中的嫡系程度</p>
+      <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent mb-4">嫡系计算器2.0</h1>
+      <p class="text-gray-600">通过9个维度测试，评估你在组织中的嫡系程度</p>
     </div>
     <div class="max-w-2xl mx-auto">
       <div class="mb-6">
@@ -61,7 +63,7 @@
           <div id="progress-bar" class="h-full bg-primary transition-all duration-500 ease-out" style="width:0%"></div>
         </div>
       </div>
-      <h2 class="text-xl md:text-2xl font-bold mb-6 text-center">请回答以下所有问题</h2>
+      <h2 class="text-xl font-bold mb-6 text-center">请回答以下所有问题</h2>
       <div id="questions-container" class="space-y-4 mb-8"></div>
       <div class="flex justify-center">
         <button id="submit-btn" class="btn-primary" disabled="">提交答案</button>
@@ -70,450 +72,332 @@
   </div>
 
   <!-- 结果页面 -->
-  <div id="result-page" class="min-h-screen p-4 hidden">
-    <div class="max-w-4xl mx-auto space-y-6">
-      <!-- 综合得分卡片 -->
+  <div id="result-page" class="min-h-screen p-4 hidden flex flex-col items-center">
+    <div class="max-w-4xl w-full space-y-6">
+      <!-- 综合得分 -->
       <div class="bg-white rounded-2xl shadow-md p-5 text-center" id="score-card">
-        <h2 class="text-xl md:text-2xl font-bold mb-3">综合得分</h2>
-        <div id="score-text" class="text-4xl md:text-5xl font-extrabold text-primary mb-3"></div>
-        <div id="level-text" class="text-base md:text-lg font-medium text-gray-600 mb-3"></div>
-        <div class="text-left text-xs md:text-sm text-gray-500 border-t pt-3 mt-3">
+        <h2 class="text-xl font-bold mb-3">综合得分</h2>
+        <div id="score-text" class="text-4xl font-extrabold text-primary mb-3"></div>
+        <div id="level-text" class="text-base font-medium text-gray-600 mb-3"></div>
+        <div class="text-left text-xs text-gray-500 border-t pt-3 mt-3">
           <h3 class="font-semibold mb-2">嫡系等级判定说明</h3>
           <table class="w-full border-collapse text-xs">
-            <tbody><tr class="bg-gray-100">
-              <th class="p-2 border">总分范围</th>
-              <th class="p-2 border">嫡系等级</th>
-              <th class="p-2 border">职场特征</th>
-            </tr>
-            <tr>
-              <td class="p-2 border">&gt;60分</td>
-              <td class="p-2 border">心腹嫡系</td>
-              <td class="p-2 border">参与重大决策，掌握核心资源，领导心腹</td>
-            </tr>
-            <tr>
-              <td class="p-2 border">50-60分</td>
-              <td class="p-2 border">核心圈层</td>
-              <td class="p-2 border">负责关键业务，资源优先配置，领导核心圈层</td>
-            </tr>
-            <tr>
-              <td class="p-2 border">40-50分</td>
-              <td class="p-2 border">外围人员</td>
-              <td class="p-2 border">常规工作关系，无特殊关照</td>
-            </tr>
-            <tr>
-              <td class="p-2 border">&lt;40分</td>
-              <td class="p-2 border">风险人员</td>
-              <td class="p-2 border">可能被边缘化或优化</td>
-            </tr>
-          </tbody></table>
+            <tbody>
+              <tr class="bg-gray-100">
+                <th class="p-2 border">总分范围</th>
+                <th class="p-2 border">嫡系等级</th>
+                <th class="p-2 border">职场特征</th>
+              </tr>
+              <tr>
+                <td class="p-2 border">&gt;60</td>
+                <td class="p-2 border">心腹嫡系</td>
+                <td class="p-2 border">参与重大决策，掌握核心资源</td>
+              </tr>
+              <tr>
+                <td class="p-2 border">50-60</td>
+                <td class="p-2 border">核心圈层</td>
+                <td class="p-2 border">负责关键业务，资源优先配置</td>
+              </tr>
+              <tr>
+                <td class="p-2 border">40-50</td>
+                <td class="p-2 border">外围人员</td>
+                <td class="p-2 border">常规工作关系，无特殊关照</td>
+              </tr>
+              <tr>
+                <td class="p-2 border">&lt;40</td>
+                <td class="p-2 border">风险人员</td>
+                <td class="p-2 border">可能被边缘化或优化</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
-      <!-- 雷达图卡片 -->
+      <!-- 雷达图 -->
       <div class="bg-white rounded-2xl shadow-md p-5" id="radar-card">
-        <h3 class="text-lg md:text-xl font-bold mb-3 text-center">维度雷达图</h3>
-        <div class="chart-container" style="height: 300px;">
-          <canvas id="radarChart"></canvas>
+        <h3 class="text-lg font-bold mb-3 text-center">维度雷达图</h3>
+        <div class="flex justify-center">
+          <div class="chart-container" style="height: 300px; max-width: 400px;">
+            <canvas id="radarChart"></canvas>
+          </div>
         </div>
       </div>
 
       <!-- 维度详情 -->
       <div class="bg-white rounded-2xl shadow-md p-5">
-        <h3 class="text-lg md:text-xl font-bold mb-4 text-center">维度详情</h3>
-        <div id="dimensions-container" class="grid grid-cols-1 gap-3">
-          <!-- 维度卡片将在这里动态生成 -->
-        </div>
+        <h3 class="text-lg font-bold mb-4 text-center">维度详情</h3>
+        <div id="dimensions-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
       </div>
 
       <!-- 操作按钮 -->
       <div class="text-center flex flex-col sm:flex-row justify-center gap-3">
-        <button id="share-result-btn" class="btn-primary bg-blue-600 hover:bg-blue-700"><i class="fa fa-share-alt mr-2"></i>分享测试结果</button>
-        <button id="share-calculator-btn" class="btn-primary bg-green-600 hover:bg-green-700"><i class="fa fa-link mr-2"></i>分享计算器</button>
-        <button id="back-btn" class="btn-primary bg-gray-600 hover:bg-gray-700"><i class="fa fa-arrow-left mr-2"></i>返回上一页</button>
+        <button id="share-result-btn" class="btn-primary bg-blue-600 hover:bg-blue-700"><i class="fa fa-share-alt mr-2"></i>分享计算器</button>
+        <button id="download-screenshot" class="btn-primary bg-green-600 hover:bg-green-700"><i class="fa fa-download mr-2"></i>下载图片</button>
+        <button id="back-btn" class="btn-primary bg-gray-600 hover:bg-gray-700"><i class="fa fa-arrow-left mr-2"></i>返回</button>
       </div>
-    </div>
-  </div>
 
-  <!-- 群聊信息（原有二维码保持不变） -->
-  <div class="max-w-2xl mx-auto text-center mt-6 p-4" id="qrcode-container">
-    <p class="text-gray-700 text-sm mb-3">建了个群聊，致力于突破大厂信息茧房，每周掉落职场干货，欢迎进群~</p>
-    <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/812d77df9eef40959316a03291598db6~tplv-a9rns2rl98-image.image?rcl=20250822102816B11F6EB0A81697AF4CE8&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1756434500&amp;x-signature=XJNHe4hCyWNGfeJP4OJTsvJNxyc%3D" alt="微信群二维码" class="mx-auto w-40 h-40 rounded-lg shadow">
-  </div>
-
-  <!-- 截图模态框 -->
-  <div id="screenshot-modal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-xl p-4 max-w-3xl w-full max-h-[90vh] overflow-auto">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-xl font-bold">测试结果分享图</h3>
-        <button id="close-modal" class="text-gray-500 hover:text-gray-700">
-          <i class="fa fa-times text-xl"></i>
-        </button>
-      </div>
-      <div id="screenshot-container" class="mb-6"></div>
-      
-      <!-- 新增的二维码 -->
-      <div class="text-center mb-6">
-        <p class="text-gray-700 mb-3">扫描下方二维码，获取更多职场分析</p>
-        <img src="https://s21.ax1x.com/2025/08/22/pVDydr4.png" alt="职场分析二维码" class="mx-auto w-40 h-40 rounded-lg shadow">
-      </div>
-      
-      <div class="flex justify-center gap-3">
-        <button id="download-screenshot" class="btn-primary bg-green-600 hover:bg-green-700">
-          <i class="fa fa-download mr-2"></i>下载图片
-        </button>
-        <button id="close-modal-btn" class="btn-primary bg-gray-600 hover:bg-gray-700">关闭</button>
+      <!-- 底部两个并排二维码（result-page内部） -->
+      <div class="max-w-3xl mx-auto text-center mt-6 p-6 bg-white rounded-2xl shadow-md" id="qrcode-container">
+        <div class="qrcode-pair">
+          <!-- 第一个二维码 -->
+          <div class="qrcode-item">
+            <p class="text-gray-700 mb-3 text-sm font-medium">建了个群聊，每周掉落职场干货~</p>
+            <p class="text-sm text-gray-600 mb-2">
+</p>
+            <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/ffd08ae069d84e3cb7a2f7292a181a0a~tplv-a9rns2rl98-image.image?rcl=2025082216491508D12C99CF60573B10A5&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1756457356&amp;x-signature=hLch6F3Pyzdij9nCvHpqfD6cFno%3D" alt="微信群二维码" class="w-40 h-40 rounded-lg shadow border p-2 bg-white">
+          </div>
+          
+          <!-- 第二个二维码 -->
+          <div class="qrcode-item">
+            <p class="text-gray-700 mb-3 text-sm font-medium">快来测一测你的嫡系指数吧</p>
+            <p class="text-sm text-gray-600 mb-2">
+</p>
+            <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/6704675a2c9a4abb9d0f1bc0936a12b3~tplv-a9rns2rl98-image.image?rcl=202508221653301E3287D5F693A9DAF498&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1756457610&amp;x-signature=50JWZC9WMaFsKhb1tmaFht%2F9J1I%3D" alt="测试二维码" class="w-40 h-40 rounded-lg shadow border p-2 bg-gray-50 flex items-center justify-center">
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    // 存储截图数据的变量
-    let screenshotDataUrl = null;
-    
-    // 完整的9个问题数据
+    let radarChartInstance = null;
+
     const questions = [
-      { 
-        text: "组织关系", 
-        dimension: "组织关系", 
-        options: [
-          {text:"跨三级汇报", score:20, analysis: "层级距离远，信息传递衰减。", suggestion: "主动建立跨级沟通渠道。"},
-          {text:"跨两级汇报", score:40, analysis: "存在层级隔阂，影响力有限。", suggestion: "争取更多向上展示的机会。"},
-          {text:"直接汇报", score:60, analysis: "常规汇报关系，沟通顺畅。", suggestion: "提升汇报质量，建立信任。"},
-          {text:"直接汇报+同部门≥3年", score:80, analysis: "长期合作，有一定信任基础。", suggestion: "深化业务绑定，成为可靠助手。"},
-          {text:"领导前嫡系团队", score:100, analysis: "深度绑定，高度信任。", suggestion: "维护长期信任，成为左膀右臂。"}
-        ]
-      },
-      { 
-        text: "信任等级", 
-        dimension: "信任等级", 
-        options: [
-          {text:"仅工作沟通", score:20, analysis: "纯工作关系，无额外信任。", suggestion: "增加工作外互动，建立好感。"},
-          {text:"参与常规会议", score:40, analysis: "基础信任，纳入常规信息圈。", suggestion: "会议中积极贡献，展现价值。"},
-          {text:"参加领导小范围会议", score:60, analysis: "中度信任，进入核心信息圈。", suggestion: "保守机密，提升判断力。"},
-          {text:"处理领导私人事务", score:80, analysis: "高度信任，超越工作关系。", suggestion: "把握分寸，公私分明。"},
-          {text:"掌握领导核心资源", score:100, analysis: "绝对信任，成为核心心腹。", suggestion: "忠诚可靠，保守核心秘密。"}
-        ]
-      },
-      { 
-        text: "项目权重", 
-        dimension: "项目权重", 
-        options: [
-          {text:"支持性工作", score:20, analysis: "参与度低，影响力有限。", suggestion: "主动承担更多责任，展现能力。"},
-          {text:"独立模块负责人", score:40, analysis: "有一定职责，但非核心。", suggestion: "做出亮点，争取更大范围负责。"},
-          {text:"核心项目骨干", score:60, analysis: "承担重要工作，受重视。", suggestion: "打造核心竞争力，成为不可或缺的角色。"},
-          {text:"战略项目负责人", score:80, analysis: "负责关键项目，有战略价值。", suggestion: "确保项目成功，提升战略影响力。"},
-          {text:"领导亲自指派项目", score:100, analysis: "深度信任，承担特殊使命。", suggestion: "超额完成，巩固信任基础。"}
-        ]
-      },
-      { 
-        text: "晋升轨迹", 
-        dimension: "晋升轨迹", 
-        options: [
-          {text:"无晋升", score:0, analysis: "发展停滞，需警惕。", suggestion: "寻找问题根源，主动寻求突破。"},
-          {text:"正常晋升", score:20, analysis: "按部就班，符合预期。", suggestion: "提升差异化优势，争取加速发展。"},
-          {text:"破格晋升", score:40, analysis: "表现突出，获得认可。", suggestion: "保持势头，证明晋升合理性。"},
-          {text:"跟随领导调岗晋升", score:80, analysis: "受领导器重，同步发展。", suggestion: "适应新环境，快速创造价值。"},
-          {text:"领导特批职级", score:100, analysis: "高度认可，特殊对待。", suggestion: "匹配职级要求，不负所托。"}
-        ]
-      },
-      { 
-        text: "资源倾斜", 
-        dimension: "资源倾斜", 
-        options: [
-          {text:"资源受限", score:25, analysis: "获取资源较少。", suggestion: "学会用有限资源做出成果。"},
-          {text:"标准配置", score:50, analysis: "处于正常水平。", suggestion: "逐渐申请更多资源。"},
-          {text:"优先获取资源", score:75, analysis: "具备较高优先级。", suggestion: "确保成果回报资源支持。"},
-          {text:"领导特批资源", score:100, analysis: "获得特殊照顾。", suggestion: "谨慎使用，避免口碑风险。"}
-        ]
-      },
-      { 
-        text: "信息权限", 
-        dimension: "信息权限", 
-        options: [
-          {text:"信息滞后", score:25, analysis: "处于信息末端。", suggestion: "主动拓展信息渠道。"},
-          {text:"同步知悉", score:50, analysis: "获取信息及时。", suggestion: "保证理解和执行。"},
-          {text:"提前获知未公开信息", score:75, analysis: "提前获知，说明被信任。", suggestion: "注意保密。"},
-          {text:"参与决策讨论", score:100, analysis: "直接参与核心决策。", suggestion: "发挥战略思考力。"}
-        ]
-      },
-      { 
-        text: "危机处理", 
-        dimension: "危机处理", 
-        options: [
-          {text:"被牺牲", score:25, analysis: "处于弱势，风险高。", suggestion: "增强不可替代性。"},
-          {text:"中立状态", score:50, analysis: "保持中性，安全但边缘。", suggestion: "寻找提升存在感的机会。"},
-          {text:"领导公开维护", score:75, analysis: "获得一定保护。", suggestion: "维持与领导良好关系。"},
-          {text:"领导私下保护", score:100, analysis: "深度信任，关键时刻被优先照顾。", suggestion: "继续巩固，保持低调。"}
-        ]
-      },
-      { 
-        text: "绩效情况", 
-        dimension: "绩效情况", 
-        options: [
-          {text:"长期低绩效/背锅侠（C/D）", score:20, analysis: "处于边缘或风险。", suggestion: "寻找短期可提升的突破口。"},
-          {text:"近期绩效下滑（S/A→B/C）", score:40, analysis: "状态不稳定。", suggestion: "分析原因并快速调整。"},
-          {text:"稳定中等（近2次B+/B）", score:60, analysis: "处于稳定区间。", suggestion: "适当寻找亮点项目突破。"},
-          {text:"近期绩效提升（近2次B+/B）", score:80, analysis: "状态上升。", suggestion: "持续保持，扩大影响力。"},
-          {text:"持续高绩效（近2次S/A）", score:100, analysis: "核心绩效背书。", suggestion: "保持长期稳定，关注团队贡献。"}
-        ]
-      },
-      { 
-        text: "RSU/股权激励授予", 
-        dimension: "股权激励", 
-        options: [
-          {text:"从未获得过任何激励", score:20, analysis: "不在激励核心。", suggestion: "提升稀缺价值，争取关注。"},
-          {text:"仅入职授予，后续无新增", score:40, analysis: "缺乏持续性认可。", suggestion: "保持业绩，争取新激励。"},
-          {text:"授予价值低于同级", score:60, analysis: "认可度有限。", suggestion: "对比同级，提出合理诉求。"},
-          {text:"授予价值高于同级", score:80, analysis: "价值较高。", suggestion: "继续提升，保持核心地位。"},
-          {text:"授予周期稳定且价值可观", score:100, analysis: "处于激励核心。", suggestion: "稳定发挥，避免波动。"}
-        ]
-      }
+      { text:"组织关系", dimension:"组织关系", options:[
+        {text:"跨三级汇报",score:20,analysis:"层级远，影响力弱。",suggestion:"主动建立跨级沟通。"},
+        {text:"跨两级汇报",score:40,analysis:"存在隔阂，影响有限。",suggestion:"争取展示机会。"},
+        {text:"直接汇报",score:60,analysis:"常规沟通顺畅。",suggestion:"提升汇报质量。"},
+        {text:"直接汇报+同部门≥3年",score:80,analysis:"长期合作，有信任。",suggestion:"深化绑定。"},
+        {text:"领导前嫡系团队",score:100,analysis:"高度信任。",suggestion:"维护长期关系。"}
+      ]},
+      { text:"信任等级", dimension:"信任等级", options:[
+        {text:"仅工作沟通",score:20,analysis:"纯工作关系。",suggestion:"增加互动。"},
+        {text:"参与常规会议",score:40,analysis:"基础信任。",suggestion:"会议积极发言。"},
+        {text:"参加小范围会议",score:60,analysis:"进入核心圈。",suggestion:"注意保密。"},
+        {text:"处理私人事务",score:80,analysis:"高度信任。",suggestion:"公私分明。"},
+        {text:"掌握核心资源",score:100,analysis:"绝对信任。",suggestion:"保持忠诚。"}
+      ]},
+      { text:"项目权重", dimension:"项目权重", options:[
+        {text:"支持性工作",score:20,analysis:"影响小。",suggestion:"主动争取责任。"},
+        {text:"独立模块负责人",score:40,analysis:"有限职责。",suggestion:"做出亮点。"},
+        {text:"核心骨干",score:60,analysis:"受重视。",suggestion:"打造核心力。"},
+        {text:"战略项目负责人",score:80,analysis:"战略价值。",suggestion:"确保成功。"},
+        {text:"领导亲指派",score:100,analysis:"特殊使命。",suggestion:"超额完成。"}
+      ]},
+      { text:"晋升轨迹", dimension:"晋升轨迹", options:[
+        {text:"无晋升",score:0,analysis:"发展停滞。",suggestion:"寻找突破。"},
+        {text:"正常晋升",score:20,analysis:"符合预期。",suggestion:"提升优势。"},
+        {text:"破格晋升",score:40,analysis:"表现突出。",suggestion:"保持证明。"},
+        {text:"调岗晋升",score:80,analysis:"受器重。",suggestion:"快速适应。"},
+        {text:"特批职级",score:100,analysis:"高度认可。",suggestion:"不负所托。"}
+      ]},
+      { text:"资源倾斜", dimension:"资源倾斜", options:[
+        {text:"资源受限",score:25,analysis:"资源不足。",suggestion:"高效利用。"},
+        {text:"标准配置",score:50,analysis:"正常水平。",suggestion:"逐渐申请。"},
+        {text:"优先获取",score:75,analysis:"优先级高。",suggestion:"成果回报。"},
+        {text:"特批资源",score:100,analysis:"特殊照顾。",suggestion:"谨慎使用。"}
+      ]},
+      { text:"信息权限", dimension:"信息权限", options:[
+        {text:"信息滞后",score:25,analysis:"末端。",suggestion:"主动获取。"},
+        {text:"同步知悉",score:50,analysis:"及时。",suggestion:"保证执行。"},
+        {text:"提前获知",score:75,analysis:"被信任。",suggestion:"注意保密。"},
+        {text:"参与决策",score:100,analysis:"核心决策。",suggestion:"发挥思考。"}
+      ]},
+      { text:"危机处理", dimension:"危机处理", options:[
+        {text:"被牺牲",score:25,analysis:"风险高。",suggestion:"增强不可替代性。"},
+        {text:"中立",score:50,analysis:"安全但边缘。",suggestion:"提升存在感。"},
+        {text:"公开维护",score:75,analysis:"获得保护。",suggestion:"维持关系。"},
+        {text:"私下保护",score:100,analysis:"深度信任。",suggestion:"保持低调。"}
+      ]},
+      { text:"绩效情况", dimension:"绩效情况", options:[
+        {text:"低绩效",score:20,analysis:"边缘化风险。",suggestion:"寻找突破。"},
+        {text:"绩效下滑",score:40,analysis:"不稳定。",suggestion:"快速调整。"},
+        {text:"中等",score:60,analysis:"稳定。",suggestion:"寻找亮点。"},
+        {text:"绩效提升",score:80,analysis:"上升。",suggestion:"保持扩大。"},
+        {text:"高绩效",score:100,analysis:"核心背书。",suggestion:"保持稳定。"}
+      ]},
+      { text:"RSU/股权", dimension:"股权激励", options:[
+        {text:"未获得",score:20,analysis:"不在核心。",suggestion:"争取机会。"},
+        {text:"仅入职",score:40,analysis:"缺乏持续。",suggestion:"保持业绩。"},
+        {text:"低于同级",score:60,analysis:"认可有限。",suggestion:"提出诉求。"},
+        {text:"高于同级",score:80,analysis:"较高价值。",suggestion:"保持地位。"},
+        {text:"稳定可观",score:100,analysis:"激励核心。",suggestion:"稳定发挥。"}
+      ]}
     ];
 
-    // 渲染所有问题
-    function renderAllQuestions() {
-      const container = document.getElementById('questions-container');
-      container.innerHTML = '';
+    // 渲染题目
+    function renderAllQuestions(){
+      const c=document.getElementById("questions-container");
+      c.innerHTML="";
       
-      // 确保遍历所有9个问题
-      questions.forEach((q, index) => {
-        const card = document.createElement('div');
-        card.className = 'bg-white rounded-xl shadow-md p-4';
-        
-        let opts = '';
-        q.options.forEach((opt, i) => {
-          opts += `<div class=\"option-card\" data-q=\"${index}\" data-option-index=\"${i}\" data-score=\"${opt.score}\">${opt.text}</div>`;
+      questions.forEach((q,i)=>{
+        let opts="";
+        q.options.forEach((opt,j)=>{
+          opts+=`<div class="option-card" data-q="${i}" data-index="${j}">${opt.text}</div>`;
         });
-        
-        card.innerHTML = `
-          <h3 class='text-lg font-semibold mb-3'>${index+1}. ${q.text}</h3>
-          <div class='space-y-2'>${opts}</div>
-        `;
-        
-        container.appendChild(card);
+        c.innerHTML+=`<div class="bg-white rounded-xl shadow p-4">
+          <h3 class="font-semibold mb-3">${i+1}. ${q.text}</h3>
+          <div class="space-y-2">${opts}</div>
+        </div>`;
       });
     }
 
-    // 更新进度
-    function updateProgress() {
-      const total = questions.length;
-      const answered = document.querySelectorAll('.option-card.selected').length;
-      document.getElementById('completed-count').innerText = answered;
-      const percent = Math.round((answered/total)*100);
-      document.getElementById('progress-text').innerText = percent+"%";
-      document.getElementById('progress-bar').style.width = percent+"%";
-      document.getElementById('submit-btn').disabled = answered < total;
+    function updateProgress(){
+      const total=questions.length;
+      const answered=document.querySelectorAll('.option-card.selected').length;
+      document.getElementById('completed-count').innerText=answered;
+      const percent=Math.round(answered/total*100);
+      document.getElementById('progress-text').innerText=percent+"%";
+      document.getElementById('progress-bar').style.width=percent+"%";
+      document.getElementById('submit-btn').disabled=answered<total;
     }
 
-    // 计算结果
-    function calculateResult() {
-      let results = [];
-      let sum = 0;
-      let count = 0;
+    function calculateResult(){
+      let results=[];
+      let sum=0;
       
-      questions.forEach((q,i) => {
-        const sel = document.querySelector(`.option-card.selected[data-q='${i}']`);
+      questions.forEach((q,i)=>{
+        const sel=document.querySelector(`.option-card.selected[data-q="${i}"]`);
         if(sel){
-          const optionIndex = parseInt(sel.dataset.optionIndex);
-          const selectedOption = q.options[optionIndex];
-          results.push({
-            dimension: q.dimension,
-            score: selectedOption.score,
-            analysis: selectedOption.analysis,
-            suggestion: selectedOption.suggestion
-          });
-          sum += selectedOption.score;
-          count++;
+          const opt=q.options[parseInt(sel.dataset.index)];
+          results.push({...opt,dimension:q.dimension});
+          sum+=opt.score;
         }
       });
       
-      const avg = count > 0 ? (sum / count) : 0;
-      showResult(results, avg);
+      const avg=sum/questions.length;
+      showResult(results,avg);
     }
 
-    // 获取等级文本
-    function getLevelText(score) {
-      if(score > 60) return "心腹嫡系：参与重大决策，掌握核心资源，领导心腹";
-      if(score >= 50) return "核心圈层：负责关键业务，资源优先配置，领导核心圈层";
-      if(score >= 40) return "外围人员：常规工作关系，无特殊关照";
-      return "风险人员：可能被边缘化或优化";
+    function getLevel(score){
+      if(score>60)return"心腹嫡系：参与重大决策，掌握核心资源";
+      if(score>=50)return"核心圈层：负责关键业务，资源优先配置";
+      if(score>=40)return"外围人员：常规关系，无特殊关照";
+      return"风险人员：可能被边缘化或优化";
     }
 
-    // 显示结果
-    function showResult(dimensions, avg){
+    function showResult(dim,avg){
       document.getElementById('quiz-page').classList.add('hidden');
-      const res = document.getElementById('result-page');
-      res.classList.remove('hidden');
-      
-      // 更新综合得分
-      document.getElementById('score-text').innerText = avg.toFixed(1);
-      document.getElementById('level-text').innerText = getLevelText(avg);
+      document.getElementById('result-page').classList.remove('hidden');
+      document.getElementById('score-text').innerText=avg.toFixed(1);
+      document.getElementById('level-text').innerText=getLevel(avg);
 
       // 绘制雷达图
-      const ctx = document.getElementById('radarChart');
-      
-      // 销毁已存在的图表
-      if (window.radarChartInstance) {
-        window.radarChartInstance.destroy();
-      }
-      
-      // 检测屏幕宽度，调整图表配置
-      const isMobile = window.innerWidth < 640;
-      
-      window.radarChartInstance = new Chart(ctx, {
-        type: 'radar',
-        data: {
-          labels: dimensions.map(d => d.dimension),
-          datasets: [{
-            label: '得分',
-            data: dimensions.map(d => d.score),
-            backgroundColor: 'rgba(59,130,246,0.2)',
-            borderColor: '#3b82f6',
-            pointBackgroundColor: '#3b82f6',
-            pointRadius: isMobile ? 3 : 5,
-            pointHoverRadius: isMobile ? 5 : 7
+      const ctx=document.getElementById('radarChart');
+      if(radarChartInstance)radarChartInstance.destroy();
+      radarChartInstance=new Chart(ctx,{
+        type:'radar',
+        data:{
+          labels:dim.map(d=>d.dimension),
+          datasets:[{
+            label:'得分',
+            data:dim.map(d=>d.score),
+            backgroundColor:'rgba(59,130,246,0.2)',
+            borderColor:'#3b82f6',
+            pointBackgroundColor:'#3b82f6'
           }]
         },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          animation: false,
-          scales: {
-            r: {
-              beginAtZero: true,
-              max: 100,
-              ticks: {
-                display: !isMobile,
-                stepSize: 20
-              },
-              pointLabels: {
-                font: {
-                  size: isMobile ? 10 : 12
-                },
-                padding: isMobile ? 5 : 10
-              }
-            }
-          },
-          plugins: {
-            legend: {
-              display: !isMobile
+        options:{
+          scales:{
+            r:{
+              min:0,
+              max:100
             }
           }
         }
       });
 
       // 渲染维度详情
-      const dimContainer = document.getElementById('dimensions-container');
-      dimContainer.innerHTML = '';
-      dimensions.forEach(dim => {
-        const card = document.createElement('div');
-        card.className = 'dimension-card';
-        card.innerHTML = `
-          <div class="flex justify-between items-start mb-2">
-            <h4 class="font-semibold">${dim.dimension}</h4>
-            <span class="bg-primary/10 text-primary px-2 py-1 rounded-full text-sm font-medium">${dim.score}分</span>
+      const dc=document.getElementById('dimensions-container');
+      dc.innerHTML="";
+      
+      dim.forEach(d=>{
+        dc.innerHTML+=`<div class="dimension-card">
+          <div class="flex justify-between">
+            <h4>${d.dimension}</h4>
+            <span>${d.score}分</span>
           </div>
-          <div class="text-sm text-gray-600 mb-2">${dim.analysis}</div>
-          <div class="text-sm text-green-600"><i class="fa fa-lightbulb-o mr-1"></i>${dim.suggestion}</div>
-        `;
-        dimContainer.appendChild(card);
+          <div class="text-sm text-gray-600">${d.analysis}</div>
+          <div class="text-sm text-green-600">
+            <i class="fa fa-lightbulb-o"></i> ${d.suggestion}
+          </div>
+        </div>`;
       });
     }
 
-    // 事件监听
-    document.addEventListener('DOMContentLoaded', () => {
-      // 渲染所有问题
+    document.addEventListener("DOMContentLoaded",()=>{
       renderAllQuestions();
-      
+
       // 选项点击事件
-      document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('option-card')) {
-          const qIndex = e.target.dataset.q;
-          // 移除同题目的其他选中状态
-          document.querySelectorAll(`.option-card[data-q='${qIndex}']`).forEach(el => {
-            el.classList.remove('selected');
+      document.addEventListener("click",e=>{
+        if(e.target.classList.contains("option-card")){
+          const q=e.target.dataset.q;
+          document.querySelectorAll(`.option-card[data-q="${q}"]`).forEach(el=>{
+            el.classList.remove("selected");
           });
-          // 添加当前选中状态
-          e.target.classList.add('selected');
-          // 更新进度
+          e.target.classList.add("selected");
           updateProgress();
         }
       });
+
+      // 提交按钮
+      document.getElementById("submit-btn").addEventListener("click",calculateResult);
       
-      // 提交按钮点击事件
-      document.getElementById('submit-btn').addEventListener('click', calculateResult);
-      
-      // 返回按钮点击事件
-      document.getElementById('back-btn').addEventListener('click', () => {
-        document.getElementById('result-page').classList.add('hidden');
-        document.getElementById('quiz-page').classList.remove('hidden');
+      // 返回按钮
+      document.getElementById("back-btn").addEventListener("click",()=>{
+        document.getElementById("result-page").classList.add("hidden");
+        document.getElementById("quiz-page").classList.remove("hidden");
+        renderAllQuestions();
+        updateProgress();
       });
-      
-      // 分享测试结果按钮点击事件
-      document.getElementById('share-result-btn').addEventListener('click', () => {
-        const modal = document.getElementById('screenshot-modal');
-        const screenshotContainer = document.getElementById('screenshot-container');
+
+      // 分享按钮功能 - 修复版
+      document.getElementById("share-result-btn").addEventListener("click",()=>{
+        const url = "https://dachangzhishiku.github.io/";
+        const button = document.getElementById("share-result-btn");
+        const originalText = button.innerHTML;
         
-        // 隐藏可能影响截图的元素
-        const qrcode = document.getElementById('qrcode-container');
-        qrcode.style.display = 'none';
-        
-        // 截取综合得分卡片
-        html2canvas(document.getElementById('score-card'), {
-          useCORS: true,  // 允许跨域图片
-          logging: false  // 禁用日志
-        }).then(canvas => {
-          // 恢复隐藏的元素
-          qrcode.style.display = 'block';
+        // 尝试复制到剪贴板
+        navigator.clipboard.writeText(url).then(() => {
+          // 复制成功，更新按钮文本
+          button.innerHTML = '<i class="fa fa-check mr-2"></i>网址已复制，去分享吧';
           
-          // 保存图片数据
-          screenshotDataUrl = canvas.toDataURL('image/png');
-          
-          // 显示截图
-          screenshotContainer.innerHTML = '';
-          screenshotContainer.appendChild(canvas);
-          modal.classList.remove('hidden');
-        }).catch(error => {
-          console.error('截图生成失败:', error);
-          alert('截图生成失败，请重试');
-          qrcode.style.display = 'block';
+          // 2秒后恢复原文本
+          setTimeout(() => {
+            button.innerHTML = originalText;
+          }, 2000);
+        }).catch(err => {
+          // 复制失败，显示错误信息
+          console.error('无法复制文本: ', err);
+          alert('复制失败，请手动复制网址：' + url);
         });
       });
-      
-      // 下载图片按钮点击事件
-      document.getElementById('download-screenshot').addEventListener('click', () => {
-        if (screenshotDataUrl) {
-          // 创建一个临时链接并触发下载
-          const link = document.createElement('a');
-          link.href = screenshotDataUrl;
-          link.download = '嫡系计算器测试结果.png';
-          
-          // 添加到文档并模拟点击
-          document.body.appendChild(link);
-          link.click();
-          
-          // 清理
-          setTimeout(() => {
-            document.body.removeChild(link);
-          }, 100);
-        } else {
-          alert('图片数据未准备好，请稍后再试');
-        }
-      });
-      
-      // 关闭模态框
-      document.getElementById('close-modal').addEventListener('click', () => {
-        document.getElementById('screenshot-modal').classList.add('hidden');
-      });
-      
-      document.getElementById('close-modal-btn').addEventListener('click', () => {
-        document.getElementById('screenshot-modal').classList.add('hidden');
-      });
-      
-      // 分享计算器
-      document.getElementById('share-calculator-btn').addEventListener('click', () => {
-        alert('已复制计算器链接到剪贴板（模拟）');
+
+      // 下载图片功能
+      document.getElementById("download-screenshot").addEventListener("click",()=>{
+        const resultPage = document.getElementById("result-page");
+        
+        setTimeout(() => {
+          html2canvas(resultPage, {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            height: resultPage.scrollHeight,
+            width: resultPage.scrollWidth,
+            windowWidth: resultPage.scrollWidth,
+            windowHeight: resultPage.scrollHeight
+          }).then(canvas => {
+            const a = document.createElement("a");
+            a.href = canvas.toDataURL("image/png");
+            a.download = "嫡系指数测试结果.png";
+            a.click();
+          }).catch(err => {
+            console.error('截图失败: ', err);
+            alert("截图失败，请重试");
+          });
+        }, 1000);
       });
     });
   </script>
+
 </body></html>
