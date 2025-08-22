@@ -140,7 +140,7 @@
     <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/812d77df9eef40959316a03291598db6~tplv-a9rns2rl98-image.image?rcl=20250822102816B11F6EB0A81697AF4CE8&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1756434500&amp;x-signature=XJNHe4hCyWNGfeJP4OJTsvJNxyc%3D" alt="微信群二维码" class="mx-auto w-40 h-40 rounded-lg shadow">
   </div>
 
-  <!-- 截图模态框（更新为包含新二维码） -->
+  <!-- 截图模态框 -->
   <div id="screenshot-modal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
     <div class="bg-white rounded-xl p-4 max-w-3xl w-full max-h-[90vh] overflow-auto">
       <div class="flex justify-between items-center mb-4">
@@ -158,16 +158,19 @@
       </div>
       
       <div class="flex justify-center gap-3">
-        <a id="download-screenshot" href="#" download="嫡系计算器测试结果.png" class="btn-primary bg-green-600 hover:bg-green-700">
+        <button id="download-screenshot" class="btn-primary bg-green-600 hover:bg-green-700">
           <i class="fa fa-download mr-2"></i>下载图片
-        </a>
+        </button>
         <button id="close-modal-btn" class="btn-primary bg-gray-600 hover:bg-gray-700">关闭</button>
       </div>
     </div>
   </div>
 
   <script>
-    // 问题数据
+    // 存储截图数据的变量
+    let screenshotDataUrl = null;
+    
+    // 完整的9个问题数据
     const questions = [
       { 
         text: "组织关系", 
@@ -267,18 +270,26 @@
       }
     ];
 
-    // 渲染问题
+    // 渲染所有问题
     function renderAllQuestions() {
       const container = document.getElementById('questions-container');
       container.innerHTML = '';
+      
+      // 确保遍历所有9个问题
       questions.forEach((q, index) => {
         const card = document.createElement('div');
         card.className = 'bg-white rounded-xl shadow-md p-4';
+        
         let opts = '';
         q.options.forEach((opt, i) => {
           opts += `<div class=\"option-card\" data-q=\"${index}\" data-option-index=\"${i}\" data-score=\"${opt.score}\">${opt.text}</div>`;
         });
-        card.innerHTML = `<h3 class='text-lg font-semibold mb-3'>${index+1}. ${q.text}</h3><div class='space-y-2'>${opts}</div>`;
+        
+        card.innerHTML = `
+          <h3 class='text-lg font-semibold mb-3'>${index+1}. ${q.text}</h3>
+          <div class='space-y-2'>${opts}</div>
+        `;
+        
         container.appendChild(card);
       });
     }
@@ -386,13 +397,6 @@
           plugins: {
             legend: {
               display: !isMobile
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  return `${context.dataset.label}: ${context.raw}`;
-                }
-              }
             }
           }
         }
@@ -418,7 +422,7 @@
 
     // 事件监听
     document.addEventListener('DOMContentLoaded', () => {
-      // 渲染问题
+      // 渲染所有问题
       renderAllQuestions();
       
       // 选项点击事件
@@ -445,7 +449,7 @@
         document.getElementById('quiz-page').classList.remove('hidden');
       });
       
-      // 分享测试结果按钮点击事件（修改为生成综合得分卡片截图）
+      // 分享测试结果按钮点击事件
       document.getElementById('share-result-btn').addEventListener('click', () => {
         const modal = document.getElementById('screenshot-modal');
         const screenshotContainer = document.getElementById('screenshot-container');
@@ -455,15 +459,46 @@
         qrcode.style.display = 'none';
         
         // 截取综合得分卡片
-        html2canvas(document.getElementById('score-card')).then(canvas => {
+        html2canvas(document.getElementById('score-card'), {
+          useCORS: true,  // 允许跨域图片
+          logging: false  // 禁用日志
+        }).then(canvas => {
           // 恢复隐藏的元素
           qrcode.style.display = 'block';
           
+          // 保存图片数据
+          screenshotDataUrl = canvas.toDataURL('image/png');
+          
+          // 显示截图
           screenshotContainer.innerHTML = '';
           screenshotContainer.appendChild(canvas);
-          document.getElementById('download-screenshot').href = canvas.toDataURL('image/png');
           modal.classList.remove('hidden');
+        }).catch(error => {
+          console.error('截图生成失败:', error);
+          alert('截图生成失败，请重试');
+          qrcode.style.display = 'block';
         });
+      });
+      
+      // 下载图片按钮点击事件
+      document.getElementById('download-screenshot').addEventListener('click', () => {
+        if (screenshotDataUrl) {
+          // 创建一个临时链接并触发下载
+          const link = document.createElement('a');
+          link.href = screenshotDataUrl;
+          link.download = '嫡系计算器测试结果.png';
+          
+          // 添加到文档并模拟点击
+          document.body.appendChild(link);
+          link.click();
+          
+          // 清理
+          setTimeout(() => {
+            document.body.removeChild(link);
+          }, 100);
+        } else {
+          alert('图片数据未准备好，请稍后再试');
+        }
       });
       
       // 关闭模态框
