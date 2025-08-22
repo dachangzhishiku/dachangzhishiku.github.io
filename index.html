@@ -456,7 +456,7 @@ document.getElementById('share-btn').addEventListener('click', async function() 
       // 4. 绘制新二维码到最终 canvas （这里用在线示例地址，你替换成实际的二维码图片地址）
       const qrCodeImage = new Image();
       // 替换成你实际的二维码图片路径，本地的话注意路径正确，也可以用在线地址
-      qrCodeImage.src = 'C:\二维码\1.png'; 
+      qrCodeImage.src = 'https://img.example.com/new-qr-code.png'; 
       qrCodeImage.onload = function() {
         // 计算二维码位置，底部居中
         const qrX = (contentWidth - qrCodeWidth) / 2;
