@@ -591,7 +591,11 @@
       // 显示目标页面
       document.getElementById(pageId).classList.remove('hidden');
     }
-
+    
+      // 强制滚动到页面顶部
+      window.scrollTo(0, 0);
+    }
+    
     // 渲染嫡系计算器问题
     function renderCliqueQuestions() {
       const container = document.getElementById('clique-questions-container');
