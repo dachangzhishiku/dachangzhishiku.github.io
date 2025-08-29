@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>嫡系计算器2.0</title>
+  <title>职场计算器工具集</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
@@ -13,8 +13,9 @@
       theme: {
         extend: {
           colors: {
-            primary: '#3b82f6', // 蓝色
-            secondary: '#10b981', // 绿色
+            primary: '#3b82f6', // 蓝色 - 嫡系计算器
+            secondary: '#10b981', // 绿色 - 跳槽计算器
+            tertiary: '#f97316', // 橙色 - 牛马指数计算器
             warning: '#f59e0b', // 黄色
             neutral: '#1f2937',
             danger: '#ef4444',
@@ -33,20 +34,74 @@
       .option-card {@apply border rounded-xl p-4 cursor-pointer transition-all duration-200 bg-white hover:shadow-md;}
       .option-card.selected {@apply border-2 border-primary bg-blue-50;}
       .dimension-card {@apply bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden relative;}
-      /* 按行定义指示条颜色 */
       .dimension-card.row-blue::before {@apply absolute top-0 left-0 w-1 h-full bg-primary transition-all duration-300; content: '';}
       .dimension-card.row-yellow::before {@apply absolute top-0 left-0 w-1 h-full bg-warning transition-all duration-300; content: '';}
       .dimension-card.row-green::before {@apply absolute top-0 left-0 w-1 h-full bg-secondary transition-all duration-300; content: '';}
+      .dimension-card.row-orange::before {@apply absolute top-0 left-0 w-1 h-full bg-tertiary transition-all duration-300; content: '';}
       .social-btn {@apply w-full text-white text-sm font-medium py-2 px-4 rounded-lg shadow hover:opacity-90 transition;}
       .chart-container {@apply relative w-full overflow-hidden;}
       .qrcode-pair {@apply flex flex-col sm:flex-row justify-center items-center gap-6;}
       .qrcode-item {@apply text-center mx-auto;}
+      .calculator-card {@apply bg-white rounded-2xl shadow-lg p-6 cursor-pointer transition-all duration-300 hover:shadow-xl transform hover:-translate-y-1 border border-gray-100;}
     }
   </style>
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-purple-50 font-sans text-neutral">
-  <!-- 测试页面 -->
-  <div id="quiz-page" class="min-h-screen p-4">
+<body class="bg-gradient-to-br from-blue-50 to-purple-50 font-sans text-neutral min-h-screen">
+  <!-- 首页选择页面 -->
+  <div id="home-page" class="min-h-screen p-4 flex flex-col items-center justify-center">
+    <div class="max-w-3xl w-full mx-auto text-center mb-3">
+      <h1 class="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent mb-2">职场计算器工具集</h1>
+      <p class="text-gray-600 text-lg">趣味职场评估工具，助您了解职业现状</p>
+      <p class="text-gray-400 text-lg">声明：本工具集所有内容仅供娱乐和参考之用，不构成任何形式的建议</p>
+    </div>
+
+<!-- 移除了 bg-white、rounded-xl、shadow-md 这些白色框相关样式 -->
+    <div class="mt-1 max-w-md w-full mx-auto p-0">
+      <a href="https://www.xiaohongshu.com/user/profile/660ea153000000000600c7ba" target="_blank" class="social-btn bg-red-500 block text-center">
+        ❤️ 欢迎关注我的小红书，持续更新职场干货
+      </a>
+    </div>
+    
+    <div class="mt-6 max-w-5xl w-full mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+      <!-- 嫡系计算器卡片 -->
+      <div class="calculator-card" id="clique-calculator-card">
+        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fa fa-users text-2xl text-primary"></i>
+        </div>
+        <h2 class="text-2xl font-bold mb-3 text-gray-800">嫡系计算器</h2>
+        <p class="text-gray-600 mb-6">通过9个维度测试，评估你在组织中的嫡系程度，了解自己在团队中的位置。</p>
+        <button class="btn-primary w-full" id="go-clique-btn">开始测试</button>
+      </div>
+      
+      <!-- 跳槽计算器卡片 -->
+      <div class="calculator-card" id="job-hopping-calculator-card">
+        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fa fa-exchange text-2xl text-secondary"></i>
+        </div>
+        <h2 class="text-2xl font-bold mb-3 text-gray-800">跳槽计算器</h2>
+        <p class="text-gray-600 mb-6">通过8个维度分析，评估当前是否是适合跳槽的时机，是否有跳槽的紧迫性。</p>
+        <button class="btn-primary bg-secondary hover:bg-secondary/90 w-full" id="go-hopping-btn">开始评估</button>
+      </div>
+      
+
+
+
+      <!-- 新增：更多计算器正在筹备中卡片 -->
+      <div class="calculator-card opacity-80 cursor-default hover:translate-y-0 hover:shadow-lg" id="more-calculators-card">
+        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fa fa-cog fa-spin text-2xl text-gray-500"></i>
+        </div>
+        <h2 class="text-2xl font-bold mb-3 text-gray-800">更多计算器</h2>
+        <p class="text-gray-600 mb-6">正在筹备中，敬请期待更多实用的职场评估工具...</p>
+        <div class="w-full py-3 px-6 rounded-lg bg-gray-100 text-gray-500 font-medium text-center cursor-not-allowed">
+          即将上线
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 嫡系计算器页面 -->
+  <div id="clique-page" class="min-h-screen p-4 hidden">
     <!-- 顶部社交链接 -->
     <div class="flex flex-col items-center space-y-2 p-4">
       <a href="https://www.xiaohongshu.com/user/profile/660ea153000000000600c7ba" target="_blank" class="social-btn bg-red-500">
@@ -55,35 +110,35 @@
     </div>
 
     <div class="text-center max-w-md mx-auto mb-6">
-      <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent mb-4">嫡系计算器2.0</h1>
+      <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent mb-4">嫡系计算器</h1>
       <p class="text-gray-600">通过9个维度测试，评估你在组织中的嫡系程度</p>
     </div>
     <div class="max-w-2xl mx-auto">
       <div class="mb-6">
         <div class="flex justify-between text-sm text-gray-500 mb-2">
-          <span>已完成 <span id="completed-count">0</span>/9 题</span>
-          <span id="progress-text">0%</span>
+          <span>已完成 <span id="clique-completed-count">0</span>/9 题</span>
+          <span id="clique-progress-text">0%</span>
         </div>
         <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
-          <div id="progress-bar" class="h-full bg-primary transition-all duration-500 ease-out" style="width:0%"></div>
+          <div id="clique-progress-bar" class="h-full bg-primary transition-all duration-500 ease-out" style="width:0%"></div>
         </div>
       </div>
       <h2 class="text-xl font-bold mb-6 text-center">请回答以下所有问题</h2>
-      <div id="questions-container" class="space-y-4 mb-8"></div>
+      <div id="clique-questions-container" class="space-y-4 mb-8"></div>
       <div class="flex justify-center">
-        <button id="submit-btn" class="btn-primary" disabled="">提交答案</button>
+        <button id="clique-submit-btn" class="btn-primary" disabled="">提交答案</button>
       </div>
     </div>
   </div>
 
-  <!-- 结果页面 -->
-  <div id="result-page" class="min-h-screen p-4 hidden flex flex-col items-center">
+  <!-- 嫡系计算器结果页面 -->
+  <div id="clique-result-page" class="min-h-screen p-4 hidden flex flex-col items-center">
     <div class="max-w-4xl w-full space-y-6">
       <!-- 嫡系程度得分 -->
-      <div class="bg-white rounded-2xl shadow-md p-5 text-center" id="score-card">
+      <div class="bg-white rounded-2xl shadow-md p-5 text-center" id="clique-score-card">
         <h2 class="text-xl font-bold mb-3">嫡系程度得分</h2>
-        <div id="score-text" class="text-4xl font-extrabold text-primary mb-3"></div>
-        <div id="level-text" class="text-base font-medium text-gray-600 mb-3"></div>
+        <div id="clique-score-text" class="text-4xl font-extrabold text-primary mb-3"></div>
+        <div id="clique-level-text" class="text-base font-medium text-gray-600 mb-3"></div>
         <div class="text-left text-xs text-gray-500 border-t pt-3 mt-3">
           <h3 class="font-semibold mb-2">嫡系等级判定说明</h3>
           <table class="w-full border-collapse text-xs">
@@ -119,30 +174,31 @@
       </div>
 
       <!-- 雷达图 -->
-      <div class="bg-white rounded-2xl shadow-md p-5" id="radar-card">
+      <div class="bg-white rounded-2xl shadow-md p-5" id="clique-radar-card">
         <h3 class="text-lg font-bold mb-3 text-center">维度雷达图</h3>
         <div class="flex justify-center">
-          <div class="chart-container mx-auto" style="height: 300px; max-width: 400px;">
-            <canvas id="radarChart"></canvas>
+          <div class="chart-container ml-16" style="height: 300px; max-width: 400px; margin-left: 5">
+            <canvas id="clique-radarChart"></canvas>
           </div>
         </div>
       </div>
 
       <!-- 维度详情 -->
-      <div class="bg-white rounded-2xl shadow-md p-5" id="dimensions-section">
+      <div class="bg-white rounded-2xl shadow-md p-5" id="clique-dimensions-section">
         <h3 class="text-lg font-bold mb-4 text-center">维度详情</h3>
-        <div id="dimensions-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        <div id="clique-dimensions-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
       </div>
 
       <!-- 操作按钮 -->
       <div class="text-center flex flex-col sm:flex-row justify-center gap-3">
-        <button id="share-result-btn" class="btn-primary bg-blue-600 hover:bg-blue-700"><i class="fa fa-share-alt mr-2"></i>分享计算器</button>
-        <button id="download-screenshot" class="btn-primary bg-green-600 hover:bg-green-700"><i class="fa fa-download mr-2"></i>下载图片</button>
-        <button id="back-btn" class="btn-primary bg-gray-600 hover:bg-gray-700"><i class="fa fa-arrow-left mr-2"></i>返回</button>
+        <button id="clique-share-result-btn" class="btn-primary bg-blue-600 hover:bg-blue-700"><i class="fa fa-share-alt mr-2"></i>分享计算器</button>
+        <button id="clique-download-screenshot" class="btn-primary bg-green-600 hover:bg-green-700"><i class="fa fa-download mr-2"></i>下载图片</button>
+        <button id="clique-back-btn" class="btn-primary bg-gray-600 hover:bg-gray-700"><i class="fa fa-arrow-left mr-2"></i>返回</button>
+        <button id="clique-home-btn" class="btn-primary bg-gray-600 hover:bg-gray-700"><i class="fa fa-home mr-2"></i>返回首页</button>
       </div>
 
       <!-- 底部两个并排二维码 -->
-      <div class="max-w-3xl mx-auto text-center mt-6 p-6 bg-white rounded-2xl shadow-md" id="qrcode-container">
+      <div class="max-w-3xl mx-auto text-center mt-6 p-6 bg-white rounded-2xl shadow-md" id="clique-qrcode-container">
         <div class="qrcode-pair">
           <!-- 第一个二维码 -->
           <div class="qrcode-item">
@@ -160,10 +216,367 @@
     </div>
   </div>
 
-  <script>
-    let radarChartInstance = null;
+  <!-- 跳槽计算器页面 -->
+  <div id="hopping-page" class="min-h-screen p-4 hidden">
+    <!-- 顶部社交链接 -->
+    <div class="flex flex-col items-center space-y-2 p-4">
+      <a href="https://www.xiaohongshu.com/user/profile/660ea153000000000600c7ba" target="_blank" class="social-btn bg-red-500">
+        ❤️ 欢迎关注我的小红书，持续更新职场干货
+      </a>
+    </div>
 
-    const questions = [
+    <div class="text-center max-w-md mx-auto mb-6">
+      <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-secondary to-accent mb-4">跳槽计算器</h1>
+      <p class="text-gray-600">通过8个维度分析，评估你当前是否适合跳槽</p>
+    </div>
+    <div class="max-w-2xl mx-auto">
+      <div class="mb-6">
+        <div class="flex justify-between text-sm text-gray-500 mb-2">
+          <span>已完成 <span id="hopping-completed-count">0</span>/8 题</span>
+          <span id="hopping-progress-text">0%</span>
+        </div>
+        <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div id="hopping-progress-bar" class="h-full bg-secondary transition-all duration-500 ease-out" style="width:0%"></div>
+        </div>
+      </div>
+      <h2 class="text-xl font-bold mb-6 text-center">请回答以下所有问题</h2>
+      <div id="hopping-questions-container" class="space-y-4 mb-8"></div>
+      <div class="flex justify-center">
+        <button id="hopping-submit-btn" class="btn-primary bg-secondary hover:bg-secondary/90" disabled="">提交答案</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 跳槽计算器结果页面 -->
+  <div id="hopping-result-page" class="min-h-screen p-4 hidden flex flex-col items-center">
+    <div class="max-w-4xl w-full space-y-6">
+      <!-- 跳槽紧迫度得分 -->
+      <div class="bg-white rounded-2xl shadow-md p-5 text-center" id="hopping-score-card">
+        <h2 class="text-xl font-bold mb-3">跳槽紧迫度得分</h2>
+        <div id="hopping-score-text" class="text-4xl font-extrabold text-secondary mb-3"></div>
+        <div id="hopping-level-text" class="text-base font-medium text-gray-600 mb-3"></div>
+        <div class="text-left text-xs text-gray-500 border-t pt-3 mt-3">
+          <h3 class="font-semibold mb-2">跳槽建议说明</h3>
+          <table class="w-full border-collapse text-xs">
+            <tbody>
+              <tr class="bg-gray-100">
+                <th class="p-2 border">总分范围</th>
+                <th class="p-2 border">跳槽建议</th>
+                <th class="p-2 border">行动指南</th>
+              </tr>
+              <tr>
+                <td class="p-2 border">&gt;70</td>
+                <td class="p-2 border">强烈建议跳槽</td>
+                <td class="p-2 border">当前环境严重制约发展，积极寻找新机会</td>
+              </tr>
+              <tr>
+                <td class="p-2 border">50-70</td>
+                <td class="p-2 border">可以考虑跳槽</td>
+                <td class="p-2 border">现有发展存在瓶颈，可选择性寻找机会</td>
+              </tr>
+              <tr>
+                <td class="p-2 border">30-50</td>
+                <td class="p-2 border">谨慎考虑跳槽</td>
+                <td class="p-2 border">现有环境有不足，但仍有发展空间</td>
+              </tr>
+              <tr>
+                <td class="p-2 border">&lt;30</td>
+                <td class="p-2 border">不建议跳槽</td>
+                <td class="p-2 border">当前环境良好，应专注内部发展</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 雷达图 -->
+      <div class="bg-white rounded-2xl shadow-md p-5" id="hopping-radar-card">
+        <h3 class="text-lg font-bold mb-3 text-center">维度雷达图</h3>
+        <div class="flex justify-center">
+          <div class="chart-container ml-16" style="height: 300px; max-width: 400px;">
+            <canvas id="hopping-radarChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- 各维度跳槽紧迫度 -->
+      <div class="bg-white rounded-2xl shadow-md p-5" id="hopping-dimensions-section">
+        <h3 class="text-lg font-bold mb-4 text-center">维度详情</h3>
+        <div id="hopping-dimensions-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      </div>
+
+      <!-- 操作按钮 -->
+      <div class="text-center flex flex-col sm:flex-row justify-center gap-3">
+        <button id="hopping-share-result-btn" class="btn-primary bg-blue-600 hover:bg-blue-700"><i class="fa fa-share-alt mr-2"></i>分享计算器</button>
+        <button id="hopping-download-screenshot" class="btn-primary bg-green-600 hover:bg-green-700"><i class="fa fa-download mr-2"></i>下载图片</button>
+        <button id="hopping-back-btn" class="btn-primary bg-gray-600 hover:bg-gray-700"><i class="fa fa-arrow-left mr-2"></i>返回</button>
+        <button id="hopping-home-btn" class="btn-primary bg-gray-600 hover:bg-gray-700"><i class="fa fa-home mr-2"></i>返回首页</button>
+      </div>
+
+      <!-- 底部两个并排二维码 -->
+      <div class="max-w-3xl mx-auto text-center mt-6 p-6 bg-white rounded-2xl shadow-md" id="hopping-qrcode-container">
+        <div class="qrcode-pair">
+          <!-- 第一个二维码 -->
+          <div class="qrcode-item">
+            <p class="text-gray-700 mb-3 text-sm font-medium">快来测一测你的跳槽指数吧</p>
+            <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/6704675a2c9a4abb9d0f1bc0936a12b3~tplv-a9rns2rl98-image.image?rcl=202508221653301E3287D5F693A9DAF498&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1756457610&amp;x-signature=50JWZC9WMaFsKhb1tmaFht%2F9J1I%3D" alt="测试二维码" class="w-40 h-40 rounded-lg shadow border p-2 bg-gray-50 flex items-center justify-center">
+          </div>
+          
+          <!-- 第二个二维码 -->
+          <div class="qrcode-item">
+            <p class="text-gray-700 mb-3 text-sm font-medium">建了个群聊，每周掉落职场干货~</p>
+            <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/ffd08ae069d84e3cb7a2f7292a181a0a~tplv-a9rns2rl98-image.image?rcl=2025082216491508D12C99CF60573B10A5&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1756457356&amp;x-signature=hLch6F3Pyzdij9nCvHpqfD6cFno%3D" alt="微信群二维码" class="w-40 h-40 rounded-lg shadow border p-2 bg-white">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 牛马指数计算器页面 -->
+  <div id="cattle-page" class="min-h-screen p-4 hidden">
+    <!-- 顶部社交链接 -->
+    <div class="flex flex-col items-center space-y-2 p-4">
+      <a href="https://www.xiaohongshu.com/user/profile/660ea153000000000600c7ba" target="_blank" class="social-btn bg-red-500">
+        ❤️ 欢迎关注我的小红书，持续更新职场干货
+      </a>
+    </div>
+
+    <div class="text-center max-w-md mx-auto mb-6">
+      <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-tertiary to-accent mb-4">牛马指数计算器</h1>
+      <p class="text-gray-600">通过10个维度测评，计算你的职场牛马指数</p>
+    </div>
+    <div class="max-w-2xl mx-auto">
+      <div class="mb-6">
+        <div class="flex justify-between text-sm text-gray-500 mb-2">
+          <span>已完成 <span id="cattle-completed-count">0</span>/10 题</span>
+          <span id="cattle-progress-text">0%</span>
+        </div>
+        <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div id="cattle-progress-bar" class="h-full bg-tertiary transition-all duration-500 ease-out" style="width:0%"></div>
+        </div>
+      </div>
+      <h2 class="text-xl font-bold mb-6 text-center">请回答以下所有问题</h2>
+      <div id="cattle-questions-container" class="space-y-4 mb-8"></div>
+      <div class="flex justify-center">
+        <button id="cattle-submit-btn" class="btn-primary bg-tertiary hover:bg-tertiary/90" disabled="">提交答案</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 牛马指数计算器结果页面 -->
+  <div id="cattle-result-page" class="min-h-screen p-4 hidden flex flex-col items-center">
+    <div class="max-w-4xl w-full space-y-6">
+      <!-- 牛马指数得分 -->
+      <div class="bg-white rounded-2xl shadow-md p-5 text-center" id="cattle-score-card">
+        <h2 class="text-xl font-bold mb-3">牛马指数得分</h2>
+        <div id="cattle-score-text" class="text-4xl font-extrabold text-tertiary mb-3"></div>
+        <div id="cattle-level-text" class="text-base font-medium text-gray-600 mb-3"></div>
+        <div class="text-left text-xs text-gray-500 border-t pt-3 mt-3">
+          <h3 class="font-semibold mb-2">牛马等级鉴定说明</h3>
+          <table class="w-full border-collapse text-xs">
+            <tbody>
+              <tr class="bg-gray-100">
+                <th class="p-2 border">总分范围</th>
+                <th class="p-2 border">牛马等级</th>
+                <th class="p-2 border">职场特征</th>
+              </tr>
+              <tr>
+                <td class="p-2 border">0-39</td>
+                <td class="p-2 border">佛系摸鱼人</td>
+                <td class="p-2 border">职场哲学家，生活的智者，工作只是副业</td>
+              </tr>
+              <tr>
+                <td class="p-2 border">40-59</td>
+                <td class="p-2 border">牛马预备役</td>
+                <td class="p-2 border">在牛马边界反复试探，时而努力时而躺平</td>
+              </tr>
+              <tr>
+                <td class="p-2 border">60-79</td>
+                <td class="p-2 border">高级牛马</td>
+                <td class="p-2 border">公司中流砥柱，有一点卷</td>
+              </tr>
+              <tr>
+                <td class="p-2 border">80-100</td>
+                <td class="p-2 border">牛马之王</td>
+                <td class="p-2 border">鞠躬尽瘁，公司是我家</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 雷达图 -->
+      <div class="bg-white rounded-2xl shadow-md p-5" id="cattle-radar-card">
+        <h3 class="text-lg font-bold mb-3 text-center">维度雷达图</h3>
+        <div class="flex justify-center">
+          <div class="chart-container ml-16" style="height: 300px; max-width: 400px;">
+            <canvas id="cattle-radarChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- 维度详情 -->
+      <div class="bg-white rounded-2xl shadow-md p-5" id="cattle-dimensions-section">
+        <h3 class="text-lg font-bold mb-4 text-center">维度详情</h3>
+        <div id="cattle-dimensions-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      </div>
+
+      <!-- 操作按钮 -->
+      <div class="text-center flex flex-col sm:flex-row justify-center gap-3">
+        <button id="cattle-share-result-btn" class="btn-primary bg-blue-600 hover:bg-blue-700"><i class="fa fa-share-alt mr-2"></i>分享计算器</button>
+        <button id="cattle-download-screenshot" class="btn-primary bg-green-600 hover:bg-green-700"><i class="fa fa-download mr-2"></i>下载图片</button>
+        <button id="cattle-back-btn" class="btn-primary bg-gray-600 hover:bg-gray-700"><i class="fa fa-arrow-left mr-2"></i>返回</button>
+        <button id="cattle-home-btn" class="btn-primary bg-gray-600 hover:bg-gray-700"><i class="fa fa-home mr-2"></i>返回首页</button>
+      </div>
+
+      <!-- 底部两个并排二维码 -->
+      <div class="max-w-3xl mx-auto text-center mt-6 p-6 bg-white rounded-2xl shadow-md" id="cattle-qrcode-container">
+        <div class="qrcode-pair">
+          <!-- 第一个二维码 -->
+          <div class="qrcode-item">
+            <p class="text-gray-700 mb-3 text-sm font-medium">快来测一测你的牛马指数吧</p>
+            <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/6704675a2c9a4abb9d0f1bc0936a12b3~tplv-a9rns2rl98-image.image?rcl=202508221653301E3287D5F693A9DAF498&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1756457610&amp;x-signature=50JWZC9WMaFsKhb1tmaFht%2F9J1I%3D" alt="测试二维码" class="w-40 h-40 rounded-lg shadow border p-2 bg-gray-50 flex items-center justify-center">
+          </div>
+          
+          <!-- 第二个二维码 -->
+          <div class="qrcode-item">
+            <p class="text-gray-700 mb-3 text-sm font-medium">建了个群聊，每周掉落职场干货~</p>
+            <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/ffd08ae069d84e3cb7a2f7292a181a0a~tplv-a9rns2rl98-image.image?rcl=2025082216491508D12C99CF60573B10A5&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1756457356&amp;x-signature=hLch6F3Pyzdij9nCvHpqfD6cFno%3D" alt="微信群二维码" class="w-40 h-40 rounded-lg shadow border p-2 bg-white">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 躺平计算器页面 -->
+  <div id="lying-page" class="min-h-screen p-4 hidden">
+    <!-- 顶部社交链接 -->
+    <div class="flex flex-col items-center space-y-2 p-4">
+      <a href="https://www.xiaohongshu.com/user/profile/660ea153000000000600c7ba" target="_blank" class="social-btn bg-red-500">
+        ❤️ 欢迎关注我的小红书，持续更新职场干货
+      </a>
+    </div>
+
+    <div class="text-center max-w-md mx-auto mb-6">
+      <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-accent to-purple-700 mb-4">躺平计算器</h1>
+      <p class="text-gray-600">通过6个维度评估，分析你当前是否适合躺平</p>
+    </div>
+    <div class="max-w-2xl mx-auto">
+      <div class="mb-6">
+        <div class="flex justify-between text-sm text-gray-500 mb-2">
+          <span>已完成 <span id="lying-completed-count">0</span>/8 题</span>
+          <span id="lying-progress-text">0%</span>
+        </div>
+        <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div id="lying-progress-bar" class="h-full bg-accent transition-all duration-500 ease-out" style="width:0%"></div>
+        </div>
+      </div>
+      <h2 class="text-xl font-bold mb-6 text-center">请回答以下所有问题</h2>
+      <div id="lying-questions-container" class="space-y-4 mb-8"></div>
+      <div class="flex justify-center">
+        <button id="lying-submit-btn" class="btn-primary bg-accent hover:bg-accent/90" disabled="">提交答案</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 躺平计算器结果页面 -->
+  <div id="lying-result-page" class="min-h-screen p-4 hidden flex flex-col items-center">
+    <div class="max-w-4xl w-full space-y-6">
+      <!-- 躺平适宜度得分 -->
+      <div class="bg-white rounded-2xl shadow-md p-5 text-center" id="lying-score-card">
+        <h2 class="text-xl font-bold mb-3">躺平适宜度得分</h2>
+        <div id="lying-score-text" class="text-4xl font-extrabold text-accent mb-3"></div>
+        <div id="lying-level-text" class="text-base font-medium text-gray-600 mb-3"></div>
+        <div class="text-left text-xs text-gray-500 border-t pt-3 mt-3">
+          <h3 class="font-semibold mb-2">躺平等级说明</h3>
+          <table class="w-full border-collapse text-xs">
+            <tbody>
+              <tr class="bg-gray-100">
+                <th class="p-2 border">总分范围</th>
+                <th class="p-2 border">躺平等级</th>
+                <th class="p-2 border">职场状态</th>
+              </tr>
+              <tr>
+                <td class="p-2 border">&gt;80</td>
+                <td class="p-2 border">钻石躺</td>
+                <td class="p-2 border">上班≈带薪养生，躺平无风险</td>
+              </tr>
+              <tr>
+                <td class="p-2 border">61-80</td>
+                <td class="p-2 border">黄金躺</td>
+                <td class="p-2 border">选择性努力，躺平性价比高</td>
+              </tr>
+              <tr>
+                <td class="p-2 border">41-60</td>
+                <td class="p-2 border">陶瓷躺</td>
+                <td class="p-2 border">需伪装努力，躺平需谨慎</td>
+              </tr>
+              <tr>
+                <td class="p-2 border">21-40</td>
+                <td class="p-2 border">高危躺</td>
+                <td class="p-2 border">基础薄弱，躺平有风险</td>
+              </tr>
+              <tr>
+                <td class="p-2 border">&lt;21</td>
+                <td class="p-2 border">禁止躺平</td>
+                <td class="p-2 border">缺乏条件，躺平风险较高</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 雷达图 -->
+      <div class="bg-white rounded-2xl shadow-md p-5" id="lying-radar-card">
+        <h3 class="text-lg font-bold mb-3 text-center">维度雷达图</h3>
+        <div class="flex justify-center">
+          <div class="chart-container ml-16" style="height: 300px; max-width: 400px;">
+            <canvas id="lying-radarChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- 维度详情 -->
+      <div class="bg-white rounded-2xl shadow-md p-5" id="lying-dimensions-section">
+        <h3 class="text-lg font-bold mb-4 text-center">维度详情</h3>
+        <div id="lying-dimensions-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      </div>
+
+      <!-- 操作按钮 -->
+      <div class="text-center flex flex-col sm:flex-row justify-center gap-3">
+        <button id="lying-share-result-btn" class="btn-primary bg-blue-600 hover:bg-blue-700"><i class="fa fa-share-alt mr-2"></i>分享计算器</button>
+        <button id="lying-download-screenshot" class="btn-primary bg-green-600 hover:bg-green-700"><i class="fa fa-download mr-2"></i>下载图片</button>
+        <button id="lying-back-btn" class="btn-primary bg-gray-600 hover:bg-gray-700"><i class="fa fa-arrow-left mr-2"></i>返回</button>
+        <button id="lying-home-btn" class="btn-primary bg-gray-600 hover:bg-gray-700"><i class="fa fa-home mr-2"></i>返回首页</button>
+      </div>
+
+      <!-- 底部两个并排二维码 -->
+      <div class="max-w-3xl mx-auto text-center mt-6 p-6 bg-white rounded-2xl shadow-md" id="lying-qrcode-container">
+        <div class="qrcode-pair">
+          <!-- 第一个二维码 -->
+          <div class="qrcode-item">
+            <p class="text-gray-700 mb-3 text-sm font-medium">快来测一测你的躺平指数吧</p>
+            <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/6704675a2c9a4abb9d0f1bc0936a12b3~tplv-a9rns2rl98-image.image?rcl=202508221653301E3287D5F693A9DAF498&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1756457610&amp;x-signature=50JWZC9WMaFsKhb1tmaFht%2F9J1I%3D" alt="测试二维码" class="w-40 h-40 rounded-lg shadow border p-2 bg-gray-50 flex items-center justify-center">
+          </div>
+          
+          <!-- 第二个二维码 -->
+          <div class="qrcode-item">
+            <p class="text-gray-700 mb-3 text-sm font-medium">建了个群聊，每周掉落职场干货~</p>
+            <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/ffd08ae069d84e3cb7a2f7292a181a0a~tplv-a9rns2rl98-image.image?rcl=2025082216491508D12C99CF60573B10A5&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1756457356&amp;x-signature=hLch6F3Pyzdij9nCvHpqfD6cFno%3D" alt="微信群二维码" class="w-40 h-40 rounded-lg shadow border p-2 bg-white">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 全局变量
+    let cliqueRadarChartInstance = null;
+    let hoppingRadarChartInstance = null;
+    let cattleRadarChartInstance = null; // 新增这一行
+    let lyingRadarChartInstance = null;
+
+    // 嫡系计算器问题
+    const cliqueQuestions = [
       { 
         text: "组织关系", 
         dimension: "组织关系", 
@@ -262,89 +675,360 @@
       }
     ];
 
-    // 渲染题目
-    function renderAllQuestions(){
-      const c=document.getElementById("questions-container");
-      c.innerHTML="";
+    // 跳槽计算器问题
+    const hoppingQuestions = [
+      { 
+        text: "当前薪资竞争力", 
+        dimension: "薪资竞争力", 
+        options: [
+          {text:"远低于市场水平(30%以上)", score:90, analysis: "薪资严重缺乏竞争力。", suggestion: "市场机会可能带来显著提升。"},
+          {text:"低于市场水平(10-30%)", score:70, analysis: "薪资有一定差距。", suggestion: "可寻找匹配市场水平的机会。"},
+          {text:"与市场水平持平", score:40, analysis: "薪资处于合理范围。", suggestion: "跳槽薪资提升空间有限。"},
+          {text:"略高于市场水平(10-30%)", score:20, analysis: "薪资有一定优势。", suggestion: "除非有更大发展，否则不建议跳槽。"},
+          {text:"远高于市场水平(30%以上)", score:5, analysis: "薪资具有明显优势。", suggestion: "跳槽需谨慎评估薪资风险。"}
+        ]
+      },
+      { 
+        text: "职业发展空间", 
+        dimension: "发展空间", 
+        options: [
+          {text:"完全没有晋升通道", score:90, analysis: "职业发展陷入停滞。", suggestion: "外部机会可能是必要选择。"},
+          {text:"晋升通道狭窄，遥遥无期", score:70, analysis: "发展前景不明朗。", suggestion: "可积极关注外部机会。"},
+          {text:"有晋升可能，但周期较长", score:50, analysis: "发展速度偏慢。", suggestion: "可同时考虑内部沟通与外部机会。"},
+          {text:"有明确晋升路径，1-2年内可实现", score:30, analysis: "发展路径清晰。", suggestion: "优先考虑内部发展。"},
+          {text:"快速晋升通道，受到重点培养", score:10, analysis: "发展前景良好。", suggestion: "应专注内部机会，谨慎跳槽。"}
+        ]
+      },
+      { 
+        text: "工作满意度", 
+        dimension: "工作满意度", 
+        options: [
+          {text:"极度不满，每天抵触上班", score:90, analysis: "职业状态严重不健康。", suggestion: "尽快寻找新机会改善状态。"},
+          {text:"较不满意，经常感到压抑", score:70, analysis: "工作状态不佳。", suggestion: "可考虑寻找更合适的工作环境。"},
+          {text:"一般，谈不上满意或不满意", score:40, analysis: "工作缺乏热情。", suggestion: "评估是否有改善空间。"},
+          {text:"比较满意，偶尔有抱怨", score:20, analysis: "整体状态良好。", suggestion: "关注如何提升满意度。"},
+          {text:"非常满意，享受工作过程", score:5, analysis: "工作状态理想。", suggestion: "珍惜现有工作环境。"}
+        ]
+      },
+      { 
+        text: "技能提升速度", 
+        dimension: "技能提升", 
+        options: [
+          {text:"几乎没有学习机会，技能停滞", score:80, analysis: "职业能力发展受阻。", suggestion: "寻找能提供成长空间的环境。"},
+          {text:"学习缓慢，进步不明显", score:60, analysis: "成长速度低于预期。", suggestion: "考虑更具挑战性的机会。"},
+          {text:"有一定提升，但速度一般", score:40, analysis: "成长速度适中。", suggestion: "可尝试内部争取更多机会。"},
+          {text:"持续学习，技能提升较快", score:20, analysis: "处于良好的成长状态。", suggestion: "保持节奏，稳步发展。"},
+          {text:"快速成长，接触前沿技术/业务", score:10, analysis: "成长环境理想。", suggestion: "继续深耕现有领域。"}
+        ]
+      },
+      { 
+        text: "公司发展前景", 
+        dimension: "公司前景", 
+        options: [
+          {text:"严重下滑，可能面临裁员/倒闭", score:90, analysis: "职业环境风险极高。", suggestion: "应紧急寻找稳定的新机会。"},
+          {text:"发展停滞，市场竞争力下降", score:70, analysis: "公司前景不容乐观。", suggestion: "积极关注行业内其他机会。"},
+          {text:"发展平稳，无明显增长", score:40, analysis: "公司处于稳定期。", suggestion: "综合评估个人发展再决定。"},
+          {text:"稳步增长，市场地位稳固", score:20, analysis: "公司发展健康。", suggestion: "可优先考虑内部发展。"},
+          {text:"快速发展，行业领先", score:10, analysis: "公司前景广阔。", suggestion: "与公司共同成长是优选。"}
+        ]
+      },
+      { 
+        text: "上下级关系", 
+        dimension: "上下级关系", 
+        options: [
+          {text:"严重不和，存在明显冲突", score:80, analysis: "职场关系紧张。", suggestion: "换环境可能是必要的。"},
+          {text:"沟通不畅，难以合作", score:60, analysis: "工作配合存在障碍。", suggestion: "可考虑内部转岗或外部机会。"},
+          {text:"关系一般，仅工作交流", score:30, analysis: "职业关系平淡。", suggestion: "可尝试改善关系或保持现状。"},
+          {text:"关系良好，沟通顺畅", score:15, analysis: "合作氛围良好。", suggestion: "维持良好合作关系。"},
+          {text:"关系融洽，相互信任", score:5, analysis: "上下级关系理想。", suggestion: "珍惜良好的合作环境。"}
+        ]
+      },
+      { 
+        text: "工作生活平衡", 
+        dimension: "工作生活平衡", 
+        options: [
+          {text:"长期严重失衡，频繁熬夜加班", score:70, analysis: "健康面临风险。", suggestion: "寻找更平衡的工作环境。"},
+          {text:"经常加班，个人时间被严重挤压", score:50, analysis: "生活质量受影响。", suggestion: "考虑调整工作节奏或换工作。"},
+          {text:"偶尔加班，基本能保证休息", score:30, analysis: "平衡状况一般。", suggestion: "尝试优化工作效率。"},
+          {text:"很少加班，工作生活较平衡", score:15, analysis: "平衡状况良好。", suggestion: "保持现有状态。"},
+          {text:"从不加班，完全掌控个人时间", score:5, analysis: "工作生活平衡极佳。", suggestion: "这种工作环境值得珍惜。"}
+        ]
+      },
+      { 
+        text: "行业发展趋势", 
+        dimension: "行业趋势", 
+        options: [
+          {text:"行业衰退，面临被淘汰风险", score:90, analysis: "职业赛道风险高。", suggestion: "尽快考虑行业转型。"},
+          {text:"行业饱和，增长乏力", score:70, analysis: "发展空间受限。", suggestion: "可考虑转向相关新兴领域。"},
+          {text:"行业稳定，增长平缓", score:40, analysis: "发展机会适中。", suggestion: "可在本行业深耕或适度拓展。"},
+          {text:"行业增长，发展前景良好", score:20, analysis: "处于上升行业。", suggestion: "在本行业持续发展更有利。"},
+          {text:"行业爆发期，高速增长", score:10, analysis: "处于风口行业。", suggestion: "抓住行业红利期发展。"}
+        ]
+      }
+    ];
+
+    // 牛马指数计算器问题
+    const cattleQuestions = [
+      { 
+        text: "下班时间", 
+        dimension: "下班时间", 
+        options: [
+          {text:"18:00 前", score:25, analysis: "准时下班，工作生活界限清晰。", suggestion: "保持这种健康状态，避免内卷。"},
+          {text:"20:00 前", score:50, analysis: "偶尔加班，但仍有个人时间。", suggestion: "注意控制加班频率，防止常态化。"},
+          {text:"22:00 前", score:75, analysis: "经常较晚下班，个人时间被压缩。", suggestion: "评估工作效率，尝试优化时间管理。"},
+          {text:"零点以后", score:100, analysis: "严重透支个人时间，健康风险高。", suggestion: "重新审视工作强度，考虑调整或更换工作。"}
+        ]
+      },
+      { 
+        text: "周末加班", 
+        dimension: "周末加班", 
+        options: [
+          {text:"从不", score:25, analysis: "周末完全属于自己，工作生活平衡。", suggestion: "坚守底线，拒绝无意义的周末加班。"},
+          {text:"偶尔（月均<1次）", score:50, analysis: "偶尔占用周末，但影响有限。", suggestion: "确保加班有必要且有回报。"},
+          {text:"经常（月均2-3次）", score:75, analysis: "周末被频繁占用，生活受影响。", suggestion: "与领导沟通，争取减少周末加班频率。"},
+          {text:"标配（每周）", score:100, analysis: "全年无休，完全被工作占据。", suggestion: "较为严重的透支状态，需要做出改变。"}
+        ]
+      },
+      { 
+        text: "消息频率", 
+        dimension: "消息频率", 
+        options: [
+          {text:"从不在非工作时间回消息", score:25, analysis: "下班后无工作打扰，边界感强。", suggestion: "继续保持这种健康的工作边界。"},
+          {text:"偶尔在非工作时间回消息", score:50, analysis: "偶尔有紧急消息，但不频繁。", suggestion: "设定消息回复时间，避免即时响应压力。"},
+          {text:"经常在非工作时间回消息", score:75, analysis: "下班后仍被工作消息轰炸。", suggestion: "尝试设置自动回复，说明非工作时间。"},
+          {text:"不但经常回，不回还要立刻@你”", score:100, analysis: "被无边界地要求即时响应。", suggestion: "个人时间被侵蚀严重。"}
+        ]
+      },
+      { 
+        text: "不可替代性", 
+        dimension: "不可替代性", 
+        options: [
+          {text:"离了我项目得崩", score:25, analysis: "核心人物，具有高不可替代性。", suggestion: "利用这种优势争取更好的待遇和工作条件。"},
+          {text:"离了我有点麻烦", score:50, analysis: "有一定重要性，但可被替代。", suggestion: "提升核心技能，增加不可替代性。"},
+          {text:"谁都能干我的活", score:75, analysis: "可替代性高，随时可能被替换。", suggestion: "发展差异化优势，提升自身价值。"},
+          {text:"我的活狗都能干", score:100, analysis: "价值被严重低估，处境危险。", suggestion: "提升技能或寻找新机会。"}
+        ]
+      },
+      { 
+        text: "背锅指数", 
+        dimension: "背锅指数", 
+        options: [
+          {text:"从不背锅", score:25, analysis: "责任清晰，不会替人受过。", suggestion: "保持警惕，避免陷入不必要的责任纠纷。"},
+          {text:"偶尔背小锅", score:50, analysis: "偶尔承担次要责任。", suggestion: "学会保护自己，明确责任边界。"},
+          {text:"专业背锅侠", score:75, analysis: "经常替人背锅，成为牺牲品。", suggestion: "建立证据意识，学会拒绝不合理要求。"},
+          {text:"锅来的速度比外卖快", score:100, analysis: "被当成固定背锅对象。", suggestion: "环境很不健康，建议尽快离开。"}
+        ]
+      },
+      { 
+        text: "画饼指数", 
+        dimension: "画饼指数", 
+        options: [
+          {text:"从没画过", score:25, analysis: "务实不画饼，承诺会兑现。", suggestion: "珍惜这种务实的工作环境。"},
+          {text:"“近期饼：好好干明年升职”", score:50, analysis: "有基本承诺，但实现性一般。", suggestion: "要求具体的晋升标准和时间节点。"},
+          {text:"“远期饼：未来财务自由”", score:75, analysis: "画远期大饼，兑现可能性低。", suggestion: "关注眼前实际利益，不要被远景迷惑。"},
+          {text:"饼太大，噎着了", score:100, analysis: "被过度画饼，承诺与现实脱节。", suggestion: "不要相信空头支票，以实际待遇为准。"}
+        ]
+      },
+      { 
+        text: "薪资匹配度", 
+        dimension: "薪资匹配度", 
+        options: [
+          {text:"钱多事少", score:25, analysis: "性价比极高，令人羡慕。", suggestion: "悄悄享受，别声张。"},
+          {text:"一分钱一分货", score:50, analysis: "付出与回报基本匹配。", suggestion: "关注技能提升，为下一步加薪做准备。"},
+          {text:"钱少事多", score:75, analysis: "付出远超回报，性价比低。", suggestion: "评估是否值得继续，或寻找更高回报的机会。"},
+          {text:"倒贴钱上班", score:100, analysis: "收入远低于付出，严重失衡。", suggestion: "这种情况不可持续，寻找新工作。"}
+        ]
+      },
+      { 
+        text: "身体信号", 
+        dimension: "身体信号", 
+        options: [
+          {text:"吃嘛嘛香", score:25, analysis: "身体状态良好，工作压力适中。", suggestion: "保持健康的生活习惯和工作节奏。"},
+          {text:"脱发/失眠/过劳肥", score:50, analysis: "出现轻度亚健康症状。", suggestion: "调整作息，增加锻炼，减少熬夜。"},
+          {text:"结节/增生/颈椎病", score:75, analysis: "出现明显的职业疾病。", suggestion: "必须重视健康问题，调整工作强度。"},
+          {text:"体检报告不敢看", score:100, analysis: "健康状况堪忧，风险高。", suggestion: "体检并调整工作状态，注意健康问题。"}
+        ]
+      },
+      { 
+        text: "生活压缩", 
+        dimension: "生活压缩", 
+        options: [
+          {text:"生活工作完美平衡", score:25, analysis: "工作与生活和谐共存。", suggestion: "继续保持这种理想状态。"},
+          {text:"偶尔缺席朋友聚会", score:50, analysis: "生活略有影响，但仍可维持。", suggestion: "合理安排时间，保留必要的社交活动。"},
+          {text:"没时间谈恋爱/爱好", score:75, analysis: "个人生活被严重压缩。", suggestion: "重新平衡工作与生活，否则会影响长期幸福感。"},
+          {text:"家人以为我失踪了", score:100, analysis: "完全失去个人生活，与社会脱节。", suggestion: "这是非常危险的状态，必须立即做出改变。"}
+        ]
+      },
+      { 
+        text: "黑话反应", 
+        dimension: "黑话反应", 
+        options: [
+          {text:"无感，正常沟通", score:25, analysis: "能适应职场沟通方式，心态平和。", suggestion: "保持这种良好心态，不被负面情绪影响。"},
+          {text:"轻微不适，但能忍", score:50, analysis: "对职场黑话有一定反感，但能接受。", suggestion: "尝试过滤无效信息，关注实质内容。"},
+          {text:"下意识翻白眼", score:75, analysis: "对职场黑话非常反感。", suggestion: "这种情绪可能影响职业发展，需要调整心态。"},
+          {text:"想把手伸进屏幕打人", score:100, analysis: "对职场文化极度排斥。", suggestion: "考虑是否适合当前环境，或寻找更匹配的企业文化。"}
+        ]
+      }
+    ];
+
+    // 躺平计算器问题
+    const lyingQuestions = [
+      {
+        text: "职场护城河",
+        dimension: "职场护城河",
+        options: [
+          { text: '新人2周可接手80%工作，随时可被替换', score: 0, analysis: "替代成本极低，缺乏核心竞争力。", suggestion: "尽快建立专属技能或资源壁垒。" },
+          { text: '工作标准化高，新人2周可掌握基本操作', score: 25, analysis: "标准化程度高，替代难度低。", suggestion: "主动承担非标准化工作，提升不可替代性。" },
+          { text: '工作有部分技术含量，新人需1-3个月培训可上岗', score: 50, analysis: "具备一定专业门槛，有基本护城河。", suggestion: "深化专业技能，扩大护城河范围。" },
+          { text: '负责关键模块，新人需要3个月以上才能接手', score: 75, analysis: "掌握关键业务，替代成本较高。", suggestion: "保持核心模块优势，适度培养后备力量。" },
+          { text: '掌握核心系统/客户资源，离职会造成公司重大损失', score: 100, analysis: "具备战略级价值，几乎不可替代。", suggestion: "平衡核心竞争力与团队协作，避免过度依赖。" }
+        ]
+      },
+      {
+        text: "领导容忍度",
+        dimension: "领导容忍度",
+        options: [
+          { text: '正在招聘或培训新人准备替代你', score: 0, analysis: "已被列入优化名单，风险极高。", suggestion: "紧急寻找外部机会，做好离职准备。" },
+          { text: '领导对你工作不满，时有批评', score: 25, analysis: "信任度低，容错空间小。", suggestion: "改善工作表现，修复上下级关系。" },
+          { text: '普通员工，领导公事公办没有特别照顾', score: 50, analysis: "关系平淡，无特殊对待。", suggestion: "保持基本工作表现，避免出错。" },
+          { text: '核心骨干，领导对你错误容忍度较高', score: 75, analysis: "受重视，有较大容错空间。", suggestion: "把握核心工作质量，次要事务可适度放松。" },
+          { text: '嫡系心腹，领导能保你', score: 100, analysis: "深度信任，有强大保护伞。", suggestion: "在核心事务上支持领导，其他事务可灵活处理。" }
+        ]
+      },
+      {
+        text: "现金流缓冲",
+        dimension: "现金流缓冲",
+        options: [
+          { text: '信用卡/负债金额＞月收入', score: 0, analysis: "财务状况危险，抗风险能力为零。", suggestion: "优先解决负债问题，增加现金储备。" },
+          { text: '存款不足1年，但无负债', score: 25, analysis: "财务缓冲有限，抗风险能力弱。", suggestion: "减少非必要开支，快速积累6个月生活费。" },
+          { text: '存款1-3年生活费', score: 50, analysis: "有基本财务安全垫，抗风险能力中等。", suggestion: "逐步增加被动收入来源。" },
+          { text: '存款3-5年生活费', score: 75, analysis: "财务状况良好，抗风险能力强。", suggestion: "可适度配置风险资产，提高收益。" },
+          { text: '存款≥5年生活费且有稳定被动收入（如房租、投资）', score: 100, analysis: "财务自由边缘，抗风险能力极强。", suggestion: "可考虑半退休状态，追求工作生活平衡。" }
+        ]
+      },
+      {
+        text: "家庭安全网",
+        dimension: "家庭安全网",
+        options: [
+          { text: '父母无收入+子女教育+房贷医疗等多重担', score: 0, analysis: "家庭负担极重，容错空间为零。", suggestion: "优先保障稳定收入，避免任何风险。" },
+          { text: '需要赡养父母+抚养子女，家庭压力较大', score: 25, analysis: "家庭负担重，抗风险能力弱。", suggestion: "寻求稳定高收入，谨慎对待职业变动。" },
+          { text: '父母需少量补贴，但家庭无重大负担', score: 50, analysis: "家庭压力适中，有一定缓冲空间。", suggestion: "平衡收入与生活质量，适度规划未来。" },
+          { text: '父母有退休金+配偶有工作，基本无需补贴', score: 75, analysis: "家庭支持良好，抗风险能力强。", suggestion: "可根据个人意愿选择工作强度。" },
+          { text: '父母有丰厚退休金+配偶收入高，可以支持你', score: 100, analysis: "家庭经济实力强，无后顾之忧。", suggestion: "可自由选择职业方向，追求个人价值。" }
+        ]
+      },
+      {
+        text: "行业年龄要求",
+        dimension: "行业年龄要求",
+        options: [
+          { text: '35岁裁员重灾区（如互联网）', score: 0, analysis: "年龄风险极高，职业周期短。", suggestion: "提前规划转型方向，积累跨行业技能。" },
+          { text: '典型吃青春饭行业（如电竞、体育）', score: 25, analysis: "职业生命周期短，年龄限制严格。", suggestion: "尽早规划退役后的职业路径。" },
+          { text: '中年危机存在但可通过转管理规避（如硬件）', score: 50, analysis: "有年龄压力，但有转型空间。", suggestion: "30岁前完成管理岗转型或技能升级。" },
+          { text: '经验导向行业，35岁后仍有发展空间（如会计、建筑）', score: 75, analysis: "越老越吃香，年龄不是障碍。", suggestion: "深耕专业领域，积累行业经验和资源。" },
+          { text: '职业越老越吃香（如医生、教师、律师）', score: 100, analysis: "年龄是优势，长期发展稳定。", suggestion: "持续积累专业深度，打造个人品牌。" }
+        ]
+      },
+      {
+        text: "再就业成本",
+        dimension: "再就业成本",
+        options: [
+          { text: '空窗1年简历无人问津，转行困难', score: 0, analysis: "职业竞争力极低，失业风险高。", suggestion: "紧急提升核心技能，扩大人脉圈。" },
+          { text: '行业下行，可能降薪30%才能入职', score: 25, analysis: "就业市场严峻，议价能力弱。", suggestion: "谨慎对待当前工作，同时提升跨行业技能。" },
+          { text: '需主动投递，2-3个月能找到平薪工作', score: 50, analysis: "就业难度中等，有基本市场需求。", suggestion: "定期更新简历，保持职场活跃度。" },
+          { text: '更新简历后1个月内可获面试邀请', score: 75, analysis: "市场需求良好，就业相对容易。", suggestion: "保持核心竞争力，适当拓展人脉。" },
+          { text: '猎头主动联系频繁，有优质人脉随时内推', score: 100, analysis: "职场竞争力强，就业选择多。", suggestion: "选择性接受机会，优先考虑发展前景。" }
+        ]
+      }
+    ];
+
+    // 通用函数 - 渲染题目
+    function renderQuestions(containerId, questions) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = "";
       
-      questions.forEach((q,i)=>{
-        let opts="";
-        q.options.forEach((opt,j)=>{
-          opts+=`<div class="option-card" data-q="${i}" data-index="${j}">${opt.text}</div>`;
+      questions.forEach((q, i) => {
+        let optionsHtml = "";
+        q.options.forEach((opt, j) => {
+          optionsHtml += `<div class="option-card" data-q="${i}" data-index="${j}">${opt.text}</div>`;
         });
-        c.innerHTML+=`<div class="bg-white rounded-xl shadow p-4">
+        container.innerHTML += `<div class="bg-white rounded-xl shadow p-4">
           <h3 class="font-semibold mb-3">${i+1}. ${q.text}</h3>
-          <div class="space-y-2">${opts}</div>
+          <div class="space-y-2">${optionsHtml}</div>
         </div>`;
       });
     }
 
-    function updateProgress(){
-      const total=questions.length;
-      const answered=document.querySelectorAll('.option-card.selected').length;
-      document.getElementById('completed-count').innerText=answered;
-      const percent=Math.round(answered/total*100);
-      document.getElementById('progress-text').innerText=percent+"%";
-      document.getElementById('progress-bar').style.width=percent+"%";
-      document.getElementById('submit-btn').disabled=answered<total;
+    // 通用函数 - 更新进度
+    function updateProgress(questionCount, selectedClass, countId, textId, barId) {
+      const total = questionCount;
+      const answered = document.querySelectorAll(`${selectedClass}`).length;
+      document.getElementById(countId).innerText = answered;
+      const percent = Math.round(answered / total * 100);
+      document.getElementById(textId).innerText = percent + "%";
+      document.getElementById(barId).style.width = percent + "%";
+      return answered >= total;
     }
 
-    function calculateResult(){
-      let results=[];
-      let sum=0;
-      
-      questions.forEach((q,i)=>{
-        const sel=document.querySelector(`.option-card.selected[data-q="${i}"]`);
-        if(sel){
-          const opt=q.options[parseInt(sel.dataset.index)];
-          results.push({...opt,dimension:q.dimension});
-          sum+=opt.score;
-        }
-      });
-      
-      const avg=sum/questions.length;
-      showResult(results,avg);
-    }
-
-    function getLevel(score){
-      if(score>60)return"心腹嫡系：参与重大决策，掌握核心资源";
-      if(score>=50)return"核心圈层：负责关键业务，资源优先配置";
-      if(score>=40)return"外围人员：常规关系，无特殊关照";
-      return"风险人员：可能被边缘化或优化";
-    }
-
-    // 根据卡片索引和屏幕尺寸计算行号，分配颜色（第一行蓝、第二行黄、第三行绿）
-    function getRowColorInfo(index) {
-      // 获取当前屏幕宽度，确定列数（与CSS grid布局匹配）
+    // 通用函数 - 获取行颜色信息
+    function getRowColorInfo(index, calculatorType = 'default') {
       const screenWidth = window.innerWidth;
-      let cols = 1; // 默认1列（移动端）
-      if (screenWidth >= 1024) cols = 3; // lg以上3列
-      else if (screenWidth >= 640) cols = 2; // sm以上2列
+      let cols = 1;
+      if (screenWidth >= 1024) cols = 3;
+      else if (screenWidth >= 640) cols = 2;
 
-      // 计算行号（从0开始）
       const row = Math.floor(index / cols);
-
-      // 按行分配颜色：0行蓝、1行黄、2行绿
+      
+      // 为牛马计算器单独设置颜色方案
+      if (calculatorType === 'cattle') {
+        switch(row % 3) {
+          case 0:
+            return {
+              cardClass: "row-orange",
+              badgeColor: "bg-tertiary text-white",
+              lightColor: "bg-orange-50 text-orange-700"
+            };
+          case 1:
+            return {
+              cardClass: "row-blue",
+              badgeColor: "bg-primary text-white",
+              lightColor: "bg-blue-50 text-blue-700"
+            };
+          case 2:
+            return {
+              cardClass: "row-yellow",
+              badgeColor: "bg-warning text-white",
+              lightColor: "bg-yellow-50 text-yellow-700"
+            };
+          default:
+            return {
+              cardClass: "row-orange",
+              badgeColor: "bg-tertiary text-white",
+              lightColor: "bg-orange-50 text-orange-700"
+            };
+        }
+      }
+      
+      // 默认颜色方案
       switch(row % 3) {
-        case 0: // 第一行
+        case 0:
           return {
             cardClass: "row-blue",
             badgeColor: "bg-primary text-white",
             lightColor: "bg-blue-50 text-blue-700"
           };
-        case 1: // 第二行
+        case 1:
           return {
             cardClass: "row-yellow",
             badgeColor: "bg-warning text-white",
             lightColor: "bg-yellow-50 text-yellow-700"
           };
-        case 2: // 第三行
+        case 2:
           return {
             cardClass: "row-green",
             badgeColor: "bg-secondary text-white",
             lightColor: "bg-green-50 text-green-700"
           };
-        default: // 默认蓝色
+        default:
           return {
             cardClass: "row-blue",
             badgeColor: "bg-primary text-white",
@@ -353,111 +1037,75 @@
       }
     }
 
-    function showResult(dim,avg){
-      document.getElementById('quiz-page').classList.add('hidden');
-      document.getElementById('result-page').classList.remove('hidden');
-      document.getElementById('score-text').innerText=avg.toFixed(1);
-      document.getElementById('level-text').innerText=getLevel(avg);
-
-      // 绘制雷达图
-      const ctx=document.getElementById('radarChart');
-      if(radarChartInstance)radarChartInstance.destroy();
-      radarChartInstance=new Chart(ctx,{
-        type:'radar',
-        data:{
-          labels:dim.map(d=>d.dimension),
-          datasets:[{
-            label:'得分',
-            data:dim.map(d=>d.score),
-            backgroundColor:'rgba(59,130,246,0.2)',
-            borderColor:'#3b82f6',
-            pointBackgroundColor:'#3b82f6'
-          }]
-        },
-        options:{
-          scales:{
-            r:{
-              min:0,
-              max:100
-            }
-          }
-        }
-      });
-
-      // 渲染维度详情（按行分配颜色）
-      const dc=document.getElementById('dimensions-container');
-      dc.innerHTML="";
+    // 嫡系计算器相关函数
+    function initCliqueCalculator() {
+      renderQuestions("clique-questions-container", cliqueQuestions);
       
-      dim.forEach((d, index)=>{
-        const colorInfo = getRowColorInfo(index);
-        
-        dc.innerHTML+=`<div class="dimension-card ${colorInfo.cardClass}">
-          <div class="flex justify-between items-start mb-2">
-            <h4 class="font-medium text-gray-800">${d.dimension}</h4>
-            <span class="inline-block px-2 py-1 rounded-full text-xs font-medium ${colorInfo.badgeColor}">${d.score}分</span>
-          </div>
-          <div class="text-sm text-gray-600 mb-3 leading-relaxed">${d.analysis}</div>
-          <div class="text-sm ${colorInfo.lightColor} p-2 rounded-lg mt-2">
-            <i class="fa fa-lightbulb-o mr-1"></i> ${d.suggestion}
-          </div>
-        </div>`;
-      });
-    }
-
-    document.addEventListener("DOMContentLoaded",()=>{
-      renderAllQuestions();
-
       // 选项点击事件
-      document.addEventListener("click",e=>{
-        if(e.target.classList.contains("option-card")){
-          const q=e.target.dataset.q;
-          document.querySelectorAll(`.option-card[data-q="${q}"]`).forEach(el=>{
+      document.getElementById("clique-questions-container").addEventListener("click", e => {
+        if (e.target.classList.contains("option-card")) {
+          const q = e.target.dataset.q;
+          document.querySelectorAll(`.option-card[data-q="${q}"]`).forEach(el => {
             el.classList.remove("selected");
           });
           e.target.classList.add("selected");
-          updateProgress();
+          
+          const isComplete = updateProgress(
+            cliqueQuestions.length,
+            '#clique-questions-container .option-card.selected',
+            'clique-completed-count',
+            'clique-progress-text',
+            'clique-progress-bar'
+          );
+          document.getElementById("clique-submit-btn").disabled = !isComplete;
         }
       });
-
+      
       // 提交按钮
-      document.getElementById("submit-btn").addEventListener("click",calculateResult);
+      document.getElementById("clique-submit-btn").addEventListener("click", calculateCliqueResult);
       
       // 返回按钮
-      document.getElementById("back-btn").addEventListener("click",()=>{
-        document.getElementById("result-page").classList.add("hidden");
-        document.getElementById("quiz-page").classList.remove("hidden");
-        renderAllQuestions();
-        updateProgress();
+      document.getElementById("clique-back-btn").addEventListener("click", () => {
+        document.getElementById("clique-result-page").classList.add("hidden");
+        document.getElementById("clique-page").classList.remove("hidden");
+        initCliqueCalculator();
+        updateProgress(
+          cliqueQuestions.length,
+          '#clique-questions-container .option-card.selected',
+          'clique-completed-count',
+          'clique-progress-text',
+          'clique-progress-bar'
+        );
       });
-
-      // 分享按钮功能
-      document.getElementById("share-result-btn").addEventListener("click",()=>{
+      
+      // 返回首页按钮
+      document.getElementById("clique-home-btn").addEventListener("click", () => {
+        document.getElementById("clique-result-page").classList.add("hidden");
+        document.getElementById("home-page").classList.remove("hidden");
+      });
+      
+      // 分享按钮
+      document.getElementById("clique-share-result-btn").addEventListener("click", () => {
         const url = "https://dachangzhishiku.github.io/";
-        const button = document.getElementById("share-result-btn");
+        const button = document.getElementById("clique-share-result-btn");
         const originalText = button.innerHTML;
         
-        // 尝试复制到剪贴板
         navigator.clipboard.writeText(url).then(() => {
-          // 复制成功，更新按钮文本
           button.innerHTML = '<i class="fa fa-check mr-2"></i>网址已复制，去分享吧';
-          
-          // 2秒后恢复原文本
           setTimeout(() => {
             button.innerHTML = originalText;
           }, 2000);
         }).catch(err => {
-          // 复制失败，显示错误信息
           console.error('无法复制文本: ', err);
           alert('复制失败，请手动复制网址：' + url);
         });
       });
-
-      // 下载图片功能
-      document.getElementById("download-screenshot").addEventListener("click",()=>{
-        const resultPage = document.getElementById("result-page");
-        const dimensionsSection = document.getElementById("dimensions-section");
+      
+      // 下载图片
+      document.getElementById("clique-download-screenshot").addEventListener("click", () => {
+        const resultPage = document.getElementById("clique-result-page");
+        const dimensionsSection = document.getElementById("clique-dimensions-section");
         
-        // 隐藏维度详情部分以优化截图
         dimensionsSection.style.display = "none";
         
         setTimeout(() => {
@@ -474,20 +1122,641 @@
             a.href = canvas.toDataURL("image/png");
             a.download = "嫡系指数测试结果.png";
             a.click();
-            
-            // 恢复维度详情显示
             dimensionsSection.style.display = "block";
           }).catch(err => {
             console.error('截图失败: ', err);
             alert("截图失败，请重试");
-            
-            // 无论成功失败都恢复显示
             dimensionsSection.style.display = "block";
           });
         }, 1000);
+      });
+    }
+
+    function calculateCliqueResult() {
+      let results = [];
+      let sum = 0;
+      
+      cliqueQuestions.forEach((q, i) => {
+        const sel = document.querySelector(`#clique-questions-container .option-card.selected[data-q="${i}"]`);
+        if (sel) {
+          const opt = q.options[parseInt(sel.dataset.index)];
+          results.push({...opt, dimension: q.dimension});
+          sum += opt.score;
+        }
+      });
+      
+      const avg = sum / cliqueQuestions.length;
+      showCliqueResult(results, avg);
+    }
+
+    function getCliqueLevel(score) {
+      if (score > 60) return "心腹嫡系：参与重大决策，掌握核心资源";
+      if (score >= 50) return "核心圈层：负责关键业务，资源优先配置";
+      if (score >= 40) return "外围人员：常规关系，无特殊关照";
+      return "风险人员：可能被边缘化或优化";
+    }
+
+    function showCliqueResult(dimensions, avg) {
+      document.getElementById("clique-page").classList.add("hidden");
+      document.getElementById("clique-result-page").classList.remove("hidden");
+      document.getElementById("clique-score-text").innerText = avg.toFixed(1);
+      document.getElementById("clique-level-text").innerText = getCliqueLevel(avg);
+
+      // 绘制雷达图
+      const ctx = document.getElementById("clique-radarChart");
+      if (cliqueRadarChartInstance) cliqueRadarChartInstance.destroy();
+      cliqueRadarChartInstance = new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: dimensions.map(d => d.dimension),
+          datasets: [{
+            label: '得分',
+            data: dimensions.map(d => d.score),
+            backgroundColor: 'rgba(59,130,246,0.2)',
+            borderColor: '#3b82f6',
+            pointBackgroundColor: '#3b82f6'
+          }]
+        },
+        options: {
+          scales: {
+            r: {
+              min: 0,
+              max: 100
+            }
+          }
+        }
+      });
+
+      // 渲染维度详情
+      const container = document.getElementById("clique-dimensions-container");
+      container.innerHTML = "";
+      
+      dimensions.forEach((d, index) => {
+        const colorInfo = getRowColorInfo(index);
+        
+        container.innerHTML += `<div class="dimension-card ${colorInfo.cardClass}">
+          <div class="flex justify-between items-start mb-2">
+            <h4 class="font-medium text-gray-800">${d.dimension}</h4>
+            <span class="inline-block px-2 py-1 rounded-full text-xs font-medium ${colorInfo.badgeColor}">${d.score}分</span>
+          </div>
+          <div class="text-sm text-gray-600 mb-3 leading-relaxed">${d.analysis}</div>
+          <div class="text-sm ${colorInfo.lightColor} p-2 rounded-lg mt-2">
+            <i class="fa fa-lightbulb-o mr-1"></i> ${d.suggestion}
+          </div>
+        </div>`;
+      });
+    }
+
+    // 跳槽计算器相关函数
+    function initHoppingCalculator() {
+      renderQuestions("hopping-questions-container", hoppingQuestions);
+      
+      // 选项点击事件
+      document.getElementById("hopping-questions-container").addEventListener("click", e => {
+        if (e.target.classList.contains("option-card")) {
+          const q = e.target.dataset.q;
+          document.querySelectorAll(`.option-card[data-q="${q}"]`).forEach(el => {
+            el.classList.remove("selected");
+          });
+          e.target.classList.add("selected");
+          
+          const isComplete = updateProgress(
+            hoppingQuestions.length,
+            '#hopping-questions-container .option-card.selected',
+            'hopping-completed-count',
+            'hopping-progress-text',
+            'hopping-progress-bar'
+          );
+          document.getElementById("hopping-submit-btn").disabled = !isComplete;
+        }
+      });
+      
+      // 提交按钮
+      document.getElementById("hopping-submit-btn").addEventListener("click", calculateHoppingResult);
+      
+      // 返回按钮
+      document.getElementById("hopping-back-btn").addEventListener("click", () => {
+        document.getElementById("hopping-result-page").classList.add("hidden");
+        document.getElementById("hopping-page").classList.remove("hidden");
+        initHoppingCalculator();
+        updateProgress(
+          hoppingQuestions.length,
+          '#hopping-questions-container .option-card.selected',
+          'hopping-completed-count',
+          'hopping-progress-text',
+          'hopping-progress-bar'
+        );
+      });
+      
+      // 返回首页按钮
+      document.getElementById("hopping-home-btn").addEventListener("click", () => {
+        document.getElementById("hopping-result-page").classList.add("hidden");
+        document.getElementById("home-page").classList.remove("hidden");
+      });
+      
+      // 分享按钮
+      document.getElementById("hopping-share-result-btn").addEventListener("click", () => {
+        const url = "https://dachangzhishiku.github.io/";
+        const button = document.getElementById("hopping-share-result-btn");
+        const originalText = button.innerHTML;
+        
+        navigator.clipboard.writeText(url).then(() => {
+          button.innerHTML = '<i class="fa fa-check mr-2"></i>网址已复制，去分享吧';
+          setTimeout(() => {
+            button.innerHTML = originalText;
+          }, 2000);
+        }).catch(err => {
+          console.error('无法复制文本: ', err);
+          alert('复制失败，请手动复制网址：' + url);
+        });
+      });
+      
+      // 下载图片
+      document.getElementById("hopping-download-screenshot").addEventListener("click", () => {
+        const resultPage = document.getElementById("hopping-result-page");
+        const dimensionsSection = document.getElementById("hopping-dimensions-section");
+        
+        dimensionsSection.style.display = "none";
+        
+        setTimeout(() => {
+          html2canvas(resultPage, {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            height: resultPage.scrollHeight,
+            width: resultPage.scrollWidth,
+            windowWidth: resultPage.scrollWidth,
+            windowHeight: resultPage.scrollHeight
+          }).then(canvas => {
+            const a = document.createElement("a");
+            a.href = canvas.toDataURL("image/png");
+            a.download = "跳槽适宜度评估结果.png";
+            a.click();
+            dimensionsSection.style.display = "block";
+          }).catch(err => {
+            console.error('截图失败: ', err);
+            alert("截图失败，请重试");
+            dimensionsSection.style.display = "block";
+          });
+        }, 1000);
+      });
+    }
+
+    function calculateHoppingResult() {
+      let results = [];
+      let sum = 0;
+      
+      hoppingQuestions.forEach((q, i) => {
+        const sel = document.querySelector(`#hopping-questions-container .option-card.selected[data-q="${i}"]`);
+        if (sel) {
+          const opt = q.options[parseInt(sel.dataset.index)];
+          results.push({...opt, dimension: q.dimension});
+          sum += opt.score;
+        }
+      });
+      
+      const avg = sum / hoppingQuestions.length;
+      showHoppingResult(results, avg);
+    }
+
+    function getHoppingLevel(score) {
+      if (score > 70) return "强烈建议跳槽：当前环境严重制约发展，积极寻找新机会";
+      if (score >= 50) return "可以考虑跳槽：现有发展存在瓶颈，可选择性寻找机会";
+      if (score >= 30) return "谨慎考虑跳槽：现有环境有不足，但仍有发展空间";
+      return "不建议跳槽：当前环境良好，应专注内部发展";
+    }
+
+    function showHoppingResult(dimensions, avg) {
+      document.getElementById("hopping-page").classList.add("hidden");
+      document.getElementById("hopping-result-page").classList.remove("hidden");
+      document.getElementById("hopping-score-text").innerText = avg.toFixed(1);
+      document.getElementById("hopping-level-text").innerText = getHoppingLevel(avg);
+
+      // 绘制雷达图
+      const ctx = document.getElementById("hopping-radarChart");
+      if (hoppingRadarChartInstance) hoppingRadarChartInstance.destroy();
+      hoppingRadarChartInstance = new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: dimensions.map(d => d.dimension),
+          datasets: [{
+            label: '得分',
+            data: dimensions.map(d => d.score),
+            backgroundColor: 'rgba(16, 185, 129, 0.2)',
+            borderColor: '#10b981',
+            pointBackgroundColor: '#10b981'
+          }]
+        },
+        options: {
+          scales: {
+            r: {
+              min: 0,
+              max: 100
+            }
+          }
+        }
+      });
+
+      // 渲染维度详情
+      const container = document.getElementById("hopping-dimensions-container");
+      container.innerHTML = "";
+      
+      dimensions.forEach((d, index) => {
+        const colorInfo = getRowColorInfo(index);
+        
+        container.innerHTML += `<div class="dimension-card ${colorInfo.cardClass}">
+          <div class="flex justify-between items-start mb-2">
+            <h4 class="font-medium text-gray-800">${d.dimension}</h4>
+            <span class="inline-block px-2 py-1 rounded-full text-xs font-medium ${colorInfo.badgeColor}">${d.score}分</span>
+          </div>
+          <div class="text-sm text-gray-600 mb-3 leading-relaxed">${d.analysis}</div>
+          <div class="text-sm ${colorInfo.lightColor} p-2 rounded-lg mt-2">
+            <i class="fa fa-lightbulb-o mr-1"></i> ${d.suggestion}
+          </div>
+        </div>`;
+      });
+    }
+
+    // 牛马指数计算器相关函数
+    function initCattleCalculator() {
+      renderQuestions("cattle-questions-container", cattleQuestions);
+      
+      // 选项点击事件
+      document.getElementById("cattle-questions-container").addEventListener("click", e => {
+        if (e.target.classList.contains("option-card")) {
+          const q = e.target.dataset.q;
+          document.querySelectorAll(`.option-card[data-q="${q}"]`).forEach(el => {
+            el.classList.remove("selected");
+          });
+          e.target.classList.add("selected");
+          
+          const isComplete = updateProgress(
+            cattleQuestions.length,
+            '#cattle-questions-container .option-card.selected',
+            'cattle-completed-count',
+            'cattle-progress-text',
+            'cattle-progress-bar'
+          );
+          document.getElementById("cattle-submit-btn").disabled = !isComplete;
+        }
+      });
+      
+      // 提交按钮
+      document.getElementById("cattle-submit-btn").addEventListener("click", calculateCattleResult);
+      
+      // 返回按钮
+      document.getElementById("cattle-back-btn").addEventListener("click", () => {
+        document.getElementById("cattle-result-page").classList.add("hidden");
+        document.getElementById("cattle-page").classList.remove("hidden");
+        initCattleCalculator();
+        updateProgress(
+          cattleQuestions.length,
+          '#cattle-questions-container .option-card.selected',
+          'cattle-completed-count',
+          'cattle-progress-text',
+          'cattle-progress-bar'
+        );
+      });
+      
+      // 返回首页按钮
+      document.getElementById("cattle-home-btn").addEventListener("click", () => {
+        document.getElementById("cattle-result-page").classList.add("hidden");
+        document.getElementById("home-page").classList.remove("hidden");
+      });
+      
+      // 分享按钮
+      document.getElementById("cattle-share-result-btn").addEventListener("click", () => {
+        const url = "https://dachangzhishiku.github.io/";
+        const button = document.getElementById("cattle-share-result-btn");
+        const originalText = button.innerHTML;
+        
+        navigator.clipboard.writeText(url).then(() => {
+          button.innerHTML = '<i class="fa fa-check mr-2"></i>网址已复制，去分享吧';
+          setTimeout(() => {
+            button.innerHTML = originalText;
+          }, 2000);
+        }).catch(err => {
+          console.error('无法复制文本: ', err);
+          alert('复制失败，请手动复制网址：' + url);
+        });
+      });
+      
+      // 下载图片
+      document.getElementById("cattle-download-screenshot").addEventListener("click", () => {
+        const resultPage = document.getElementById("cattle-result-page");
+        const dimensionsSection = document.getElementById("cattle-dimensions-section");
+        
+        dimensionsSection.style.display = "none";
+        
+        setTimeout(() => {
+          html2canvas(resultPage, {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            height: resultPage.scrollHeight,
+            width: resultPage.scrollWidth,
+            windowWidth: resultPage.scrollWidth,
+            windowHeight: resultPage.scrollHeight
+          }).then(canvas => {
+            const a = document.createElement("a");
+            a.href = canvas.toDataURL("image/png");
+            a.download = "牛马指数测评结果.png";
+            a.click();
+            dimensionsSection.style.display = "block";
+          }).catch(err => {
+            console.error('截图失败: ', err);
+            alert("截图失败，请重试");
+            dimensionsSection.style.display = "block";
+          });
+        }, 1000);
+      });
+    }
+
+    function calculateCattleResult() {
+      let results = [];
+      let sum = 0;
+      
+      cattleQuestions.forEach((q, i) => {
+        const sel = document.querySelector(`#cattle-questions-container .option-card.selected[data-q="${i}"]`);
+        if (sel) {
+          const opt = q.options[parseInt(sel.dataset.index)];
+          results.push({...opt, dimension: q.dimension});
+          sum += opt.score;
+        }
+      });
+      
+      const avg = sum / cattleQuestions.length;
+      showCattleResult(results, avg);
+    }
+
+    function getCattleLevel(score) {
+      if (score <= 39) return "佛系摸鱼人：您才是职场哲学家，生活的智者。公司是您的静心咖啡馆，工作只是副业。";
+      if (score <= 59) return "牛马预备役：在牛马的边界反复试探。时而努力，时而躺平，在焦虑和摆烂中仰卧起坐。";
+      if (score <= 79) return "高级牛马：公司的中流砥柱，团队的擎天柱。燃烧自己，照亮领导的PPT。";
+      return "牛马之王：鞠躬尽瘁，死而后已。是牛马界的榜样，劳动法的“漏网之鱼”。";
+    }
+
+    function showCattleResult(dimensions, avg) {
+      document.getElementById("cattle-page").classList.add("hidden");
+      document.getElementById("cattle-result-page").classList.remove("hidden");
+      document.getElementById("cattle-score-text").innerText = avg.toFixed(1);
+      document.getElementById("cattle-level-text").innerText = getCattleLevel(avg);
+
+      // 绘制雷达图
+      const ctx = document.getElementById("cattle-radarChart");
+      if (cattleRadarChartInstance) cattleRadarChartInstance.destroy();
+      cattleRadarChartInstance = new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: dimensions.map(d => d.dimension),
+          datasets: [{
+            label: '得分',
+            data: dimensions.map(d => d.score),
+            backgroundColor: 'rgba(249, 115, 22, 0.2)',
+            borderColor: '#f97316',
+            pointBackgroundColor: '#f97316'
+          }]
+        },
+        options: {
+          scales: {
+            r: {
+              min: 0,
+              max: 100
+            }
+          }
+        }
+      });
+
+      // 渲染维度详情
+      const container = document.getElementById("cattle-dimensions-container");
+      container.innerHTML = "";
+      
+      dimensions.forEach((d, index) => {
+        const colorInfo = getRowColorInfo(index, 'cattle');
+        
+        container.innerHTML += `<div class="dimension-card ${colorInfo.cardClass}">
+          <div class="flex justify-between items-start mb-2">
+            <h4 class="font-medium text-gray-800">${d.dimension}</h4>
+            <span class="inline-block px-2 py-1 rounded-full text-xs font-medium ${colorInfo.badgeColor}">${d.score}分</span>
+          </div>
+          <div class="text-sm text-gray-600 mb-3 leading-relaxed">${d.analysis}</div>
+          <div class="text-sm ${colorInfo.lightColor} p-2 rounded-lg mt-2">
+            <i class="fa fa-lightbulb-o mr-1"></i> ${d.suggestion}
+          </div>
+        </div>`;
+      });
+    }
+
+    // 躺平计算器相关函数
+    function initLyingCalculator() {
+      renderQuestions("lying-questions-container", lyingQuestions);
+      
+      // 选项点击事件
+      document.getElementById("lying-questions-container").addEventListener("click", e => {
+        if (e.target.classList.contains("option-card")) {
+          const q = e.target.dataset.q;
+          document.querySelectorAll(`.option-card[data-q="${q}"]`).forEach(el => {
+            el.classList.remove("selected");
+          });
+          e.target.classList.add("selected");
+          
+          const isComplete = updateProgress(
+            lyingQuestions.length,
+            '#lying-questions-container .option-card.selected',
+            'lying-completed-count',
+            'lying-progress-text',
+            'lying-progress-bar'
+          );
+          document.getElementById("lying-submit-btn").disabled = !isComplete;
+        }
+      });
+      
+      // 提交按钮
+      document.getElementById("lying-submit-btn").addEventListener("click", calculateLyingResult);
+      
+      // 返回按钮
+      document.getElementById("lying-back-btn").addEventListener("click", () => {
+        document.getElementById("lying-result-page").classList.add("hidden");
+        document.getElementById("lying-page").classList.remove("hidden");
+        initLyingCalculator();
+        updateProgress(
+          lyingQuestions.length,
+          '#lying-questions-container .option-card.selected',
+          'lying-completed-count',
+          'lying-progress-text',
+          'lying-progress-bar'
+        );
+      });
+      
+      // 返回首页按钮
+      document.getElementById("lying-home-btn").addEventListener("click", () => {
+        document.getElementById("lying-result-page").classList.add("hidden");
+        document.getElementById("home-page").classList.remove("hidden");
+      });
+      
+      // 分享按钮
+      document.getElementById("lying-share-result-btn").addEventListener("click", () => {
+        const url = "https://dachangzhishiku.github.io/";
+        const button = document.getElementById("lying-share-result-btn");
+        const originalText = button.innerHTML;
+        
+        navigator.clipboard.writeText(url).then(() => {
+          button.innerHTML = '<i class="fa fa-check mr-2"></i>网址已复制，去分享吧';
+          setTimeout(() => {
+            button.innerHTML = originalText;
+          }, 2000);
+        }).catch(err => {
+          console.error('无法复制文本: ', err);
+          alert('复制失败，请手动复制网址：' + url);
+        });
+      });
+    }
+
+    // 计算躺平计算器结果
+    function calculateLyingResult() {
+      const selectedOptions = document.querySelectorAll('#lying-questions-container .option-card.selected');
+      let totalScore = 0;
+      const dimensionScores = [];
+      const dimensionLabels = [];
+      const dimensionDetails = [];
+      
+      selectedOptions.forEach(option => {
+        const qIndex = parseInt(option.dataset.q);
+        const optIndex = parseInt(option.dataset.index);
+        const question = lyingQuestions[qIndex];
+        const selected = question.options[optIndex];
+        
+        totalScore += selected.score;
+        dimensionScores.push(selected.score);
+        dimensionLabels.push(question.dimension);
+        dimensionDetails.push({
+          name: question.dimension,
+          score: selected.score,
+          analysis: selected.analysis,
+          suggestion: selected.suggestion
+        });
+      });
+      
+      // 计算平均分
+      const normalizedScore = Math.round((totalScore / lyingQuestions.length));
+      
+      // 生成现状分析
+      const [moat, leader, cash, family, industry, physical, mental, reemploy] = dimensionScores;
+      const statusAnalysis = `职场护城河${moat}分（${moat >= 75 ? '高不可替代性' : moat >= 50 ? '中等替代难度' : '低替代成本'}），领导容忍度${leader}分（${leader >= 75 ? '核心信任' : leader >= 50 ? '常规对待' : '高替换风险'}）。现金流缓冲${cash}分（${cash >= 75 ? '极强抗风险' : cash >= 50 ? '中等安全' : '高财务风险'}），家庭安全网${family}分（${family >= 75 ? '无经济压力' : family >= 50 ? '轻微负担' : '重家庭压力'}）。行业保质期${industry}分（${industry >= 75 ? '长期稳定' : industry >= 50 ? '中年可转型' : '高年龄风险'}），体力消耗${physical}分（${physical >= 75 ? '极轻松' : physical >= 50 ? '常规强度' : '高体力负担'}）。精神内耗${mental}分（${mental >= 75 ? '无压力' : mental >= 50 ? '可调节' : '严重内耗'}），再就业成本${reemploy}分（${reemploy >= 75 ? '易就业' : reemploy >= 50 ? '常规难度' : '高失业风险'}）。`;
+
+      // 匹配躺平档位
+      let levelInfo = {};
+      if (normalizedScore >= 80) {
+        levelInfo = { level: '钻石躺', color: '#6366f1', status: '上班≈带薪养生，躺平无风险', suggestion: '发展副业/投资自己，最大化时间价值；保持核心竞争力，避免过度躺平导致能力退化' };
+      } else if (normalizedScore >= 61) {
+        levelInfo = { level: '黄金躺', color: '#3b82f6', status: '选择性努力，躺平性价比高', suggestion: '保住核心价值模块，拒绝无意义脏活累活；利用空闲时间提升副业或软技能' };
+      } else if (normalizedScore >= 41) {
+        levelInfo = { level: '陶瓷躺', color: '#d97706', status: '需伪装努力，躺平需谨慎', suggestion: '用80%时间做20%关键产出，表面维持积极；暗中学习跳槽技能，储备外部机会' };
+      } else if (normalizedScore >= 21) {
+        levelInfo = { level: '高危躺', color: '#f97316', status: '基础薄弱，躺平有风险', suggestion: '立刻止损跳槽，优先选择低强度、高稳定性工作；短期内减少开支，储备3-6个月生活费' };
+      } else {
+        levelInfo = { level: '禁止躺平', color: '#dc2626', status: '缺乏条件，躺平风险较高', suggestion: '借钱也要先离职治病（身体/心理），同时收集证据申请劳动仲裁；优先解决生存问题，再规划职业方向' };
+      }
+      
+      // 更新结果页面
+      document.getElementById("lying-score-text").textContent = normalizedScore;
+      document.getElementById("lying-level-text").textContent = `${levelInfo.level} - ${levelInfo.status}`;
+      document.getElementById("lying-score-text").style.color = levelInfo.color;
+      
+      // 渲染维度详情
+      const dimensionsContainer = document.getElementById("lying-dimensions-container");
+      dimensionsContainer.innerHTML = "";
+      
+      dimensionDetails.forEach((dim, index) => {
+        const colorInfo = getRowColorInfo(index);
+        dimensionsContainer.innerHTML += `
+          <div class="dimension-card ${colorInfo.cardClass}">
+            <div class="flex justify-between items-start mb-2">
+              <h4 class="font-medium">${dim.name}</h4>
+              <span class="px-2 py-1 rounded-full text-xs font-medium ${colorInfo.badgeColor}">${dim.score}分</span>
+            </div>
+            <p class="text-sm text-gray-600 mb-2">${dim.analysis}</p>
+            <p class="text-xs ${colorInfo.lightColor} px-2 py-1 rounded">💡 ${dim.suggestion}</p>
+          </div>
+        `;
+      });
+      
+      // 绘制雷达图
+      const ctx = document.getElementById("lying-radarChart").getContext('2d');
+      if (lyingRadarChartInstance) {
+        lyingRadarChartInstance.destroy();
+      }
+      
+      lyingRadarChartInstance = new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: dimensionLabels,
+          datasets: [{
+            label: '你的得分',
+            data: dimensionScores,
+            backgroundColor: 'rgba(139, 92, 246, 0.2)',
+            borderColor: 'rgba(139, 92, 246, 1)',
+            pointBackgroundColor: 'rgba(139, 92, 246, 1)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgba(139, 92, 246, 1)'
+          }]
+        },
+        options: {
+          scales: {
+            r: {
+              angleLines: {
+                display: true
+              },
+              suggestedMin: 0,
+              suggestedMax: 100
+            }
+          }
+        }
+      });
+      
+      // 切换到结果页面
+      document.getElementById("lying-page").classList.add("hidden");
+      document.getElementById("lying-result-page").classList.remove("hidden");
+    }
+
+    // 页面初始化
+    document.addEventListener("DOMContentLoaded", () => {
+      // 首页按钮事件
+      document.getElementById("go-clique-btn").addEventListener("click", () => {
+        document.getElementById("home-page").classList.add("hidden");
+        document.getElementById("clique-page").classList.remove("hidden");
+        initCliqueCalculator();
+      });
+      
+      document.getElementById("go-hopping-btn").addEventListener("click", () => {
+        document.getElementById("home-page").classList.add("hidden");
+        document.getElementById("hopping-page").classList.remove("hidden");
+        initHoppingCalculator();
+      });
+      
+      document.getElementById("go-cattle-btn").addEventListener("click", () => {
+        document.getElementById("home-page").classList.add("hidden");
+        document.getElementById("cattle-page").classList.remove("hidden");
+        initCattleCalculator();
+      });
+
+      document.getElementById("go-lying-btn").addEventListener("click", () => {
+        document.getElementById("home-page").classList.add("hidden");
+        document.getElementById("lying-page").classList.remove("hidden");
+        initLyingCalculator();
+      });
+      
+      // 卡片悬停效果增强
+      document.querySelectorAll('.calculator-card').forEach(card => {
+        card.addEventListener('mouseenter', () => {
+          card.classList.add('shadow-xl', 'scale-105');
+        });
+        card.addEventListener('mouseleave', () => {
+          card.classList.remove('shadow-xl', 'scale-105');
+        });
       });
     });
   </script>
 </body>
 </html>
-    
